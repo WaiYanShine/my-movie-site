@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStream - Movies</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #ffffff; }
+        header { background: #1f1f1f; display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; color: #e50914; text-decoration: none; }
+        nav a { color: #fff; text-decoration: none; margin-left: 25px; font-size: 16px; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #e50914; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        h2 { margin-bottom: 25px; font-size: 2rem; border-left: 4px solid #e50914; padding-left: 10px; }
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .movie-card { background: #1f1f1f; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.3s; }
+        .movie-card:hover { transform: translateY(-5px); }
+        .movie-card img { width: 100%; height: 350px; object-fit: cover; }
+        .movie-info { padding: 15px; }
+        .movie-info h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .movie-info p { color: #aaa; font-size: 0.9rem; }
+        footer { text-align: center; padding: 20px; background: #1f1f1f; color: #777; margin-top: 50px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">🎬 CineStream</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="movies.html" class="active">Movies</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Trending Movies</h2>
+        <div class="movie-grid">
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" alt="Movie">
+                <div class="movie-info">
+                    <h3>Cyber Runner 2099</h3>
+                    <p>Action, Sci-Fi • ⭐ 8.5</p>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80" alt="Movie">
+                <div class="movie-info">
+                    <h3>The Dark Horizon</h3>
+                    <p>Thriller, Drama • ⭐ 7.9</p>
+                </div>
+            </div>
+            <div class="movie-card">
+                <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=500&q=80" alt="Movie">
+                <div class="movie-info">
+                    <h3>Beyond The Stars</h3>
+                    <p>Adventure, Sci-Fi • ⭐ 8.2</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 CineStream. All rights reserved.</p>
+    </footer>
+</body>
+</html>
