@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStream - Home</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #ffffff; }
+        header { background: #1f1f1f; display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid #333; }
+        .logo { font-size: 24px; font-weight: bold; color: #e50914; text-decoration: none; }
+        nav a { color: #fff; text-decoration: none; margin-left: 25px; font-size: 16px; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #e50914; }
+        .hero { height: 70vh; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1350&q=80') center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 15px; color: #fff; }
+        .hero p { font-size: 1.2rem; margin-bottom: 25px; color: #ccc; max-width: 600px; }
+        .btn { background: #e50914; color: #fff; padding: 12px 30px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn:hover { background: #b20710; }
+        footer { text-align: center; padding: 20px; background: #1f1f1f; color: #777; margin-top: 50px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">🎬 CineStream</a>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="movies.html">Movies</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Unlimited Movies & TV Shows</h1>
+        <p>Discover and stream your favorite movies anytime, anywhere. Explore our extensive collection now.</p>
+        <a href="movies.html" class="btn">Explore Movies</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 CineStream. All rights reserved.</p>
+    </footer>
+</body>
+</html>
