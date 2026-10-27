@@ -7,6 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
+        
         ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #121212; }
         ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
@@ -20,6 +21,7 @@
         .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
         .badge { background: #e50914; font-size: 14px; padding: 4px 10px; border-radius: 20px; }
 
+        /* Responsive Grid: Mobile = 1 Column, Desktop = 6 Columns */
         .movie-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 600px) { .movie-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1024px) { .movie-grid { grid-template-columns: repeat(6, 1fr); } }
@@ -31,6 +33,12 @@
         .movie-info h3 { font-size: 1rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .movie-meta { display: flex; justify-content: space-between; color: #aaa; font-size: 0.85rem; }
         .rating { color: #ffc107; font-weight: bold; }
+
+        /* Pagination Buttons */
+        .pagination { display: flex; justify-content: center; align-items: center; margin-top: 40px; gap: 10px; }
+        .pagination a, .pagination span { background: #1f1f1f; color: #fff; padding: 10px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; border: 1px solid #333; }
+        .pagination a:hover { background: #e50914; border-color: #e50914; }
+        .pagination .active { background: #e50914; border-color: #e50914; }
 
         footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
     </style>
@@ -48,25 +56,93 @@
 
     <div class="container">
         <div class="section-title">
-            <span>Latest Released Movies</span>
-            <span class="badge">24 Movies</span>
+            <span id="sectionHeading">Latest Released Movies</span>
+            <span id="pageBadge" class="badge">Page 1</span>
         </div>
 
-        <div class="movie-grid">
-            <!-- ဇာတ်ကား တစ်ကားချင်းစီကို watch.html သို့ လင့်ခ်ချိတ်ထားသည် -->
-            <a href="watch.html?title=Cyber%20City&id=dQw4w9WgXcQ" class="movie-card"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Movie"><div class="movie-info"><h3>Movie 1: Cyber City</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.5</span></div></div></a>
-            <a href="watch.html?title=Dark%20Horizon&id=3JZ_D3ELwOQ" class="movie-card"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Movie"><div class="movie-info"><h3>Movie 2: Dark Horizon</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.9</span></div></div></a>
-            <a href="watch.html?title=Beyond%20Stars&id=jfKfPfyJRdk" class="movie-card"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Movie"><div class="movie-info"><h3>Movie 3: Beyond Stars</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.2</span></div></div></a>
-            <a href="watch.html?title=Cinema%20Realm&id=5qap5aO4i9A" class="movie-card"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Movie"><div class="movie-info"><h3>Movie 4: Cinema Realm</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 9.0</span></div></div></a>
-            <a href="watch.html?title=Shadow%20Hunter&id=L_LUpnjgPso" class="movie-card"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Movie"><div class="movie-info"><h3>Movie 5: Shadow Hunter</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.5</span></div></div></a>
-            <a href="watch.html?title=The%20Lost%20World&id=kJQP7kiw5Fk" class="movie-card"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Movie"><div class="movie-info"><h3>Movie 6: The Lost World</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.1</span></div></div></a>
-            <!-- လိုအပ်ပါက ကျန်ဇာတ်ကားများကိုလည်း ဤပုံစံအတိုင်း ဆက်ထည့်နိုင်သည် -->
+        <div id="movieGrid" class="movie-grid">
+            <!-- Movies will be loaded here dynamically via JavaScript -->
+        </div>
+
+        <div id="pagination" class="pagination">
+            <!-- Pagination buttons will be generated here -->
         </div>
     </div>
 
     <footer>
         <p>&copy; 2026 CineStream. All rights reserved.</p>
     </footer>
+
+    <script>
+        const moviesPerPage = 24;
+
+        // URL ထဲက page နံပါတ်ကို ဖတ်ရန် (ဥပမာ index.html?page=2 ဆိုရင် page = 2 လို့ယူမယ်)
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentPage = parseInt(urlParams.get('page')) || 1;
+
+        async function loadMovies() {
+            try {
+                const response = await fetch('movies.json');
+                const movies = await response.json();
+
+                // Page 1 မှာ ရုပ်ရှင်အသစ်ဆုံးတွေ ပထမဆုံးပေါ်အောင် စီစဉ်ခြင်း
+                const grid = document.getElementById('movieGrid');
+                const paginationDiv = document.getElementById('pagination');
+                
+                const startIndex = (currentPage - 1) * moviesPerPage;
+                const endIndex = startIndex + moviesPerPage;
+                const paginatedMovies = movies.slice(startIndex, endIndex);
+
+                document.getElementById('pageBadge').innerText = `Page ${currentPage}`;
+                if(currentPage > 1) {
+                    document.getElementById('sectionHeading').innerText = `Older Movies Collection`;
+                }
+
+                grid.innerHTML = '';
+                if (paginatedMovies.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No movies found on this page.</p>';
+                    return;
+                }
+
+                // ဇာတ်ကား ကတ်ပြားများကို တည်ဆောက်ခြင်း (DooPlay လို watch.html သို့ လင့်ခ်ချိတ်သည်)
+                paginatedMovies.forEach(movie => {
+                    const card = document.createElement('a');
+                    card.href = `watch.html?title=${encodeURIComponent(movie.title)}&id=${movie.id}`;
+                    card.className = 'movie-card';
+                    card.innerHTML = `
+                        <img src="${movie.img}" alt="${movie.title}">
+                        <div class="movie-info">
+                            <h3>${movie.title}</h3>
+                            <div class="movie-meta">
+                                <span>${movie.year}</span>
+                                <span class="rating">⭐ ${movie.rating}</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                // Pagination ခလုတ်များ ဖန်တီးခြင်း
+                const totalPages = Math.ceil(movies.length / moviesPerPage);
+                paginationDiv.innerHTML = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('a');
+                    btn.href = `index.html?page=${i}`;
+                    btn.innerText = i;
+                    if (i === currentPage) {
+                        btn.className = 'active';
+                    }
+                    paginationDiv.appendChild(btn);
+                }
+
+            } catch (error) {
+                console.error('Error loading movies:', error);
+            }
+        }
+
+        loadMovies();
+    </script>
 
 </body>
 </html>
