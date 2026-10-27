@@ -12,28 +12,16 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         }
 
-        /* Dark Theme & Custom Scrollbar */
         body { 
             background-color: #121212; 
             color: #ffffff; 
             overflow-y: scroll; 
         }
 
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #121212;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #e50914;
-            border-radius: 5px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #b20710;
-        }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
 
-        /* Header Navigation */
         header { 
             background: #1f1f1f; 
             display: flex; 
@@ -46,32 +34,11 @@
             z-index: 100;
         }
 
-        .logo { 
-            font-size: 22px; 
-            font-weight: bold; 
-            color: #e50914; 
-            text-decoration: none; 
-        }
+        .logo { font-size: 22px; font-weight: bold; color: #e50914; text-decoration: none; }
+        nav a { color: #fff; text-decoration: none; margin-left: 20px; font-size: 15px; transition: 0.3s; }
+        nav a:hover, nav a.active { color: #e50914; }
 
-        nav a { 
-            color: #fff; 
-            text-decoration: none; 
-            margin-left: 20px; 
-            font-size: 15px; 
-            transition: 0.3s; 
-        }
-
-        nav a:hover, nav a.active { 
-            color: #e50914; 
-        }
-
-        /* Main Container */
-        .container { 
-            max-width: 1400px; 
-            margin: 30px auto; 
-            padding: 0 20px; 
-        }
-
+        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
         .section-title { 
             margin-bottom: 25px; 
             font-size: 1.8rem; 
@@ -82,97 +49,72 @@
             align-items: center;
         }
 
-        .badge {
-            background: #e50914;
-            font-size: 14px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: normal;
-        }
+        .badge { background: #e50914; font-size: 14px; padding: 4px 10px; border-radius: 20px; }
 
-        /* Responsive Grid (Mobile = 1 Column, Desktop = 4 to 6 Columns) */
+        /* Responsive Grid: Mobile = 1 Column, Desktop = 6 Columns */
         .movie-grid { 
             display: grid; 
-            grid-template-columns: 1fr; /* Default: Mobile - 1 Column */
+            grid-template-columns: 1fr; 
             gap: 20px; 
         }
+        @media (min-width: 600px) { .movie-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .movie-grid { grid-template-columns: repeat(6, 1fr); } }
 
-        /* Tablet View */
-        @media (min-width: 600px) {
-            .movie-grid {
-                grid-template-columns: repeat(3, 1fr); /* 3 Columns for Tablets */
-            }
-        }
-
-        /* Desktop View */
-        @media (min-width: 1024px) {
-            .movie-grid {
-                grid-template-columns: repeat(6, 1fr); /* 6 Columns for Desktop */
-            }
-        }
-
-        /* Movie Card Styling */
         .movie-card { 
             background: #1f1f1f; 
             border-radius: 8px; 
             overflow: hidden; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.4); 
-            transition: transform 0.3s, box-shadow 0.3s; 
+            transition: transform 0.3s; 
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
         }
+        .movie-card:hover { transform: translateY(-8px); box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3); }
+        .movie-card img { width: 100%; height: 280px; object-fit: cover; }
+        .movie-info { padding: 12px; }
+        .movie-info h3 { font-size: 1rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-meta { display: flex; justify-content: space-between; color: #aaa; font-size: 0.85rem; }
+        .rating { color: #ffc107; font-weight: bold; }
 
-        .movie-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3);
-        }
-
-        .movie-card img { 
-            width: 100%; 
-            height: 280px; 
-            object-fit: cover; 
-        }
-
-        .movie-info { 
-            padding: 12px; 
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            flex-grow: 1;
-        }
-
-        .movie-info h3 { 
-            font-size: 1rem; 
-            margin-bottom: 6px; 
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .movie-meta {
-            display: flex;
-            justify-content: space-between;
+        /* YouTube Video Modal Popup */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
             align-items: center;
-            color: #aaa;
-            font-size: 0.85rem;
+            z-index: 1000;
         }
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            background: #1f1f1f;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .close-btn:hover { color: #e50914; }
 
-        .rating {
-            color: #ffc107;
-            font-weight: bold;
-        }
-
-        /* Footer */
-        footer { 
-            text-align: center; 
-            padding: 25px; 
-            background: #1f1f1f; 
-            color: #777; 
-            margin-top: 50px; 
-            font-size: 14px; 
-            border-top: 1px solid #333;
-        }
+        footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
     </style>
 </head>
 <body>
@@ -189,44 +131,70 @@
     <div class="container">
         <div class="section-title">
             <span>Latest Released Movies</span>
-            <span class="badge">Page 1 (24 Movies)</span>
+            <span class="badge">24 Movies</span>
         </div>
 
         <div class="movie-grid">
-            <!-- Movie 1 to 24 -->
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Poster"><div class="movie-info"><h3>Movie 1: Cyber City</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.5</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Poster"><div class="movie-info"><h3>Movie 2: Dark Horizon</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.9</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Poster"><div class="movie-info"><h3>Movie 3: Beyond Stars</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.2</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Poster"><div class="movie-info"><h3>Movie 4: Cinema Realm</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 9.0</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Poster"><div class="movie-info"><h3>Movie 5: Shadow Hunter</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.5</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Poster"><div class="movie-info"><h3>Movie 6: The Lost World</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.1</span></div></div></div>
-            
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Poster"><div class="movie-info"><h3>Movie 7: Neon Blade</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.4</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Poster"><div class="movie-info"><h3>Movie 8: Silent Echo</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.8</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Poster"><div class="movie-info"><h3>Movie 9: Galaxy Edge</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.7</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Poster"><div class="movie-info"><h3>Movie 10: Night Walker</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.2</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Poster"><div class="movie-info"><h3>Movie 11: Frozen Kingdom</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.9</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Poster"><div class="movie-info"><h3>Movie 12: Secret Agent</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.0</span></div></div></div>
+            <!-- Movie 1 to 24 (Data-trailer attribute ထဲမှာ YouTube Video ID ထည့်ထားပါတယ်) -->
+            <div class="movie-card" onclick="openModal('dQw4w9WgXcQ')"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Movie"><div class="movie-info"><h3>Movie 1: Cyber City</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.5</span></div></div></div>
+            <div class="movie-card" onclick="openModal('3JZ_D3ELwOQ')"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Movie"><div class="movie-info"><h3>Movie 2: Dark Horizon</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.9</span></div></div></div>
+            <div class="movie-card" onclick="openModal('jfKfPfyJRdk')"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Movie"><div class="movie-info"><h3>Movie 3: Beyond Stars</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.2</span></div></div></div>
+            <div class="movie-card" onclick="openModal('5qap5aO4i9A')"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Movie"><div class="movie-info"><h3>Movie 4: Cinema Realm</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 9.0</span></div></div></div>
+            <div class="movie-card" onclick="openModal('L_LUpnjgPso')"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Movie"><div class="movie-info"><h3>Movie 5: Shadow Hunter</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.5</span></div></div></div>
+            <div class="movie-card" onclick="openModal('kJQP7kiw5Fk')"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Movie"><div class="movie-info"><h3>Movie 6: The Lost World</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.1</span></div></div></div>
 
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Poster"><div class="movie-info"><h3>Movie 13: Space Odyssey</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 9.1</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Poster"><div class="movie-info"><h3>Movie 14: Time Loop</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.3</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Poster"><div class="movie-info"><h3>Movie 15: Deep Ocean</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.6</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Poster"><div class="movie-info"><h3>Movie 16: Fire & Ice</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.6</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Poster"><div class="movie-info"><h3>Movie 17: Urban Legend</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.4</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Poster"><div class="movie-info"><h3>Movie 18: Last Samurai</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.8</span></div></div></div>
+            <div class="movie-card" onclick="openModal('fJ9rUzIMcZQ')"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Movie"><div class="movie-info"><h3>Movie 7: Neon Blade</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.4</span></div></div></div>
+            <div class="movie-card" onclick="openModal('YQHsXMglC9A')"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Movie"><div class="movie-info"><h3>Movie 8: Silent Echo</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.8</span></div></div></div>
+            <div class="movie-card" onclick="openModal('2Vv-BfVoq4g')"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Movie"><div class="movie-info"><h3>Movie 9: Galaxy Edge</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.7</span></div></div></div>
+            <div class="movie-card" onclick="openModal('RgKAFK5djSk')"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Movie"><div class="movie-info"><h3>Movie 10: Night Walker</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.2</span></div></div></div>
+            <div class="movie-card" onclick="openModal('OPf0YbXqDm0')"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Movie"><div class="movie-info"><h3>Movie 11: Frozen Kingdom</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.9</span></div></div></div>
+            <div class="movie-card" onclick="openModal('hHW1oY26kxQ')"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Movie"><div class="movie-info"><h3>Movie 12: Secret Agent</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.0</span></div></div></div>
 
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Poster"><div class="movie-info"><h3>Movie 19: Iron Protocol</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.0</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Poster"><div class="movie-info"><h3>Movie 20: Rogue One</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.2</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Poster"><div class="movie-info"><h3>Movie 21: Red Planet</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.7</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Poster"><div class="movie-info"><h3>Movie 22: High Speed</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.1</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Poster"><div class="movie-info"><h3>Movie 23: Lost Temple</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.5</span></div></div></div>
-            <div class="movie-card"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Poster"><div class="movie-info"><h3>Movie 24: Final Frontier</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 9.2</span></div></div></div>
+            <div class="movie-card" onclick="openModal('ktvTqknDobU')"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Movie"><div class="movie-info"><h3>Movie 13: Space Odyssey</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 9.1</span></div></div></div>
+            <div class="movie-card" onclick="openModal('8UVNT4wvIGY')"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Movie"><div class="movie-info"><h3>Movie 14: Time Loop</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.3</span></div></div></div>
+            <div class="movie-card" onclick="openModal('9bZkp7q19f0')"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Movie"><div class="movie-info"><h3>Movie 15: Deep Ocean</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.6</span></div></div></div>
+            <div class="movie-card" onclick="openModal('tgbNymZ7vqY')"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Movie"><div class="movie-info"><h3>Movie 16: Fire & Ice</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.6</span></div></div></div>
+            <div class="movie-card" onclick="openModal('ZZ5LpwO-An4')"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Movie"><div class="movie-info"><h3>Movie 17: Urban Legend</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.4</span></div></div></div>
+            <div class="movie-card" onclick="openModal('1la4HCVOSUs')"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Movie"><div class="movie-info"><h3>Movie 18: Last Samurai</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.8</span></div></div></div>
+
+            <div class="movie-card" onclick="openModal('5NV6Rdv1a3I')"><img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500" alt="Movie"><div class="movie-info"><h3>Movie 19: Iron Protocol</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.0</span></div></div></div>
+            <div class="movie-card" onclick="openModal('kJQP7kiw5Fk')"><img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500" alt="Movie"><div class="movie-info"><h3>Movie 20: Rogue One</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.2</span></div></div></div>
+            <div class="movie-card" onclick="openModal('jfKfPfyJRdk')"><img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500" alt="Movie"><div class="movie-info"><h3>Movie 21: Red Planet</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 7.7</span></div></div></div>
+            <div class="movie-card" onclick="openModal('3JZ_D3ELwOQ')"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500" alt="Movie"><div class="movie-info"><h3>Movie 22: High Speed</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.1</span></div></div></div>
+            <div class="movie-card" onclick="openModal('dQw4w9WgXcQ')"><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500" alt="Movie"><div class="movie-info"><h3>Movie 23: Lost Temple</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 8.5</span></div></div></div>
+            <div class="movie-card" onclick="openModal('5qap5aO4i9A')"><img src="https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=500" alt="Movie"><div class="movie-info"><h3>Movie 24: Final Frontier</h3><div class="movie-meta"><span>2026</span><span class="rating">⭐ 9.2</span></div></div></div>
+        </div>
+    </div>
+
+    <!-- YouTube Video Modal -->
+    <div id="videoModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="video-container">
+                <iframe id="youtubePlayer" src="" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
 
     <footer>
         <p>&copy; 2026 CineStream. All rights reserved.</p>
     </footer>
+
+    <script>
+        function openModal(videoId) {
+            const modal = document.getElementById('videoModal');
+            const player = document.getElementById('youtubePlayer');
+            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('videoModal');
+            const player = document.getElementById('youtubePlayer');
+            player.src = ''; // Stop video when closed
+            modal.style.display = 'none';
+        }
+    </script>
 
 </body>
 </html>
