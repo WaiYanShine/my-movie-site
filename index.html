@@ -36,39 +36,74 @@
             white-space: nowrap;
         }
 
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        nav a { 
-            color: #fff; 
-            text-decoration: none; 
-            font-size: 14px; 
-            transition: 0.3s; 
-            white-space: nowrap;
-        }
-
+        nav { display: flex; align-items: center; gap: 15px; }
+        nav a { color: #fff; text-decoration: none; font-size: 14px; transition: 0.3s; white-space: nowrap; }
         nav a:hover, nav a.active { color: #e50914; }
 
-        /* Small screen adjustments */
         @media (max-width: 480px) {
-            header {
-                padding: 12px 15px;
-            }
-            .logo {
-                font-size: 18px;
-            }
-            nav {
-                gap: 10px;
-            }
-            nav a {
-                font-size: 13px;
-            }
+            header { padding: 12px 15px; }
+            .logo { font-size: 18px; }
+            nav { gap: 10px; }
+            nav a { font-size: 13px; }
         }
 
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        
+        /* Filter & Search Bar Section */
+        .filter-section {
+            background: #1f1f1f;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #333;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            background: #121212;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #e50914;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-options select {
+            padding: 10px 15px;
+            background: #121212;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .filter-options select:focus {
+            outline: none;
+            border-color: #e50914;
+        }
+
         .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
         .badge { background: #e50914; font-size: 14px; padding: 4px 10px; border-radius: 20px; }
 
@@ -87,7 +122,7 @@
 
         /* Pagination Buttons */
         .pagination { display: flex; justify-content: center; align-items: center; margin-top: 40px; gap: 10px; }
-        .pagination a, .pagination span { background: #1f1f1f; color: #fff; padding: 10px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; border: 1px solid #333; }
+        .pagination a, .pagination span { background: #1f1f1f; color: #fff; padding: 10px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; border: 1px solid #333; cursor: pointer; }
         .pagination a:hover { background: #e50914; border-color: #e50914; }
         .pagination .active { background: #e50914; border-color: #e50914; }
 
@@ -106,8 +141,30 @@
     </header>
 
     <div class="container">
+        <!-- Search & Filter Bar -->
+        <div class="filter-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search movies by name..." oninput="filterMovies()">
+            </div>
+            <div class="filter-options">
+                <select id="sortFilter" onchange="filterMovies()">
+                    <option value="latest">Sort: Latest</option>
+                    <option value="top_rated">Sort: Top Rated</option>
+                    <option value="most_viewed">Sort: Most Viewed</option>
+                </select>
+                <select id="categoryFilter" onchange="filterMovies()">
+                    <option value="all">All Categories</option>
+                    <option value="Action">Action</option>
+                    <option value="Sci-Fi">Sci-Fi</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Thriller">Thriller</option>
+                </select>
+            </div>
+        </div>
+
         <div class="section-title">
-            <span id="sectionHeading">Latest Released Movies</span>
+            <span id="sectionHeading">Movie Collection</span>
             <span id="pageBadge" class="badge">Page 1</span>
         </div>
 
@@ -126,69 +183,98 @@
 
     <script>
         const moviesPerPage = 24;
+        let allMovies = [];
 
-        const urlParams = new URLSearchParams(window.location.search);
-        let currentPage = parseInt(urlParams.get('page')) || 1;
-
-        async function loadMovies() {
+        async function initMovies() {
             try {
                 const response = await fetch('movies.json');
-                const movies = await response.json();
-
-                const grid = document.getElementById('movieGrid');
-                const paginationDiv = document.getElementById('pagination');
-                
-                const startIndex = (currentPage - 1) * moviesPerPage;
-                const endIndex = startIndex + moviesPerPage;
-                const paginatedMovies = movies.slice(startIndex, endIndex);
-
-                document.getElementById('pageBadge').innerText = `Page ${currentPage}`;
-                if(currentPage > 1) {
-                    document.getElementById('sectionHeading').innerText = `Older Movies Collection`;
-                }
-
-                grid.innerHTML = '';
-                if (paginatedMovies.length === 0) {
-                    grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No movies found on this page.</p>';
-                    return;
-                }
-
-                paginatedMovies.forEach(movie => {
-                    const card = document.createElement('a');
-                    card.href = `watch.html?title=${encodeURIComponent(movie.title)}&id=${movie.id}`;
-                    card.className = 'movie-card';
-                    card.innerHTML = `
-                        <img src="${movie.img}" alt="${movie.title}">
-                        <div class="movie-info">
-                            <h3>${movie.title}</h3>
-                            <div class="movie-meta">
-                                <span>${movie.year}</span>
-                                <span class="rating">⭐ ${movie.rating}</span>
-                            </div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-
-                const totalPages = Math.ceil(movies.length / moviesPerPage);
-                paginationDiv.innerHTML = '';
-
-                for (let i = 1; i <= totalPages; i++) {
-                    const btn = document.createElement('a');
-                    btn.href = `index.html?page=${i}`;
-                    btn.innerText = i;
-                    if (i === currentPage) {
-                        btn.className = 'active';
-                    }
-                    paginationDiv.appendChild(btn);
-                }
-
+                allMovies = await response.json();
+                filterMovies();
             } catch (error) {
                 console.error('Error loading movies:', error);
             }
         }
 
-        loadMovies();
+        function filterMovies() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+
+            // 1. Search filter
+            let filtered = allMovies.filter(movie => 
+                movie.title.toLowerCase().includes(searchQuery)
+            );
+
+            // 2. Category filter
+            if (category !== 'all') {
+                filtered = filtered.filter(movie => movie.genre === category);
+            }
+
+            // 3. Sorting
+            if (sortBy === 'latest') {
+                // Keep original order from JSON (Latest first)
+            } else if (sortBy === 'top_rated') {
+                filtered.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
+            } else if (sortBy === 'most_viewed') {
+                filtered.sort((a, b) => b.views - a.views);
+            }
+
+            renderPage(filtered);
+        }
+
+        function renderPage(movies) {
+            const urlParams = new URLSearchParams(window.location.search);
+            let currentPage = parseInt(urlParams.get('page')) || 1;
+
+            const grid = document.getElementById('movieGrid');
+            const paginationDiv = document.getElementById('pagination');
+            
+            const startIndex = (currentPage - 1) * moviesPerPage;
+            const endIndex = startIndex + moviesPerPage;
+            const paginatedMovies = movies.slice(startIndex, endIndex);
+
+            document.getElementById('pageBadge').innerText = `Page ${currentPage}`;
+
+            grid.innerHTML = '';
+            if (paginatedMovies.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No movies found.</p>';
+                paginationDiv.innerHTML = '';
+                return;
+            }
+
+            paginatedMovies.forEach(movie => {
+                const card = document.createElement('a');
+                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&id=${movie.id}`;
+                card.className = 'movie-card';
+                card.innerHTML = `
+                    <img src="${movie.img}" alt="${movie.title}">
+                    <div class="movie-info">
+                        <h3>${movie.title}</h3>
+                        <div class="movie-meta">
+                            <span>${movie.year}</span>
+                            <span class="rating">⭐ ${movie.rating}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Pagination buttons
+            const totalPages = Math.ceil(movies.length / moviesPerPage);
+            paginationDiv.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('a');
+                btn.href = `index.html?page=${i}`;
+                btn.innerText = i;
+                if (i === currentPage) {
+                    btn.className = 'active';
+                }
+                paginationDiv.appendChild(btn);
+            }
+        }
+
+        initMovies();
     </script>
 
 </body>
