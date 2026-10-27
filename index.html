@@ -12,10 +12,61 @@
         ::-webkit-scrollbar-track { background: #121212; }
         ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
 
-        header { background: #1f1f1f; display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 22px; font-weight: bold; color: #e50914; text-decoration: none; }
-        nav a { color: #fff; text-decoration: none; margin-left: 20px; font-size: 15px; transition: 0.3s; }
+        /* Header Layout Fixes for Mobile & Desktop */
+        header { 
+            background: #1f1f1f; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #333; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+
+        .logo { 
+            font-size: 20px; 
+            font-weight: bold; 
+            color: #e50914; 
+            text-decoration: none; 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        nav a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-size: 14px; 
+            transition: 0.3s; 
+            white-space: nowrap;
+        }
+
         nav a:hover, nav a.active { color: #e50914; }
+
+        /* Small screen adjustments */
+        @media (max-width: 480px) {
+            header {
+                padding: 12px 15px;
+            }
+            .logo {
+                font-size: 18px;
+            }
+            nav {
+                gap: 10px;
+            }
+            nav a {
+                font-size: 13px;
+            }
+        }
 
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
         .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -61,11 +112,11 @@
         </div>
 
         <div id="movieGrid" class="movie-grid">
-            <!-- Movies will be loaded here dynamically via JavaScript -->
+            <!-- Movies loaded dynamically -->
         </div>
 
         <div id="pagination" class="pagination">
-            <!-- Pagination buttons will be generated here -->
+            <!-- Pagination buttons -->
         </div>
     </div>
 
@@ -76,7 +127,6 @@
     <script>
         const moviesPerPage = 24;
 
-        // URL ထဲက page နံပါတ်ကို ဖတ်ရန် (ဥပမာ index.html?page=2 ဆိုရင် page = 2 လို့ယူမယ်)
         const urlParams = new URLSearchParams(window.location.search);
         let currentPage = parseInt(urlParams.get('page')) || 1;
 
@@ -85,7 +135,6 @@
                 const response = await fetch('movies.json');
                 const movies = await response.json();
 
-                // Page 1 မှာ ရုပ်ရှင်အသစ်ဆုံးတွေ ပထမဆုံးပေါ်အောင် စီစဉ်ခြင်း
                 const grid = document.getElementById('movieGrid');
                 const paginationDiv = document.getElementById('pagination');
                 
@@ -104,7 +153,6 @@
                     return;
                 }
 
-                // ဇာတ်ကား ကတ်ပြားများကို တည်ဆောက်ခြင်း (DooPlay လို watch.html သို့ လင့်ခ်ချိတ်သည်)
                 paginatedMovies.forEach(movie => {
                     const card = document.createElement('a');
                     card.href = `watch.html?title=${encodeURIComponent(movie.title)}&id=${movie.id}`;
@@ -122,7 +170,6 @@
                     grid.appendChild(card);
                 });
 
-                // Pagination ခလုတ်များ ဖန်တီးခြင်း
                 const totalPages = Math.ceil(movies.length / moviesPerPage);
                 paginationDiv.innerHTML = '';
 
