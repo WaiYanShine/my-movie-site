@@ -289,6 +289,7 @@
             } else if (sortBy === 'most_viewed') {
                 filtered.sort((a, b) => b.views - a.views);
             } else {
+                // createdAt အရ အသစ်ဆုံးများ ရှေ့ဆုံးသို့ ရောက်စေခြင်း
                 filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
             }
 
@@ -318,8 +319,9 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // Error လုံးဝမတက်စေရန် encodeURIComponent ဖြင့် လုံခြုံစွာ ပို့ဆောင်ခြင်း
-                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(movie.video)}`;
+                // 🛡️ Base64 Security Layer (btoa) ဖြင့် F12 တွင် လင့်ခ်မပေါ်စေရန် ကာကွယ်ခြင်း
+                const encodedVideoUrl = btoa(encodeURIComponent(movie.video));
+                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedVideoUrl}`;
                 
                 card.className = 'movie-card';
                 card.innerHTML = `
