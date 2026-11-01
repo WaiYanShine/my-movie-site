@@ -46,15 +46,16 @@
             nav a { font-size: 13px; }
         }
 
-        /* VPN Notice Banner Styling */
+        /* VPN Notice Banner Styling (Fixed Spacing & Clean Look) */
         .vpn-banner {
-            background: linear-gradient(90deg, #b20710, #e50914);
-            color: #ffffff;
+            background: #1f1f1f;
+            color: #e50914;
             text-align: center;
             padding: 10px 15px;
             font-size: 14px;
             font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
             letter-spacing: 0.5px;
         }
 
@@ -65,7 +66,7 @@
             }
         }
 
-        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
         
         .filter-section {
             background: #1f1f1f;
@@ -137,7 +138,7 @@
         </nav>
     </header>
 
-    <!-- VPN Notice Banner -->
+    <!-- VPN Notice Banner (Fixed Layout) -->
     <div class="vpn-banner">
         📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
     </div>
@@ -251,7 +252,7 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // 🛡️ Security Layer: Base64 Encoding for movie ID to protect from F12 Inspection
+                // 🛡️ Security Layer: Base64 Encoding for movie ID
                 const encodedId = btoa(movie.id);
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedId}`;
                 
