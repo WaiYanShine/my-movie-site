@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drsamangyi - Video & Poster Uploader</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #fff; padding: 20px; display: flex; justify-content: center; }
+        .card { background: #1f1f1f; padding: 30px; border-radius: 8px; width: 100%; max-width: 500px; border: 1px solid #333; }
+        h2 { color: #e50914; margin-bottom: 20px; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #aaa; font-size: 14px; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 10px; background: #121212; border: 1px solid #444; color: #fff; border-radius: 4px; }
+        button { width: 100%; background: #e50914; color: #fff; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #b20710; }
+        .preview-box { margin-top: 15px; text-align: center; }
+        canvas { max-width: 100%; border-radius: 4px; border: 1px solid #444; display: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Upload Video & Auto Poster</h2>
+        
+        <div class="form-group">
+            <label>Movie Title (ဇာတ်ကားနာမည်)</label>
+            <input type="text" id="movieTitle" placeholder="Enter movie title...">
+        </div>
+
+        <div class="form-group">
+            <label>Select Video File (.mp4)</label>
+            <input type="file" id="videoFile" accept="video/mp4" onchange="generateThumbnail(event)">
+        </div>
+
+        <div class="preview-box">
+            <label>Auto-Generated Poster Preview:</label>
+            <canvas id="thumbnailCanvas"></canvas>
+        </div>
+
+        <button onclick="handleUpload()">Upload to R2 & Generate JSON</button>
+    </div>
+
+    <script>
+        let generatedPosterBlob = null;
+
+        // ဗီဒီယိုရွေးလိုက်တာနဲ့ ပထမစက္ကန့်ကို ပုံအဖြစ် အလိုအလျောက် ဖြတ်ထုတ်ပေးမည့် Function
+        function generateThumbnail(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.muted = true;
+            video.playsInline = true;
+            video.currentTime = 1.0; // ၁ စက္ကန့်မြောက်နေရာက Frame ကို ယူမည်
+
+            video.onloadeddata = function () {
+                video.currentTime = 1.0;
+            };
+
+            video.onseeked = function () {
+                const canvas = document.getElementById('thumbnailCanvas');
+                canvas.width = 300;
+                canvas.height = 450; // Poster ပုံစံ အချိုးအစား (2:3)
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                canvas.style.display = 'block';
+
+                // Canvas ကို Image File (Blob) အဖြစ် ပြောင်းလဲသိမ်းဆည်းခြင်း
+                canvas.toBlob(function(blob) {
+                    generatedPosterBlob = blob;
+                }, 'image/jpeg', 0.85);
+            };
+        }
+
+        function handleUpload() {
+            const title = document.getElementById('movieTitle').value;
+            const videoInput = document.getElementById('videoFile').files[0];
+
+            if (!title || !videoInput) {
+                alert('ကျေးဇူးပြု၍ ဇာတ်ကားနာမည်နှင့် ဗီဒီယိုဖိုင်ကို အစအဆုံး ဖြည့်စွက်ပါ။');
+                return;
+            }
+
+            // ဤနေရာတွင် R2 သို့မဟုတ် Server ဘက်သို့ API ဖြင့် တိုက်ရိုက်တင်မည့် Code များကို ချိတ်ဆက်ရပါမည်။
+            alert(`"${title}" အတွက် ဗီဒီယိုနှင့် အလိုအလျောက်ထုတ်ထားသော Poster ပုံ အသင့်ဖြစ်ပါပြီ bro!`);
+        }
+    </script>
+
+</body>
+</html>
