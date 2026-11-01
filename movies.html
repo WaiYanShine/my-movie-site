@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>drsamangyi - Movies</title>
+    <title>drsamangyi - Movies Collection</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
@@ -46,34 +46,104 @@
             nav a { font-size: 13px; }
         }
 
-        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
-
-        .filter-section {
+        /* VPN Notice Banner Styling */
+        .vpn-banner {
             background: #1f1f1f;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid #333;
+            color: #e50914;
+            text-align: center;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
         }
 
-        .search-box { flex: 1; min-width: 250px; }
+        @media (max-width: 480px) {
+            .vpn-banner {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+        }
+
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
+        
+        /* Separate Search & Filter Toggle Layout */
+        .search-filter-wrapper {
+            margin-bottom: 30px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box { 
+            flex: 1; 
+        }
+
         .search-box input {
             width: 100%;
-            padding: 10px 15px;
-            background: #121212;
-            border: 1px solid #444;
+            padding: 12px 18px;
+            background: #1f1f1f;
+            border: 1px solid #333;
             color: #fff;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 14px;
         }
+
         .search-box input:focus { outline: none; border-color: #e50914; }
 
-        .filter-options { display: flex; flex-wrap: wrap; gap: 10px; }
+        /* Toggle Button with Hamburger / 3 Lines Icon */
+        .filter-toggle-btn {
+            background: #1f1f1f;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .filter-toggle-btn:hover, .filter-toggle-btn.active {
+            background: #e50914;
+            border-color: #e50914;
+        }
+
+        /* Hidden Collapsible Filter Drawer */
+        .filter-options { 
+            display: none; 
+            gap: 15px; 
+            background: #1f1f1f;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border: 1px solid #333;
+            flex-wrap: wrap;
+        }
+
+        .filter-options.show {
+            display: flex;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            color: #aaa;
+        }
+
         .filter-options select {
             padding: 10px 15px;
             background: #121212;
@@ -83,6 +153,7 @@
             font-size: 14px;
             cursor: pointer;
         }
+
         .filter-options select:focus { outline: none; border-color: #e50914; }
 
         .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -118,25 +189,44 @@
         </nav>
     </header>
 
+    <!-- VPN Notice Banner -->
+    <div class="vpn-banner">
+        📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
+    </div>
+
     <div class="container">
-        <div class="filter-section">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Search all movies..." oninput="filterMovies()">
+        <!-- Separate Search Bar & Filter Drawer -->
+        <div class="search-filter-wrapper">
+            <div class="search-row">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search all movies..." oninput="filterMovies()">
+                </div>
+                <button class="filter-toggle-btn" id="filterBtn" onclick="toggleFilters()" title="Filter Options">
+                    ☰
+                </button>
             </div>
-            <div class="filter-options">
-                <select id="sortFilter" onchange="filterMovies()">
-                    <option value="latest">Sort: Latest</option>
-                    <option value="top_rated">Sort: Top Rated</option>
-                    <option value="most_viewed">Sort: Most Viewed</option>
-                </select>
-                <select id="categoryFilter" onchange="filterMovies()">
-                    <option value="all">All Categories</option>
-                    <option value="Action">Action</option>
-                    <option value="Sci-Fi">Sci-Fi</option>
-                    <option value="Adventure">Adventure</option>
-                    <option value="Drama">Drama</option>
-                    <option value="Thriller">Thriller</option>
-                </select>
+
+            <!-- Collapsible Filters -->
+            <div class="filter-options" id="filterDrawer">
+                <div class="filter-group">
+                    <label>Sort By</label>
+                    <select id="sortFilter" onchange="filterMovies()">
+                        <option value="latest">Latest</option>
+                        <option value="top_rated">Top Rated</option>
+                        <option value="most_viewed">Most Viewed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select id="categoryFilter" onchange="filterMovies()">
+                        <option value="all">All Categories</option>
+                        <option value="Action">Action</option>
+                        <option value="Sci-Fi">Sci-Fi</option>
+                        <option value="Adventure">Adventure</option>
+                        <option value="Drama">Drama</option>
+                        <option value="Thriller">Thriller</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -157,18 +247,41 @@
         const moviesPerPage = 24;
         let allMovies = [];
 
+        // Toggle Filter Drawer Hide/Show
+        function toggleFilters() {
+            const drawer = document.getElementById('filterDrawer');
+            const btn = document.getElementById('filterBtn');
+            drawer.classList.toggle('show');
+            btn.classList.toggle('active');
+        }
+
+        // Caching with sessionStorage for instant loading speed
         async function initMovies() {
             try {
-                const response = await fetch('movies.json');
-                allMovies = await response.json();
+                const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
+                if (cachedMovies) {
+                    allMovies = JSON.parse(cachedMovies);
+                } else {
+                    const response = await fetch('movies.json');
+                    allMovies = await response.json();
+                    sessionStorage.setItem('drsamangyi_movies', JSON.stringify(allMovies));
+                }
                 filterMovies();
             } catch (error) {
                 console.error('Error loading movies:', error);
             }
         }
 
+        // XSS Sanitization
+        function sanitizeInput(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+
         function filterMovies() {
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const rawQuery = document.getElementById('searchInput').value;
+            const searchQuery = sanitizeInput(rawQuery.toLowerCase());
             const sortBy = document.getElementById('sortFilter').value;
             const category = document.getElementById('categoryFilter').value;
 
@@ -211,11 +324,14 @@
 
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
+                
+                // Base64 Encoding for Security
                 const encodedId = btoa(movie.id);
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedId}`;
+                
                 card.className = 'movie-card';
                 card.innerHTML = `
-                    <img src="${movie.img}" alt="${movie.title}">
+                    <img src="${movie.img}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
                     <div class="movie-info">
                         <h3>${movie.title}</h3>
                         <div class="movie-meta">
