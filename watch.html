@@ -116,7 +116,7 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const movieTitle = urlParams.get('title');
-        const videoUrl = urlParams.get('v');
+        const encodedVideo = urlParams.get('v');
 
         if (movieTitle) {
             document.getElementById('movieTitle').innerText = decodeURIComponent(movieTitle);
@@ -124,19 +124,23 @@
             document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
         }
 
-        if (videoUrl) {
+        if (encodedVideo) {
             try {
+                // 🛡️ Base64 Decoder (atob) ဖြင့် လင့်ခ်အမှန်ကို ပြန်ဖော်ခြင်း
+                let decodedUrl = atob(encodedVideo);
+                decodedUrl = decodeURIComponent(decodedUrl);
+
                 // Plyr Player ကို စတင်ခြင်း
                 const player = new Plyr('#player', {
                     controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
                 });
 
                 const videoElement = document.getElementById('player');
-                videoElement.src = videoUrl;
+                videoElement.src = decodedUrl;
 
             } catch (e) {
-                console.error("Player initialization error:", e);
-                alert("ဗီဒီယိုဖွင့်ရာတွင် အမှားအယွင်း ရှိနေပါသည်။");
+                console.error("Invalid video encoding:", e);
+                alert("ဗီဒီယိုလင့်ခ် ဖော်ပြရာတွင် အမှားအယွင်း ရှိနေပါသည်။");
                 window.location.href = 'index.html';
             }
         } else {
