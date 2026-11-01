@@ -4,24 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Movie - drsamangyi</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Plyr CSS CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css" />
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
 
-    <!-- Header -->
     <header class="bg-slate-900 border-b border-slate-800 px-4 py-3">
         <div class="max-w-5xl mx-auto flex items-center justify-between">
             <a href="index.html" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1">
-                ← Back to Home
+                 Back to Home
             </a>
             <h1 id="movieTitle" class="text-sm font-medium text-slate-200 truncate max-w-xs sm:max-w-md">Loading...</h1>
         </div>
     </header>
 
-    <!-- Plyr Video Player Container -->
     <main class="flex-grow max-w-5xl w-full mx-auto p-4 flex flex-col justify-center">
         <div class="aspect-video w-full bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative flex items-center justify-center">
             <video id="player" playsinline controls data-poster="">
@@ -30,28 +26,31 @@
         </div>
     </main>
 
-    <!-- Plyr JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
-    
-    <!-- Player Init Script -->
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const videoUrl = urlParams.get('v');
+        const encodedVideo = urlParams.get('v');
         const title = urlParams.get('t');
 
         if (title) {
             document.getElementById('movieTitle').innerText = decodeURIComponent(title);
         }
 
-        if (videoUrl) {
-            // Plyr Player ကို စတင်ချိတ်ဆက်ခြင်း
-            const player = new Plyr('#player', {
-                controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-            });
+        if (encodedVideo) {
+            try {
+                // Base64 မှ မူရင်း R2 Direct Link သို့ ပြန်ပြောင်းခြင်း
+                const decodedUrl = atob(decodeURIComponent(encodedVideo));
+                
+                const player = new Plyr('#player', {
+                    controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+                });
 
-            // Video Source ထည့်သွင်းခြင်း
-            const videoElement = document.getElementById('player');
-            videoElement.src = videoUrl;
+                const videoElement = document.getElementById('player');
+                videoElement.src = decodedUrl;
+            } catch (error) {
+                console.error('Decoding error:', error);
+                alert('ဗီဒီယိုလင့်ခ် မှားယွင်းနေပါသည်။');
+            }
         } else {
             alert('ဇာတ်ကား မတွေ့ရှိပါ။');
             window.location.href = 'index.html';
