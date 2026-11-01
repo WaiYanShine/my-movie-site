@@ -1,94 +1,169 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Watch Movie - drsamangyi</title>
-    <!-- Plyr CSS CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css" />
+
+    <!-- Plyr CSS -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
-
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #121212; }
-        ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
-
-        header { 
-            background: #1f1f1f; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #333; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .logo { 
-            font-size: 20px; 
-            font-weight: bold; 
-            color: #e50914; 
-            text-decoration: none; 
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            overflow-y: scroll;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e50914;
+            border-radius: 5px;
+        }
+
+        header {
+            background: #1f1f1f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e50914;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 5px;
             white-space: nowrap;
         }
 
-        nav { display: flex; align-items: center; gap: 15px; }
-        nav a { color: #fff; text-decoration: none; font-size: 14px; transition: 0.3s; white-space: nowrap; }
-        nav a:hover, nav a.active { color: #e50914; }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #e50914;
+        }
 
         @media (max-width: 480px) {
-            header { padding: 12px 15px; }
-            .logo { font-size: 18px; }
-            nav { gap: 10px; }
-            nav a { font-size: 13px; }
+            header {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            nav {
+                gap: 10px;
+            }
+
+            nav a {
+                font-size: 13px;
+            }
         }
 
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        .movie-title { font-size: 1.8rem; margin-bottom: 20px; color: #fff; border-left: 4px solid #e50914; padding-left: 12px; }
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-        .player-box { 
-            position: relative; 
-            width: 100%; 
-            background: #000; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6); 
+        .movie-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #fff;
+            border-left: 4px solid #e50914;
+            padding-left: 12px;
+        }
+
+        .player-box {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
             border: 1px solid #333;
         }
-        .player-box video { 
-            width: 100%; 
-            height: auto; 
-            display: block; 
+
+        .player-box video {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
-        .back-btn { 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 8px; 
-            margin-top: 25px; 
-            background: #1f1f1f; 
-            color: #fff; 
-            padding: 10px 20px; 
-            text-decoration: none; 
-            border-radius: 5px; 
-            transition: 0.3s; 
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 25px;
+            background: #1f1f1f;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
             border: 1px solid #333;
             font-weight: 600;
         }
-        .back-btn:hover { background: #e50914; border-color: #e50914; }
 
-        footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
+        .back-btn:hover {
+            background: #e50914;
+            border-color: #e50914;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #1f1f1f;
+            color: #777;
+            margin-top: 50px;
+            border-top: 1px solid #333;
+        }
     </style>
 </head>
+
 <body>
 
     <header>
         <a href="index.html" class="logo">🎬 drsamangyi</a>
+
         <nav>
             <a href="index.html">Home</a>
             <a href="movies.html">Movies</a>
@@ -97,88 +172,226 @@
     </header>
 
     <div class="container">
-        <h1 id="movieTitle" class="movie-title">Loading Movie...</h1>
-        
+
+        <h1 id="movieTitle" class="movie-title">
+            Loading Movie...
+        </h1>
+
         <div class="player-box">
-            <video id="player" playsinline controls></video>
+            <video id="player" playsinline controls preload="metadata">
+                Your browser does not support HTML5 video.
+            </video>
         </div>
 
-        <a href="index.html" class="back-btn">&#8592; Back to Home</a>
+        <a href="index.html" class="back-btn">
+            &#8592; Back to Home
+        </a>
+
     </div>
 
     <footer>
         <p>&copy; 2026 drsamangyi. All rights reserved.</p>
     </footer>
 
-    <!-- Plyr JS CDN -->
+    <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
 
-    <script>       
-const params = new URLSearchParams(window.location.search);
+    <script>
 
-const movieTitle = params.get('title');
-const encodedVideo = params.get('v');
+        // =====================================
+        // GET URL PARAMETERS
+        // =====================================
 
-const titleElement = document.getElementById('movieTitle');
-const videoElement = document.getElementById('player');
+        const params = new URLSearchParams(window.location.search);
 
-titleElement.textContent =
-    movieTitle || 'drsamangyi Exclusive Movie';
+        const movieTitle = params.get('title');
+        const encodedVideo = params.get('v');
 
-function b64DecodeUnicode(str) {
-    return decodeURIComponent(
-        atob(str).split('').map(c =>
-            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        ).join('')
-    );
-}
+        const titleElement = document.getElementById('movieTitle');
+        const videoElement = document.getElementById('player');
 
-async function initPlayer() {
-    try {
-        if (!encodedVideo) {
-            throw new Error('Video URL is missing');
+
+        // =====================================
+        // DISPLAY MOVIE TITLE
+        // =====================================
+
+        titleElement.textContent =
+            movieTitle || 'drsamangyi Exclusive Movie';
+
+
+        // =====================================
+        // BASE64 UNICODE DECODER
+        // =====================================
+
+        function b64DecodeUnicode(str) {
+
+            return decodeURIComponent(
+                atob(str)
+                    .split('')
+                    .map(c =>
+                        '%' +
+                        ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                    )
+                    .join('')
+            );
+
         }
 
-        const decodedUrl = b64DecodeUnicode(encodedVideo);
-        const videoUrl = new URL(decodedUrl);
 
-        if (videoUrl.protocol !== 'https:') {
-            throw new Error('Invalid video protocol');
+        // =====================================
+        // CLOUDFLARE R2 URL ENCODER
+        // =====================================
+
+        function encodeR2VideoUrl(rawUrl) {
+
+            // Separate domain and path BEFORE URL parsing.
+            // This prevents # in a filename becoming a fragment.
+
+            const match = rawUrl.match(
+                /^(https:\/\/[^/]+)(\/.*)$/i
+            );
+
+            if (!match) {
+                throw new Error('Invalid video URL');
+            }
+
+            const origin = match[1];
+            const rawPath = match[2];
+
+            // Encode each path segment separately.
+            // Supports Burmese, spaces, #, parentheses.
+
+            const encodedPath = rawPath
+                .split('/')
+                .map(segment => {
+
+                    let decodedSegment;
+
+                    try {
+                        decodedSegment = decodeURIComponent(segment);
+                    } catch (error) {
+                        decodedSegment = segment;
+                    }
+
+                    // Normalize Unicode filename
+                    decodedSegment = decodedSegment.normalize('NFC');
+
+                    return encodeURIComponent(decodedSegment);
+
+                })
+                .join('/');
+
+            return new URL(origin + encodedPath);
+
         }
 
-        videoElement.addEventListener('error', () => {
-            console.error('Video Error:', videoElement.error);
-            titleElement.textContent =
-                'Video playback failed. Please try again.';
-        });
 
-        videoElement.src = videoUrl.href;
-        videoElement.load();
+        // =====================================
+        // INITIALIZE VIDEO PLAYER
+        // =====================================
 
-        if (typeof Plyr !== 'undefined') {
-            new Plyr(videoElement, {
-                controls: [
-                    'play-large',
-                    'play',
-                    'progress',
-                    'current-time',
-                    'duration',
-                    'mute',
-                    'volume',
-                    'settings',
-                    'pip',
-                    'fullscreen'
-                ]
-            });
+        async function initPlayer() {
+
+            try {
+
+                if (!encodedVideo) {
+                    throw new Error('Video URL is missing');
+                }
+
+                // Decode Base64 exactly once
+                const decodedUrl = b64DecodeUnicode(encodedVideo);
+
+                // Encode R2 URL path
+                const videoUrl = encodeR2VideoUrl(decodedUrl);
+
+                // HTTPS validation
+                if (videoUrl.protocol !== 'https:') {
+                    throw new Error('Invalid video protocol');
+                }
+
+                // Allow only the intended R2 host
+                if (!videoUrl.hostname.endsWith('.r2.dev')) {
+                    throw new Error('Untrusted video host');
+                }
+
+                console.log('Original Video URL:', decodedUrl);
+                console.log('Encoded Video URL:', videoUrl.href);
+
+
+                // =====================================
+                // VIDEO ERROR HANDLING
+                // =====================================
+
+                videoElement.addEventListener('error', () => {
+
+                    console.error(
+                        'Video Error:',
+                        videoElement.error
+                    );
+
+                    titleElement.textContent =
+                        'Video playback failed. Please try again.';
+
+                });
+
+
+                // =====================================
+                // INITIALIZE PLYR
+                // =====================================
+
+                if (typeof Plyr !== 'undefined') {
+
+                    new Plyr(videoElement, {
+
+                        controls: [
+                            'play-large',
+                            'play',
+                            'progress',
+                            'current-time',
+                            'duration',
+                            'mute',
+                            'volume',
+                            'settings',
+                            'pip',
+                            'fullscreen'
+                        ]
+
+                    });
+
+                } else {
+
+                    console.warn('Plyr library not loaded');
+
+                }
+
+
+                // =====================================
+                // LOAD VIDEO
+                // =====================================
+
+                videoElement.src = videoUrl.href;
+
+                videoElement.load();
+
+            } catch (error) {
+
+                console.error('Player Error:', error);
+
+                titleElement.textContent =
+                    'Unable to load movie.';
+
+            }
+
         }
 
-    } catch (error) {
-        console.error('Player Error:', error);
-        titleElement.textContent = 'Unable to load movie.';
-    }
-}
 
-initPlayer();
+        // =====================================
+        // START PLAYER
+        // =====================================
+
+        initPlayer();
+
     </script>
+
 </body>
 </html>
