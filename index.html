@@ -157,18 +157,33 @@
         const moviesPerPage = 24;
         let allMovies = [];
 
+        // 🚀 2. Local Caching with sessionStorage for instant speed
         async function initMovies() {
             try {
-                const response = await fetch('movies.json');
-                allMovies = await response.json();
+                const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
+                if (cachedMovies) {
+                    allMovies = JSON.parse(cachedMovies);
+                } else {
+                    const response = await fetch('movies.json');
+                    allMovies = await response.json();
+                    sessionStorage.setItem('drsamangyi_movies', JSON.stringify(allMovies));
+                }
                 filterMovies();
             } catch (error) {
                 console.error('Error loading movies:', error);
             }
         }
 
+        // 🛡️ 3. XSS Sanitization for Security
+        function sanitizeInput(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+
         function filterMovies() {
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const rawQuery = document.getElementById('searchInput').value;
+            const searchQuery = sanitizeInput(rawQuery.toLowerCase());
             const sortBy = document.getElementById('sortFilter').value;
             const category = document.getElementById('categoryFilter').value;
 
@@ -214,8 +229,10 @@
                 const encodedId = btoa(movie.id);
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedId}`;
                 card.className = 'movie-card';
+                
+                // ⚡ 1. Lazy Loading & Error Handling for Posters
                 card.innerHTML = `
-                    <img src="${movie.img}" alt="${movie.title}">
+                    <img src="${movie.img}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
                     <div class="movie-info">
                         <h3>${movie.title}</h3>
                         <div class="movie-meta">
