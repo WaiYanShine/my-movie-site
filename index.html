@@ -68,7 +68,6 @@
 
         .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
         
-        /* Separate Search & Filter Toggle Layout */
         .search-filter-wrapper {
             margin-bottom: 30px;
         }
@@ -95,7 +94,6 @@
 
         .search-box input:focus { outline: none; border-color: #e50914; }
 
-        /* Toggle Button with Hamburger / 3 Lines Icon */
         .filter-toggle-btn {
             background: #1f1f1f;
             border: 1px solid #333;
@@ -115,7 +113,6 @@
             border-color: #e50914;
         }
 
-        /* Hidden Collapsible Filter Drawer */
         .filter-options { 
             display: none; 
             gap: 15px; 
@@ -189,13 +186,11 @@
         </nav>
     </header>
 
-    <!-- VPN Notice Banner -->
     <div class="vpn-banner">
         📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
     </div>
 
     <div class="container">
-        <!-- Separate Search Bar & Filter Drawer -->
         <div class="search-filter-wrapper">
             <div class="search-row">
                 <div class="search-box">
@@ -206,7 +201,6 @@
                 </button>
             </div>
 
-            <!-- Collapsible Filters -->
             <div class="filter-options" id="filterDrawer">
                 <div class="filter-group">
                     <label>Sort By</label>
@@ -247,7 +241,6 @@
         const moviesPerPage = 24;
         let allMovies = [];
 
-        // Toggle Filter Drawer Hide/Show
         function toggleFilters() {
             const drawer = document.getElementById('filterDrawer');
             const btn = document.getElementById('filterBtn');
@@ -255,7 +248,6 @@
             btn.classList.toggle('active');
         }
 
-        // Caching with sessionStorage for instant loading speed
         async function initMovies() {
             try {
                 const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
@@ -272,7 +264,6 @@
             }
         }
 
-        // XSS Sanitization
         function sanitizeInput(str) {
             return str.replace(/[&<>"']/g, function(m) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
@@ -298,7 +289,6 @@
             } else if (sortBy === 'most_viewed') {
                 filtered.sort((a, b) => b.views - a.views);
             } else {
-                // Default: Latest (createdAt အပေါ်မူတည်ပြီး အသစ်ဆုံးတွေ ရှေ့ဆုံးရောက်စေခြင်း)
                 filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
             }
 
@@ -328,9 +318,8 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // 🛡️ Safe Base64 Encoding for Cloudflare R2 MP4/MPEG4 security layer
-                const encodedVideoUrl = btoa(unescape(encodeURIComponent(movie.video)));
-                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedVideoUrl}`;
+                // Error လုံးဝမတက်စေရန် encodeURIComponent ဖြင့် လုံခြုံစွာ ပို့ဆောင်ခြင်း
+                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(movie.video)}`;
                 
                 card.className = 'movie-card';
                 card.innerHTML = `
