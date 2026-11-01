@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Movie - drsamangyi</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Plyr CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css" />
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
 
@@ -18,35 +21,37 @@
         </div>
     </header>
 
-    <!-- Video Player Container (HTML5 Native Video for R2 MP4 - YouTube လုံးဝမဟုတ်ပါ) -->
+    <!-- Plyr Video Player Container -->
     <main class="flex-grow max-w-5xl w-full mx-auto p-4 flex flex-col justify-center">
-        <div class="aspect-video w-full bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative">
-            <video id="videoPlayer" controls autoplay class="w-full h-full object-contain">
+        <div class="aspect-video w-full bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative flex items-center justify-center">
+            <video id="player" playsinline controls data-poster="">
                 Your browser does not support the video tag.
             </video>
         </div>
     </main>
 
-    <!-- Base64 Decoding Script -->
+    <!-- Plyr JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
+    
+    <!-- Player Init Script -->
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const encodedVideo = urlParams.get('v');
+        const videoUrl = urlParams.get('v');
         const title = urlParams.get('t');
 
         if (title) {
             document.getElementById('movieTitle').innerText = decodeURIComponent(title);
         }
 
-        if (encodedVideo) {
-            try {
-                // Base64 မှ မူရင်း R2 Direct MP4 Link သို့ ပြန်ပြောင်းခြင်း (Decoding)
-                const decodedUrl = atob(decodeURIComponent(encodedVideo));
-                const videoPlayer = document.getElementById('videoPlayer');
-                videoPlayer.src = decodedUrl;
-            } catch (error) {
-                console.error('Invalid video token:', error);
-                alert('ဗီဒီယိုလင့်ခ် မှားယွင်းနေပါသည်။');
-            }
+        if (videoUrl) {
+            // Plyr Player ကို စတင်ချိတ်ဆက်ခြင်း
+            const player = new Plyr('#player', {
+                controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+            });
+
+            // Video Source ထည့်သွင်းခြင်း
+            const videoElement = document.getElementById('player');
+            videoElement.src = videoUrl;
         } else {
             alert('ဇာတ်ကား မတွေ့ရှိပါ။');
             window.location.href = 'index.html';
