@@ -124,11 +124,18 @@
             document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
         }
 
+        // 🛡️ Unicode-safe Base64 Decoder Helper
+        function b64DecodeUnicode(str) {
+            return decodeURIComponent(atob(str).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+        }
+
         if (encodedVideo) {
             try {
-                // 🛡️ Base64 Decoder (atob) ဖြင့် လင့်ခ်အမှန်ကို ပြန်ဖော်ခြင်း
-                let decodedUrl = atob(encodedVideo);
-                decodedUrl = decodeURIComponent(decodedUrl);
+                // 🛡️ URL-safe decode လုပ်ပြီးမှ Base64 ဖြည်ခြင်း
+                const cleanBase64 = decodeURIComponent(encodedVideo);
+                let decodedUrl = b64DecodeUnicode(cleanBase64);
 
                 // Plyr Player ကို စတင်ခြင်း
                 const player = new Plyr('#player', {
@@ -139,8 +146,8 @@
                 videoElement.src = decodedUrl;
 
             } catch (e) {
-                console.error("Invalid video encoding:", e);
-                alert("ဗီဒီယိုလင့်ခ် ဖော်ပြရာတွင် အမှားအယွင်း ရှိနေပါသည်။");
+                console.error("Player initialization error:", e);
+                alert("ဗီဒီယိုဖွင့်ရာတွင် အမှားအယွင်း ရှိနေပါသည်။");
                 window.location.href = 'index.html';
             }
         } else {
