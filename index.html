@@ -270,6 +270,13 @@
             });
         }
 
+        // 🛡️ Unicode-safe Base64 Encoder Helper
+        function b64EncodeUnicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
+        }
+
         function filterMovies() {
             const rawQuery = document.getElementById('searchInput').value;
             const searchQuery = sanitizeInput(rawQuery.toLowerCase());
@@ -289,7 +296,7 @@
             } else if (sortBy === 'most_viewed') {
                 filtered.sort((a, b) => b.views - a.views);
             } else {
-                // createdAt အရ အသစ်ဆုံးများ ရှေ့ဆုံးသို့ ရောက်စေခြင်း
+                // createdAt အပေါ်မူတည်ပြီး အသစ်ဆုံးများ ရှေ့ဆုံးသို့ ရောက်စေခြင်း (নতুন releases default to Page 1)
                 filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
             }
 
@@ -319,8 +326,8 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // 🛡️ Base64 Security Layer (btoa) ဖြင့် F12 တွင် လင့်ခ်မပေါ်စေရန် ကာကွယ်ခြင်း
-                const encodedVideoUrl = btoa(encodeURIComponent(movie.video));
+                // 🛡️ Base64 Security Layer with URL-safe encoding support
+                const encodedVideoUrl = encodeURIComponent(b64EncodeUnicode(movie.video));
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedVideoUrl}`;
                 
                 card.className = 'movie-card';
