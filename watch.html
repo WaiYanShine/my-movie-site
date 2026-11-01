@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Movie - CineStream</title>
+    <title>Watch Movie - drsamangyi</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
@@ -12,7 +12,6 @@
         ::-webkit-scrollbar-track { background: #121212; }
         ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
 
-        /* Header Layout Fixes for Mobile & Desktop */
         header { 
             background: #1f1f1f; 
             display: flex; 
@@ -50,11 +49,10 @@
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         .movie-title { font-size: 1.8rem; margin-bottom: 20px; color: #fff; border-left: 4px solid #e50914; padding-left: 12px; }
 
-        /* Responsive Video Player Box */
         .player-box { 
             position: relative; 
             width: 100%; 
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%;
             background: #000; 
             border-radius: 8px; 
             overflow: hidden; 
@@ -92,7 +90,7 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo">🎬 CineStream</a>
+        <a href="index.html" class="logo">🎬 drsamangyi</a>
         <nav>
             <a href="index.html">Home</a>
             <a href="movies.html">Movies</a>
@@ -111,34 +109,29 @@
     </div>
 
     <footer>
-        <p>&copy; 2026 CineStream. All rights reserved.</p>
+        <p>&copy; 2026 drsamangyi. All rights reserved.</p>
     </footer>
 
     <script>
-        // URL parameters တွေကို ဖတ်ယူခြင်း
         const urlParams = new URLSearchParams(window.location.search);
         const movieTitle = urlParams.get('title');
-        const encodedId = urlParams.get('v'); // Base64 encoded ID ကို ဖမ်းယူရန်
+        const encodedId = urlParams.get('v');
 
-        // ဇာတ်ကားနာမည် သတ်မှတ်ပေးခြင်း
         if (movieTitle) {
             document.getElementById('movieTitle').innerText = decodeURIComponent(movieTitle);
         } else {
-            document.getElementById('movieTitle').innerText = "CineStream Exclusive Movie";
+            document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
         }
 
-        // 🛡️ Security Layer: Base64 decode လုပ်ပြီး ဇာတ်ကားလင့်ခ်ဖော်ပြခြင်း (F12 ကာကွယ်ရန်)
         if (encodedId) {
             try {
-                const decodedId = atob(encodedId); // Base64 decode ပြန်လုပ်သည်
+                const decodedId = atob(encodedId);
                 document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${decodedId}?autoplay=1`;
             } catch (e) {
                 console.error("Invalid video encoding:", e);
-                // အကယ်၍ error ဖြစ်သွားပါက default ဗီဒီယိုသို့ ပြောင်းပေးမည်
                 document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
             }
         } else {
-            // ID မပါလာပါက default ဗီဒီယိုပြရန်
             document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
         }
     </script>
