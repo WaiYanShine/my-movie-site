@@ -100,6 +100,7 @@
         <h1 id="movieTitle" class="movie-title">Loading Movie...</h1>
         
         <div class="player-box">
+            <!-- Plyr Video Element -->
             <video id="player" playsinline controls></video>
         </div>
 
@@ -124,23 +125,27 @@
             document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
         }
 
+        // Base64 Decoder & Plyr Player Initialization
         if (encodedVideo) {
             try {
-                const decodedUrl = atob(encodedVideo);
+                // Base64 ဖော်မတ်ကို decode လုပ်ခြင်း
+                const decodedUrl = atob(decodeURIComponent(encodedVideo));
                 
+                // Plyr Player စတင်ခြင်း
                 const player = new Plyr('#player', {
                     controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
                 });
 
                 const videoElement = document.getElementById('player');
                 videoElement.src = decodedUrl;
+
             } catch (e) {
                 console.error("Invalid video encoding:", e);
-                alert("ဗီဒီယိုလင့်ခ် မှားယွင်းနေပါသည်။");
+                alert("ဗီဒီယိုလင့်ခ် ဖော်ပြရာတွင် အမှားအယွင်း ရှိနေပါသည်။");
                 window.location.href = 'index.html';
             }
         } else {
-            alert("ဇာတ်ကား မတွေ့ရှိပါ။");
+            alert("ဇာတ်ကား လင့်ခ် မရှိပါ။");
             window.location.href = 'index.html';
         }
     </script>
