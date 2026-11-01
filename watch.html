@@ -100,7 +100,6 @@
         <h1 id="movieTitle" class="movie-title">Loading Movie...</h1>
         
         <div class="player-box">
-            <!-- Plyr Video Element -->
             <video id="player" playsinline controls></video>
         </div>
 
@@ -111,7 +110,7 @@
         <p>&copy; 2026 drsamangyi. All rights reserved.</p>
     </footer>
 
-       <!-- Plyr JS CDN -->
+    <!-- Plyr JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
 
     <script>
@@ -127,15 +126,14 @@
 
         if (encodedVideo) {
             try {
-                // ၁။ URL Parameter မှ Decode လုပ်ခြင်း
+                // Base64 Decode လုပ်ပြီး ယူနီကုတ်ပြဿနာမရှိစေရန် decoding လုပ်ခြင်း
                 let decodedUrl = decodeURIComponent(encodedVideo);
-
-                // ၂။ လင့်ခ်သည် http သို့မဟုတ် https ဖြင့် မစမချင်း Base64 Decode ထပ်ခါထပ်ခါ ဖြည်ပေးခြင်း (Safe Decoder Loop)
-                while (!decodedUrl.startsWith('http://') && !decodedUrl.startsWith('https://')) {
-                    decodedUrl = atob(decodedUrl);
+                try {
+                    decodedUrl = decodeURIComponent(escape(atob(decodedUrl)));
+                } catch (err) {
+                    decodedUrl = atob(decodedUrl); // Fallback standard atob
                 }
 
-                // ၃။ Plyr Player စတင်ခြင်း
                 const player = new Plyr('#player', {
                     controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
                 });
@@ -153,6 +151,5 @@
             window.location.href = 'index.html';
         }
     </script>
-
 </body>
 </html>
