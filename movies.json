@@ -2,10 +2,7 @@
     {
         "id": "movie01",
         "title": "ခရီးသွားလည်ချင်းအမှတ်တရ",
-        "year": "2026",
-        "rating": "9.4",
-        "views": 3200,
-        "genre": "Action",
+        "genre": "mm-collections",
         "img": "https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/l_145e0e4fd6b4681402f76669d4cbd969.jpg",
         "video": "https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/videos/MM/mm-collections/movietest.mp4",
         "createdAt": "2026-11-01T12:00:00.000Z"
