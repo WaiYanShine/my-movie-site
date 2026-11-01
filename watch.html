@@ -49,6 +49,7 @@
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         .movie-title { font-size: 1.8rem; margin-bottom: 20px; color: #fff; border-left: 4px solid #e50914; padding-left: 12px; }
 
+        /* ⚡ 4. Smooth Player Box with Lazy Loading */
         .player-box { 
             position: relative; 
             width: 100%; 
@@ -102,7 +103,8 @@
         <h1 id="movieTitle" class="movie-title">Loading Movie...</h1>
         
         <div class="player-box">
-            <iframe id="videoPlayer" src="" allowfullscreen></iframe>
+            <!-- ⚡ Lazy loading attribute added to iframe -->
+            <iframe id="videoPlayer" loading="lazy" src="" allowfullscreen></iframe>
         </div>
 
         <a href="index.html" class="back-btn">&#8592; Back to Home</a>
@@ -123,9 +125,11 @@
             document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
         }
 
+        // 🛡️ Base64 Security & Smooth Player Execution
         if (encodedId) {
             try {
                 const decodedId = atob(encodedId);
+                document.getElementById('videoPlayer শক্তির src = ...'); // fixed below
                 document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${decodedId}?autoplay=1`;
             } catch (e) {
                 console.error("Invalid video encoding:", e);
@@ -135,6 +139,5 @@
             document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
         }
     </script>
-
 </body>
 </html>
