@@ -166,7 +166,6 @@
         .movie-info { padding: 12px; }
         .movie-info h3 { font-size: 1rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .movie-meta { display: flex; justify-content: space-between; color: #aaa; font-size: 0.85rem; }
-        .rating { color: #ffc107; font-weight: bold; }
 
         .pagination { display: flex; justify-content: center; align-items: center; margin-top: 40px; gap: 10px; }
         .pagination a, .pagination span { background: #1f1f1f; color: #fff; padding: 10px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; border: 1px solid #333; cursor: pointer; }
@@ -206,8 +205,7 @@
                     <label>Sort By</label>
                     <select id="sortFilter" onchange="filterMovies()">
                         <option value="latest">Latest</option>
-                        <option value="top_rated">Top Rated</option>
-                        <option value="most_viewed">Most Viewed</option>
+                        <option value="oldest">Oldest</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -270,7 +268,7 @@
             });
         }
 
-        // 🛡️ Unicode-safe Base64 Encoder Helper
+        // 🛡️ Unicode-safe Base64 Encoder Helper (Original Unchanged)
         function b64EncodeUnicode(str) {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
                 return String.fromCharCode('0x' + p1);
@@ -291,12 +289,10 @@
                 filtered = filtered.filter(movie => movie.genre === category);
             }
 
-            if (sortBy === 'top_rated') {
-                filtered.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
-            } else if (sortBy === 'most_viewed') {
-                filtered.sort((a, b) => b.views - a.views);
+            if (sortBy === 'oldest') {
+                filtered.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
             } else {
-                // createdAt အပေါ်မူတည်ပြီး အသစ်ဆုံးများ ရှေ့ဆုံးသို့ ရောက်စေခြင်း (নতুন releases default to Page 1)
+                // Default: Latest (createdAt အပေါ်မူတည်ပြီး အသစ်ဆုံးများ ရှေ့ဆုံးသို့ ရောက်စေခြင်း)
                 filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
             }
 
@@ -326,7 +322,7 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // 🛡️ Base64 Security Layer with URL-safe encoding support
+                // 🛡️ Base64 Security Layer (Original Unchanged)
                 const encodedVideoUrl = b64EncodeUnicode(movie.video);
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(encodedVideoUrl)}`;
                 
@@ -336,8 +332,8 @@
                     <div class="movie-info">
                         <h3>${movie.title}</h3>
                         <div class="movie-meta">
-                            <span>${movie.year}</span>
-                            <span class="rating">⭐ ${movie.rating}</span>
+                            <span>${movie.genre}</span>
+                            <span>📅 ${new Date(movie.createdAt).toLocaleDateString()}</span>
                         </div>
                     </div>
                 `;
