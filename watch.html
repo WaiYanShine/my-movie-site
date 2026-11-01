@@ -113,47 +113,72 @@
     <!-- Plyr JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const movieTitle = urlParams.get('title');
-        const encodedVideo = urlParams.get('v');
+    <script>       
+const params = new URLSearchParams(window.location.search);
 
-        if (movieTitle) {
-            document.getElementById('movieTitle').innerText = decodeURIComponent(movieTitle);
-        } else {
-            document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
+const movieTitle = params.get('title');
+const encodedVideo = params.get('v');
+
+const titleElement = document.getElementById('movieTitle');
+const videoElement = document.getElementById('player');
+
+titleElement.textContent =
+    movieTitle || 'drsamangyi Exclusive Movie';
+
+function b64DecodeUnicode(str) {
+    return decodeURIComponent(
+        atob(str).split('').map(c =>
+            '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join('')
+    );
+}
+
+async function initPlayer() {
+    try {
+        if (!encodedVideo) {
+            throw new Error('Video URL is missing');
         }
 
-        // 🛡️ Unicode-safe Base64 Decoder Helper
-        function b64DecodeUnicode(str) {
-            return decodeURIComponent(atob(str).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
+        const decodedUrl = b64DecodeUnicode(encodedVideo);
+        const videoUrl = new URL(decodedUrl);
+
+        if (videoUrl.protocol !== 'https:') {
+            throw new Error('Invalid video protocol');
         }
 
-        if (encodedVideo) {
-            try {
-                // 🛡️ URL-safe decode လုပ်ပြီးမှ Base64 ဖြည်ခြင်း
-                const cleanBase64 = decodeURIComponent(encodedVideo);
-                let decodedUrl = b64DecodeUnicode(cleanBase64);
+        videoElement.addEventListener('error', () => {
+            console.error('Video Error:', videoElement.error);
+            titleElement.textContent =
+                'Video playback failed. Please try again.';
+        });
 
-                // Plyr Player ကို စတင်ခြင်း
-                const player = new Plyr('#player', {
-                    controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-                });
+        videoElement.src = videoUrl.href;
+        videoElement.load();
 
-                const videoElement = document.getElementById('player');
-                videoElement.src = decodedUrl;
-
-            } catch (e) {
-                console.error("Player initialization error:", e);
-                alert("ဗီဒီယိုဖွင့်ရာတွင် အမှားအယွင်း ရှိနေပါသည်။");
-                window.location.href = 'index.html';
-            }
-        } else {
-            alert("ဇာတ်ကား လင့်ခ် မရှိပါ။");
-            window.location.href = 'index.html';
+        if (typeof Plyr !== 'undefined') {
+            new Plyr(videoElement, {
+                controls: [
+                    'play-large',
+                    'play',
+                    'progress',
+                    'current-time',
+                    'duration',
+                    'mute',
+                    'volume',
+                    'settings',
+                    'pip',
+                    'fullscreen'
+                ]
+            });
         }
+
+    } catch (error) {
+        console.error('Player Error:', error);
+        titleElement.textContent = 'Unable to load movie.';
+    }
+}
+
+initPlayer();
     </script>
 </body>
 </html>
