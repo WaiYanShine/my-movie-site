@@ -328,7 +328,7 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // 🛡️ Base64 Encoding for Cloudflare R2 MP4/MPEG4 security layer
+                // 🛡️ Safe Base64 Encoding for Cloudflare R2 MP4/MPEG4 security layer
                 const encodedVideoUrl = btoa(unescape(encodeURIComponent(movie.video)));
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedVideoUrl}`;
                 
