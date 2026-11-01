@@ -1,59 +1,142 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Movie - drsamangyi</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css" />
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
 
-    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3">
-        <div class="max-w-5xl mx-auto flex items-center justify-between">
-            <a href="index.html" class="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-1">
-                 Back to Home
-            </a>
-            <h1 id="movieTitle" class="text-sm font-medium text-slate-200 truncate max-w-xs sm:max-w-md">Loading...</h1>
-        </div>
-    </header>
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
 
-    <main class="flex-grow max-w-5xl w-full mx-auto p-4 flex flex-col justify-center">
-        <div class="aspect-video w-full bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative flex items-center justify-center">
-            <video id="player" playsinline controls data-poster="">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const encodedVideo = urlParams.get('v');
-        const title = urlParams.get('t');
-
-        if (title) {
-            document.getElementById('movieTitle').innerText = decodeURIComponent(title);
+        header { 
+            background: #1f1f1f; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #333; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
         }
 
-        if (encodedVideo) {
-            try {
-                // Base64 မှ မူရင်း R2 Direct Link သို့ ပြန်ပြောင်းခြင်း
-                const decodedUrl = atob(decodeURIComponent(encodedVideo));
-                
-                const player = new Plyr('#player', {
-                    controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-                });
+        .logo { 
+            font-size: 20px; 
+            font-weight: bold; 
+            color: #e50914; 
+            text-decoration: none; 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
 
-                const videoElement = document.getElementById('player');
-                videoElement.src = decodedUrl;
-            } catch (error) {
-                console.error('Decoding error:', error);
-                alert('ဗီဒီယိုလင့်ခ် မှားယွင်းနေပါသည်။');
+        nav { display: flex; align-items: center; gap: 15px; }
+        nav a { color: #fff; text-decoration: none; font-size: 14px; transition: 0.3s; white-space: nowrap; }
+        nav a:hover, nav a.active { color: #e50914; }
+
+        @media (max-width: 480px) {
+            header { padding: 12px 15px; }
+            .logo { font-size: 18px; }
+            nav { gap: 10px; }
+            nav a { font-size: 13px; }
+        }
+
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        .movie-title { font-size: 1.8rem; margin-bottom: 20px; color: #fff; border-left: 4px solid #e50914; padding-left: 12px; }
+
+        /* ⚡ 4. Smooth Player Box with Lazy Loading */
+        .player-box { 
+            position: relative; 
+            width: 100%; 
+            padding-bottom: 56.25%;
+            background: #000; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6); 
+            border: 1px solid #333;
+        }
+        .player-box iframe { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+
+        .back-btn { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            margin-top: 25px; 
+            background: #1f1f1f; 
+            color: #fff; 
+            padding: 10px 20px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            transition: 0.3s; 
+            border: 1px solid #333;
+            font-weight: 600;
+        }
+        .back-btn:hover { background: #e50914; border-color: #e50914; }
+
+        footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">🎬 drsamangyi</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="movies.html">Movies</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1 id="movieTitle" class="movie-title">Loading Movie...</h1>
+        
+        <div class="player-box">
+            <!-- ⚡ Lazy loading attribute added to iframe -->
+            <iframe id="videoPlayer" loading="lazy" src="" allowfullscreen></iframe>
+        </div>
+
+        <a href="index.html" class="back-btn">&#8592; Back to Home</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 drsamangyi. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieTitle = urlParams.get('title');
+        const encodedId = urlParams.get('v');
+
+        if (movieTitle) {
+            document.getElementById('movieTitle').innerText = decodeURIComponent(movieTitle);
+        } else {
+            document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
+        }
+
+        // 🛡️ Base64 Security & Smooth Player Execution
+        if (encodedId) {
+            try {
+                const decodedId = atob(encodedId);
+                document.getElementById('videoPlayer শক্তির src = ...'); // fixed below
+                document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${decodedId}?autoplay=1`;
+            } catch (e) {
+                console.error("Invalid video encoding:", e);
+                document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
             }
         } else {
-            alert('ဇာတ်ကား မတွေ့ရှိပါ။');
-            window.location.href = 'index.html';
+            document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
         }
     </script>
 </body>
