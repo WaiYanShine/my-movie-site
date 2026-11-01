@@ -1,363 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>drsamangyi - Home</title>
+    <title>MM Movie Stream</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
-        
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #121212; }
-        ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
-
-        header { 
-            background: #1f1f1f; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #333; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-        }
-
-        .logo { 
-            font-size: 20px; 
-            font-weight: bold; 
-            color: #e50914; 
-            text-decoration: none; 
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
-        }
-
-        nav { display: flex; align-items: center; gap: 15px; }
-        nav a { color: #fff; text-decoration: none; font-size: 14px; transition: 0.3s; white-space: nowrap; }
-        nav a:hover, nav a.active { color: #e50914; }
-
-        @media (max-width: 480px) {
-            header { padding: 12px 15px; }
-            .logo { font-size: 18px; }
-            nav { gap: 10px; }
-            nav a { font-size: 13px; }
-        }
-
-        /* VPN Notice Banner Styling */
-        .vpn-banner {
-            background: #1f1f1f;
-            color: #e50914;
-            text-align: center;
-            padding: 10px 15px;
-            font-size: 14px;
-            font-weight: 600;
-            border-bottom: 1px solid #333;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-        }
-
-        @media (max-width: 480px) {
-            .vpn-banner {
-                font-size: 12px;
-                padding: 8px 10px;
-            }
-        }
-
-        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
-        
-        /* Separate Search & Filter Toggle Layout */
-        .search-filter-wrapper {
-            margin-bottom: 30px;
-        }
-
-        .search-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .search-box { 
-            flex: 1; 
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 18px;
-            background: #1f1f1f;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .search-box input:focus { outline: none; border-color: #e50914; }
-
-        /* Toggle Button with Hamburger / 3 Lines Icon */
-        .filter-toggle-btn {
-            background: #1f1f1f;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 12px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: 0.3s;
-        }
-
-        .filter-toggle-btn:hover, .filter-toggle-btn.active {
-            background: #e50914;
-            border-color: #e50914;
-        }
-
-        /* Hidden Collapsible Filter Drawer */
-        .filter-options { 
-            display: none; 
-            gap: 15px; 
-            background: #1f1f1f;
-            padding: 15px 20px;
-            border-radius: 6px;
-            margin-top: 10px;
-            border: 1px solid #333;
-            flex-wrap: wrap;
-        }
-
-        .filter-options.show {
-            display: flex;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 180px;
-        }
-
-        .filter-group label {
-            font-size: 12px;
-            color: #aaa;
-        }
-
-        .filter-options select {
-            padding: 10px 15px;
-            background: #121212;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .filter-options select:focus { outline: none; border-color: #e50914; }
-
-        .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { background: #e50914; font-size: 14px; padding: 4px 10px; border-radius: 20px; }
-
-        .movie-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 600px) { .movie-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .movie-grid { grid-template-columns: repeat(6, 1fr); } }
-
-        .movie-card { background: #1f1f1f; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: transform 0.3s; text-decoration: none; color: inherit; display: block; }
-        .movie-card:hover { transform: translateY(-8px); box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3); }
-        .movie-card img { width: 100%; height: 280px; object-fit: cover; }
-        .movie-info { padding: 12px; }
-        .movie-info h3 { font-size: 1rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-meta { display: flex; justify-content: space-between; color: #aaa; font-size: 0.85rem; }
-        .rating { color: #ffc107; font-weight: bold; }
-
-        .pagination { display: flex; justify-content: center; align-items: center; margin-top: 40px; gap: 10px; }
-        .pagination a, .pagination span { background: #1f1f1f; color: #fff; padding: 10px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; border: 1px solid #333; cursor: pointer; }
-        .pagination a:hover, .pagination .active { background: #e50914; border-color: #e50914; }
-
-        footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-rose-500 selection:text-white">
 
-    <header>
-        <a href="index.html" class="logo">🎬 drsamangyi</a>
-        <nav>
-            <a href="index.html" class="active">Home</a>
-            <a href="movies.html">Movies</a>
-            <a href="contact.html">Contact</a>
-        </nav>
+    <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <h1 class="text-xl font-bold bg-gradient-to-r from-rose-500 to-purple-500 bg-clip-text text-transparent">
+                 MM Movie Collections
+            </h1>
+            <div class="w-full sm:w-80">
+                <input type="text" id="searchInput" placeholder="ဇာတ်ကားနာမည် ရှာရန်..." 
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-rose-500 transition-colors">
+            </div>
+        </div>
     </header>
 
-    <!-- VPN Notice Banner -->
-    <div class="vpn-banner">
-        📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
-    </div>
-
-    <div class="container">
-        <!-- Separate Search Bar & Filter Drawer -->
-        <div class="search-filter-wrapper">
-            <div class="search-row">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search movies by name..." oninput="filterMovies()">
-                </div>
-                <button class="filter-toggle-btn" id="filterBtn" onclick="toggleFilters()" title="Filter Options">
-                    ☰
-                </button>
-            </div>
-
-            <!-- Collapsible Filters -->
-            <div class="filter-options" id="filterDrawer">
-                <div class="filter-group">
-                    <label>Sort By</label>
-                    <select id="sortFilter" onchange="filterMovies()">
-                        <option value="latest">Latest</option>
-                        <option value="top_rated">Top Rated</option>
-                        <option value="most_viewed">Most Viewed</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Category</label>
-                    <select id="categoryFilter" onchange="filterMovies()">
-                        <option value="all">All Categories</option>
-                        <option value="Action">Action</option>
-                        <option value="Sci-Fi">Sci-Fi</option>
-                        <option value="Adventure">Adventure</option>
-                        <option value="Drama">Drama</option>
-                        <option value="Thriller">Thriller</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-title">
-            <span id="sectionHeading">Movie Collection</span>
-            <span id="pageBadge" class="badge">Page 1</span>
-        </div>
-
-        <div id="movieGrid" class="movie-grid"></div>
-        <div id="pagination" class="pagination"></div>
-    </div>
-
-    <footer>
-        <p>&copy; 2026 drsamangyi. All rights reserved.</p>
-    </footer>
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"></div>
+        <div id="pagination" class="flex justify-center items-center gap-2 mt-8"></div>
+    </main>
 
     <script>
-        const moviesPerPage = 24;
         let allMovies = [];
+        let currentPage = 1;
+        const itemsPerPage = 24;
 
-        // Toggle Filter Drawer Hide/Show
-        function toggleFilters() {
-            const drawer = document.getElementById('filterDrawer');
-            const btn = document.getElementById('filterBtn');
-            drawer.classList.toggle('show');
-            btn.classList.toggle('active');
-        }
-
-        // Caching with sessionStorage for instant loading speed
-        async function initMovies() {
+        async function loadMovies() {
             try {
-                const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
-                if (cachedMovies) {
-                    allMovies = JSON.parse(cachedMovies);
-                } else {
-                    const response = await fetch('movies.json');
-                    allMovies = await response.json();
-                    sessionStorage.setItem('drsamangyi_movies', JSON.stringify(allMovies));
-                }
-                filterMovies();
+                const response = await fetch('movies.json');
+                allMovies = await response.json();
+                renderApp();
             } catch (error) {
                 console.error('Error loading movies:', error);
             }
         }
 
-        // XSS Sanitization
-        function sanitizeInput(str) {
-            return str.replace(/[&<>"']/g, function(m) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-            });
-        }
-
-        function filterMovies() {
-            const rawQuery = document.getElementById('searchInput').value;
-            const searchQuery = sanitizeInput(rawQuery.toLowerCase());
-            const sortBy = document.getElementById('sortFilter').value;
-            const category = document.getElementById('categoryFilter').value;
-
-            let filtered = allMovies.filter(movie => 
-                movie.title.toLowerCase().includes(searchQuery)
+        function renderApp() {
+            const searchKeyword = document.getElementById('searchInput').value.toLowerCase();
+            const filteredMovies = allMovies.filter(movie => 
+                movie.title.toLowerCase().includes(searchKeyword)
             );
 
-            if (category !== 'all') {
-                filtered = filtered.filter(movie => movie.genre === category);
-            }
-
-            if (sortBy === 'top_rated') {
-                filtered.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
-            } else if (sortBy === 'most_viewed') {
-                filtered.sort((a, b) => b.views - a.views);
-            }
-
-            renderPage(filtered);
-        }
-
-        function renderPage(movies) {
-            const urlParams = new URLSearchParams(window.location.search);
-            let currentPage = parseInt(urlParams.get('page')) || 1;
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedMovies = filteredMovies.slice(startIndex, startIndex + itemsPerPage);
 
             const grid = document.getElementById('movieGrid');
-            const paginationDiv = document.getElementById('pagination');
-            
-            const startIndex = (currentPage - 1) * moviesPerPage;
-            const endIndex = startIndex + moviesPerPage;
-            const paginatedMovies = movies.slice(startIndex, endIndex);
-
-            document.getElementById('pageBadge').innerText = `Page ${currentPage}`;
-
             grid.innerHTML = '';
+
             if (paginatedMovies.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No movies found.</p>';
-                paginationDiv.innerHTML = '';
+                grid.innerHTML = `<p class="col-span-full text-center text-slate-500 py-10">ဇာတ်ကား မတွေ့ပါ။</p>`;
+                document.getElementById('pagination').innerHTML = '';
                 return;
             }
 
             paginatedMovies.forEach(movie => {
-                const card = document.createElement('a');
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition-all flex flex-col group cursor-pointer";
                 
-                // Base64 Encoding for Security
-                const encodedId = btoa(movie.id);
-                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedId}`;
-                
-                card.className = 'movie-card';
+                // Base64 Encoding ဖြင့် လင့်ခ်ကို ဖုံးကွယ်ပြီး ပို့ပါမည်
+                card.onclick = () => {
+                    const encodedVideo = btoa(movie.video);
+                    window.location.href = `watch.html?v=${encodeURIComponent(encodedVideo)}&t=${encodeURIComponent(movie.title)}`;
+                };
+
                 card.innerHTML = `
-                    <img src="${movie.img}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
-                    <div class="movie-info">
-                        <h3>${movie.title}</h3>
-                        <div class="movie-meta">
-                            <span>${movie.year}</span>
-                            <span class="rating">⭐ ${movie.rating}</span>
-                        </div>
+                    <div class="aspect-[2/3] overflow-hidden bg-slate-950 relative">
+                        <img src="${movie.poster}" alt="${movie.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="p-3 flex flex-col flex-grow justify-between">
+                        <h3 class="text-sm font-medium line-clamp-2 text-slate-200 group-hover:text-rose-400 transition-colors">${movie.title}</h3>
+                        <span class="text-xs text-slate-500 mt-2">${new Date(movie.createdAt).toLocaleDateString()}</span>
                     </div>
                 `;
                 grid.appendChild(card);
             });
 
-            const totalPages = Math.ceil(movies.length / moviesPerPage);
-            paginationDiv.innerHTML = '';
+            renderPagination(filteredMovies.length);
+        }
+
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+
+            if (totalPages <= 1) return;
 
             for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('a');
-                btn.href = `index.html?page=${i}`;
-                btn.innerText = i;
-                if (i === currentPage) {
-                    btn.className = 'active';
-                }
-                paginationDiv.appendChild(btn);
+                const btnActual = document.createElement('button');
+                btnActual.innerText = i;
+                btnActual.className = `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    currentPage === i ? 'bg-rose-600 text-white' : 'bg-slate-900 border border-slate-800 text-slate-400 hover:bg-slate-800'
+                }`;
+                btnActual.onclick = () => {
+                    currentPage = i;
+                    renderApp();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+                paginationContainer.appendChild(btnActual);
             }
         }
 
-        initMovies();
+        document.getElementById('searchInput').addEventListener('input', () => {
+            currentPage = 1;
+            renderApp();
+        });
+
+        loadMovies();
     </script>
 </body>
 </html>
