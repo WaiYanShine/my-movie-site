@@ -68,9 +68,21 @@
 
         .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
         
-        .search-filter-wrapper { margin-bottom: 30px; }
-        .search-row { display: flex; gap: 10px; align-items: center; }
-        .search-box { flex: 1; }
+        /* Separate Search & Filter Toggle Layout */
+        .search-filter-wrapper {
+            margin-bottom: 30px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box { 
+            flex: 1; 
+        }
+
         .search-box input {
             width: 100%;
             padding: 12px 18px;
@@ -80,8 +92,10 @@
             border-radius: 6px;
             font-size: 14px;
         }
+
         .search-box input:focus { outline: none; border-color: #e50914; }
 
+        /* Toggle Button with Hamburger / 3 Lines Icon */
         .filter-toggle-btn {
             background: #1f1f1f;
             border: 1px solid #333;
@@ -95,11 +109,13 @@
             font-size: 18px;
             transition: 0.3s;
         }
+
         .filter-toggle-btn:hover, .filter-toggle-btn.active {
             background: #e50914;
             border-color: #e50914;
         }
 
+        /* Hidden Collapsible Filter Drawer */
         .filter-options { 
             display: none; 
             gap: 15px; 
@@ -110,7 +126,10 @@
             border: 1px solid #333;
             flex-wrap: wrap;
         }
-        .filter-options.show { display: flex; }
+
+        .filter-options.show {
+            display: flex;
+        }
 
         .filter-group {
             display: flex;
@@ -119,7 +138,12 @@
             flex: 1;
             min-width: 180px;
         }
-        .filter-group label { font-size: 12px; color: #aaa; }
+
+        .filter-group label {
+            font-size: 12px;
+            color: #aaa;
+        }
+
         .filter-options select {
             padding: 10px 15px;
             background: #121212;
@@ -129,6 +153,7 @@
             font-size: 14px;
             cursor: pointer;
         }
+
         .filter-options select:focus { outline: none; border-color: #e50914; }
 
         .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -164,11 +189,13 @@
         </nav>
     </header>
 
+    <!-- VPN Notice Banner -->
     <div class="vpn-banner">
         📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
     </div>
 
     <div class="container">
+        <!-- Separate Search Bar & Filter Drawer -->
         <div class="search-filter-wrapper">
             <div class="search-row">
                 <div class="search-box">
@@ -179,6 +206,7 @@
                 </button>
             </div>
 
+            <!-- Collapsible Filters -->
             <div class="filter-options" id="filterDrawer">
                 <div class="filter-group">
                     <label>Sort By</label>
@@ -219,6 +247,7 @@
         const moviesPerPage = 24;
         let allMovies = [];
 
+        // Toggle Filter Drawer Hide/Show
         function toggleFilters() {
             const drawer = document.getElementById('filterDrawer');
             const btn = document.getElementById('filterBtn');
@@ -226,6 +255,7 @@
             btn.classList.toggle('active');
         }
 
+        // Caching with sessionStorage for instant loading speed
         async function initMovies() {
             try {
                 const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
@@ -242,6 +272,7 @@
             }
         }
 
+        // XSS Sanitization
         function sanitizeInput(str) {
             return str.replace(/[&<>"']/g, function(m) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
@@ -267,6 +298,7 @@
             } else if (sortBy === 'most_viewed') {
                 filtered.sort((a, b) => b.views - a.views);
             } else {
+                // Default: Latest (createdAt အပေါ်မူတည်ပြီး အသစ်ဆုံးတွေ ရှေ့ဆုံးရောက်စေခြင်း)
                 filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
             }
 
@@ -296,8 +328,8 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // Base64 Encoding for Cloudflare R2 MP4/MPEG4 security layer
-                const encodedVideoUrl = btoa(movie.video);
+                // 🛡️ Base64 Encoding for Cloudflare R2 MP4/MPEG4 security layer
+                const encodedVideoUrl = btoa(unescape(encodeURIComponent(movie.video)));
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedVideoUrl}`;
                 
                 card.className = 'movie-card';
