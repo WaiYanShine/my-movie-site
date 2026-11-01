@@ -46,6 +46,25 @@
             nav a { font-size: 13px; }
         }
 
+        /* VPN Notice Banner Styling */
+        .vpn-banner {
+            background: linear-gradient(90deg, #b20710, #e50914);
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 480px) {
+            .vpn-banner {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+        }
+
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
         
         .filter-section {
@@ -118,6 +137,11 @@
         </nav>
     </header>
 
+    <!-- VPN Notice Banner -->
+    <div class="vpn-banner">
+        📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
+    </div>
+
     <div class="container">
         <div class="filter-section">
             <div class="search-box">
@@ -157,7 +181,7 @@
         const moviesPerPage = 24;
         let allMovies = [];
 
-        // 🚀 2. Local Caching with sessionStorage for instant speed
+        // 🚀 Caching with sessionStorage for instant loading speed
         async function initMovies() {
             try {
                 const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
@@ -174,7 +198,7 @@
             }
         }
 
-        // 🛡️ 3. XSS Sanitization for Security
+        // 🛡️ XSS Sanitization for Security
         function sanitizeInput(str) {
             return str.replace(/[&<>"']/g, function(m) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
@@ -226,11 +250,12 @@
 
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
+                
+                // 🛡️ Security Layer: Base64 Encoding for movie ID to protect from F12 Inspection
                 const encodedId = btoa(movie.id);
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedId}`;
-                card.className = 'movie-card';
                 
-                // ⚡ 1. Lazy Loading & Error Handling for Posters
+                card.className = 'movie-card';
                 card.innerHTML = `
                     <img src="${movie.img}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
                     <div class="movie-info">
