@@ -1,16 +1,5 @@
 [
     {
-        "id": "movietest01",
-        "title": "Movie Test - MM Collections",
-        "year": "2026",
-        "rating": "9.5",
-        "views": 5000,
-        "genre": "Action",
-        "img": "https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/videos/MM/mm-collections/poster_placeholder.jpg",
-        "video": "https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/videos/MM/mm-collections/movietest.mp4",
-        "createdAt": "2026-11-01T18:48:04.000Z"
-    },
-    {
         "id": "movie02",
         "title": "Neon Syndicate",
         "year": "2026",
@@ -20,16 +9,5 @@
         "img": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500",
         "video": "https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/videos/MM/mm-collections/movietest.mp4",
         "createdAt": "2026-11-01T12:00:00.000Z"
-    },
-    {
-        "id": "movie03",
-        "title": "Cyber Vanguard",
-        "year": "2026",
-        "rating": "9.1",
-        "views": 2800,
-        "genre": "Sci-Fi",
-        "img": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500",
-        "video": "https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/videos/MM/mm-collections/movietest.mp4",
-        "createdAt": "2026-10-30T10:00:00.000Z"
     }
 ]
