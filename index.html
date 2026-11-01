@@ -244,7 +244,11 @@
 
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
-                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&id=${movie.id}`;
+                
+                // 🛡️ Security Layer: Base64 Encoding for movie ID to protect from F12 Inspection
+                const encodedId = btoa(movie.id);
+                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedId}`;
+                
                 card.className = 'movie-card';
                 card.innerHTML = `
                     <img src="${movie.img}" alt="${movie.title}">
