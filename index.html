@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineStream - Home</title>
+    <title>drsamangyi - Home</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
@@ -12,7 +12,6 @@
         ::-webkit-scrollbar-track { background: #121212; }
         ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
 
-        /* Header Layout Fixes for Mobile & Desktop */
         header { 
             background: #1f1f1f; 
             display: flex; 
@@ -49,7 +48,6 @@
 
         .container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
         
-        /* Filter & Search Bar Section */
         .filter-section {
             background: #1f1f1f;
             padding: 20px;
@@ -63,11 +61,7 @@
             border: 1px solid #333;
         }
 
-        .search-box {
-            flex: 1;
-            min-width: 250px;
-        }
-
+        .search-box { flex: 1; min-width: 250px; }
         .search-box input {
             width: 100%;
             padding: 10px 15px;
@@ -77,18 +71,9 @@
             border-radius: 5px;
             font-size: 14px;
         }
+        .search-box input:focus { outline: none; border-color: #e50914; }
 
-        .search-box input:focus {
-            outline: none;
-            border-color: #e50914;
-        }
-
-        .filter-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
+        .filter-options { display: flex; flex-wrap: wrap; gap: 10px; }
         .filter-options select {
             padding: 10px 15px;
             background: #121212;
@@ -98,16 +83,11 @@
             font-size: 14px;
             cursor: pointer;
         }
-
-        .filter-options select:focus {
-            outline: none;
-            border-color: #e50914;
-        }
+        .filter-options select:focus { outline: none; border-color: #e50914; }
 
         .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
         .badge { background: #e50914; font-size: 14px; padding: 4px 10px; border-radius: 20px; }
 
-        /* Responsive Grid: Mobile = 1 Column, Desktop = 6 Columns */
         .movie-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 600px) { .movie-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 1024px) { .movie-grid { grid-template-columns: repeat(6, 1fr); } }
@@ -120,11 +100,9 @@
         .movie-meta { display: flex; justify-content: space-between; color: #aaa; font-size: 0.85rem; }
         .rating { color: #ffc107; font-weight: bold; }
 
-        /* Pagination Buttons */
         .pagination { display: flex; justify-content: center; align-items: center; margin-top: 40px; gap: 10px; }
         .pagination a, .pagination span { background: #1f1f1f; color: #fff; padding: 10px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; border: 1px solid #333; cursor: pointer; }
-        .pagination a:hover { background: #e50914; border-color: #e50914; }
-        .pagination .active { background: #e50914; border-color: #e50914; }
+        .pagination a:hover, .pagination .active { background: #e50914; border-color: #e50914; }
 
         footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
     </style>
@@ -132,7 +110,7 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo">🎬 CineStream</a>
+        <a href="index.html" class="logo">🎬 drsamangyi</a>
         <nav>
             <a href="index.html" class="active">Home</a>
             <a href="movies.html">Movies</a>
@@ -141,7 +119,6 @@
     </header>
 
     <div class="container">
-        <!-- Search & Filter Bar -->
         <div class="filter-section">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Search movies by name..." oninput="filterMovies()">
@@ -168,17 +145,12 @@
             <span id="pageBadge" class="badge">Page 1</span>
         </div>
 
-        <div id="movieGrid" class="movie-grid">
-            <!-- Movies loaded dynamically -->
-        </div>
-
-        <div id="pagination" class="pagination">
-            <!-- Pagination buttons -->
-        </div>
+        <div id="movieGrid" class="movie-grid"></div>
+        <div id="pagination" class="pagination"></div>
     </div>
 
     <footer>
-        <p>&copy; 2026 CineStream. All rights reserved.</p>
+        <p>&copy; 2026 drsamangyi. All rights reserved.</p>
     </footer>
 
     <script>
@@ -200,20 +172,15 @@
             const sortBy = document.getElementById('sortFilter').value;
             const category = document.getElementById('categoryFilter').value;
 
-            // 1. Search filter
             let filtered = allMovies.filter(movie => 
                 movie.title.toLowerCase().includes(searchQuery)
             );
 
-            // 2. Category filter
             if (category !== 'all') {
                 filtered = filtered.filter(movie => movie.genre === category);
             }
 
-            // 3. Sorting
-            if (sortBy === 'latest') {
-                // Keep original order from JSON (Latest first)
-            } else if (sortBy === 'top_rated') {
+            if (sortBy === 'top_rated') {
                 filtered.sort((a, b) => parseFloat(b.rating) - parseFloat(a.rating));
             } else if (sortBy === 'most_viewed') {
                 filtered.sort((a, b) => b.views - a.views);
@@ -244,11 +211,8 @@
 
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
-                
-                // 🛡️ Security Layer: Base64 Encoding for movie ID to protect from F12 Inspection
                 const encodedId = btoa(movie.id);
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedId}`;
-                
                 card.className = 'movie-card';
                 card.innerHTML = `
                     <img src="${movie.img}" alt="${movie.title}">
@@ -263,7 +227,6 @@
                 grid.appendChild(card);
             });
 
-            // Pagination buttons
             const totalPages = Math.ceil(movies.length / moviesPerPage);
             paginationDiv.innerHTML = '';
 
@@ -280,6 +243,5 @@
 
         initMovies();
     </script>
-
 </body>
 </html>
