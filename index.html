@@ -327,8 +327,8 @@
                 const card = document.createElement('a');
                 
                 // 🛡️ Base64 Security Layer with URL-safe encoding support
-                const encodedVideoUrl = encodeURIComponent(b64EncodeUnicode(movie.video));
-                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodedVideoUrl}`;
+                const encodedVideoUrl = b64EncodeUnicode(movie.video);
+                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(encodedVideoUrl)}`;
                 
                 card.className = 'movie-card';
                 card.innerHTML = `
