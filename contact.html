@@ -3,26 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineStream - Contact</title>
+    <title>CineStream - Contact & Request</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #121212; color: #ffffff; }
-        header { background: #1f1f1f; display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; border-bottom: 1px solid #333; }
-        .logo { font-size: 24px; font-weight: bold; color: #e50914; text-decoration: none; }
-        nav a { color: #fff; text-decoration: none; margin-left: 25px; font-size: 16px; transition: 0.3s; }
+        body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
+
+        /* Header Layout Fixes for Mobile & Desktop */
+        header { 
+            background: #1f1f1f; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #333; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+
+        .logo { 
+            font-size: 20px; 
+            font-weight: bold; 
+            color: #e50914; 
+            text-decoration: none; 
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        nav { display: flex; align-items: center; gap: 15px; }
+        nav a { color: #fff; text-decoration: none; font-size: 14px; transition: 0.3s; white-space: nowrap; }
         nav a:hover, nav a.active { color: #e50914; }
-        .container { max-width: 600px; margin: 40px auto; padding: 30px; background: #1f1f1f; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        h2 { margin-bottom: 20px; font-size: 1.8rem; color: #e50914; text-align: center; }
+
+        @media (max-width: 480px) {
+            header { padding: 12px 15px; }
+            .logo { font-size: 18px; }
+            nav { gap: 10px; }
+            nav a { font-size: 13px; }
+        }
+
+        .container { max-width: 650px; margin: 40px auto; padding: 30px; background: #1f1f1f; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #333; }
+        
+        .contact-title { margin-bottom: 10px; font-size: 1.8rem; color: #fff; border-left: 4px solid #e50914; padding-left: 12px; }
+        .contact-desc { color: #aaa; font-size: 0.95rem; margin-bottom: 25px; }
+
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #ccc; }
-        input, textarea { width: 100%; padding: 12px; background: #2c2c2c; border: 1px solid #444; color: #fff; border-radius: 5px; font-size: 1rem; }
-        input:focus, textarea:focus { outline: none; border-color: #e50914; }
-        button { width: 100%; background: #e50914; color: #fff; padding: 12px; border: none; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        label { display: block; margin-bottom: 8px; color: #ccc; font-size: 0.9rem; font-weight: 600; }
+        
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px 15px; 
+            background: #121212; 
+            border: 1px solid #444; 
+            color: #fff; 
+            border-radius: 5px; 
+            font-size: 1rem; 
+        }
+        
+        input:focus, textarea:focus, select:focus { 
+            outline: none; 
+            border-color: #e50914; 
+        }
+
+        button { 
+            width: 100%; 
+            background: #e50914; 
+            color: #fff; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        
         button:hover { background: #b20710; }
-        footer { text-align: center; padding: 20px; background: #1f1f1f; color: #777; margin-top: 50px; font-size: 14px; }
+
+        footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
     </style>
 </head>
 <body>
+
     <header>
         <a href="index.html" class="logo">🎬 CineStream</a>
         <nav>
@@ -33,20 +100,34 @@
     </header>
 
     <div class="container">
-        <h2>Contact Us</h2>
-        <form>
+        <h2 class="contact-title">Contact & Movie Request</h2>
+        <p class="contact-desc">ဇာတ်ကားအသစ်များ တောင်းဆိုရန် သို့မဟုတ် ဆက်သွယ်ရန်အတွက် အောက်ပါဖောင်ကို ဖြည့်သွင်းပေးပါ။</p>
+        
+        <form onsubmit="handleSubmit(event)">
             <div class="form-group">
                 <label>Your Name</label>
-                <input type="text" placeholder="Enter your name" required>
+                <input type="text" id="senderName" placeholder="Enter your name" required>
             </div>
+            
             <div class="form-group">
                 <label>Your Email</label>
-                <input type="email" placeholder="Enter your email" required>
+                <input type="email" id="senderEmail" placeholder="Enter your email" required>
             </div>
+
             <div class="form-group">
-                <label>Message</label>
-                <textarea rows="5" placeholder="Write your message here..." required></textarea>
+                <label>Inquiry Type</label>
+                <select id="inquiryType">
+                    <option value="request">Movie Request (ဇာတ်ကားတောင်းဆိုရန်)</option>
+                    <option value="issue">Broken Link / Error (လင့်ခ်သေနေခြင်း)</option>
+                    <option value="other">General Message (အခြား)</option>
+                </select>
             </div>
+            
+            <div class="form-group">
+                <label>Message / Movie Title Details</label>
+                <textarea id="senderMessage" rows="5" placeholder="Write your message or movie name here..." required></textarea>
+            </div>
+            
             <button type="submit">Send Message</button>
         </form>
     </div>
@@ -54,5 +135,15 @@
     <footer>
         <p>&copy; 2026 CineStream. All rights reserved.</p>
     </footer>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('senderName').value;
+            alert(`ကျေးဇူးတင်ပါတယ် ${name} ခင်ဗျာ။ မက်ဆေ့ခ်ျ ပို့ပြီးပါပြီ။ အမြန်ဆုံး တုံ့ပြန်ဆောင်ရွက်ပေးပါမည်။`);
+            event.target.reset();
+        }
+    </script>
+
 </body>
 </html>
