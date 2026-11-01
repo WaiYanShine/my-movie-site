@@ -14,10 +14,11 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-rose-500 selection:text-white">
 
+    <!-- Header / Navbar -->
     <header class="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
             <h1 class="text-xl font-bold bg-gradient-to-r from-rose-500 to-purple-500 bg-clip-text text-transparent">
-                 MM Movie Collections
+                🎬 MM Movie Collections
             </h1>
             <div class="w-full sm:w-80">
                 <input type="text" id="searchInput" placeholder="ဇာတ်ကားနာမည် ရှာရန်..." 
@@ -26,9 +27,15 @@
         </div>
     </header>
 
+    <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 py-6">
-        <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4"></div>
-        <div id="pagination" class="flex justify-center items-center gap-2 mt-8"></div>
+        <div id="movieGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+            <!-- Dynamic Movies -->
+        </div>
+
+        <div id="pagination" class="flex justify-center items-center gap-2 mt-8">
+            <!-- Pagination Buttons -->
+        </div>
     </main>
 
     <script>
@@ -68,10 +75,9 @@
                 const card = document.createElement('div');
                 card.className = "bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition-all flex flex-col group cursor-pointer";
                 
-                // Base64 Encoding ဖြင့် လင့်ခ်ကို ဖုံးကွယ်ပြီး ပို့ပါမည်
+                // Plaintext link ကို encodeURIComponent သုံးပြီး ပို့ပါမည်
                 card.onclick = () => {
-                    const encodedVideo = btoa(movie.video);
-                    window.location.href = `watch.html?v=${encodeURIComponent(encodedVideo)}&t=${encodeURIComponent(movie.title)}`;
+                    window.location.href = `watch.html?v=${encodeURIComponent(movie.video)}&t=${encodeURIComponent(movie.title)}`;
                 };
 
                 card.innerHTML = `
@@ -100,7 +106,9 @@
                 const btnActual = document.createElement('button');
                 btnActual.innerText = i;
                 btnActual.className = `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    currentPage === i ? 'bg-rose-600 text-white' : 'bg-slate-900 border border-slate-800 text-slate-400 hover:bg-slate-800'
+                    currentPage === i 
+                        ? 'bg-rose-600 text-white' 
+                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:bg-slate-800'
                 }`;
                 btnActual.onclick = () => {
                     currentPage = i;
