@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Movie - drsamangyi</title>
+    <!-- Plyr CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
@@ -49,24 +51,19 @@
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         .movie-title { font-size: 1.8rem; margin-bottom: 20px; color: #fff; border-left: 4px solid #e50914; padding-left: 12px; }
 
-        /* ⚡ 4. Smooth Player Box with Lazy Loading */
         .player-box { 
             position: relative; 
             width: 100%; 
-            padding-bottom: 56.25%;
             background: #000; 
             border-radius: 8px; 
             overflow: hidden; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.6); 
             border: 1px solid #333;
         }
-        .player-box iframe { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
+        .player-box video { 
             width: 100%; 
-            height: 100%; 
-            border: none; 
+            height: auto; 
+            display: block; 
         }
 
         .back-btn { 
@@ -103,8 +100,7 @@
         <h1 id="movieTitle" class="movie-title">Loading Movie...</h1>
         
         <div class="player-box">
-            <!-- ⚡ Lazy loading attribute added to iframe -->
-            <iframe id="videoPlayer" loading="lazy" src="" allowfullscreen></iframe>
+            <video id="player" playsinline controls></video>
         </div>
 
         <a href="index.html" class="back-btn">&#8592; Back to Home</a>
@@ -114,10 +110,13 @@
         <p>&copy; 2026 drsamangyi. All rights reserved.</p>
     </footer>
 
+    <!-- Plyr JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
+
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const movieTitle = urlParams.get('title');
-        const encodedId = urlParams.get('v');
+        const encodedVideo = urlParams.get('v');
 
         if (movieTitle) {
             document.getElementById('movieTitle').innerText = decodeURIComponent(movieTitle);
@@ -125,18 +124,24 @@
             document.getElementById('movieTitle').innerText = "drsamangyi Exclusive Movie";
         }
 
-        // 🛡️ Base64 Security & Smooth Player Execution
-        if (encodedId) {
+        if (encodedVideo) {
             try {
-                const decodedId = atob(encodedId);
-                document.getElementById('videoPlayer শক্তির src = ...'); // fixed below
-                document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/${decodedId}?autoplay=1`;
+                const decodedUrl = atob(encodedVideo);
+                
+                const player = new Plyr('#player', {
+                    controls: ['play-large', 'play', 'progress', 'current-time', 'duration', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
+                });
+
+                const videoElement = document.getElementById('player');
+                videoElement.src = decodedUrl;
             } catch (e) {
                 console.error("Invalid video encoding:", e);
-                document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
+                alert("ဗီဒီယိုလင့်ခ် မှားယွင်းနေပါသည်။");
+                window.location.href = 'index.html';
             }
         } else {
-            document.getElementById('videoPlayer').src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1`;
+            alert("ဇာတ်ကား မတွေ့ရှိပါ။");
+            window.location.href = 'index.html';
         }
     </script>
 </body>
