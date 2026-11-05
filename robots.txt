@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://drsamangyi.com/sitemap.xml
