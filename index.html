@@ -3,7 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>drsamangyi - Home</title>
+    
+    <!--  Complete SEO Meta Tags -->
+    <title>drsamangyi - Myanmar Trending Videos & Collections</title>
+    <meta name="description" content="Watch Myanmar trending videos, premium collections, categories, albums and latest updates on drsamangyi.">
+    <meta name="keywords" content="Myanmar movies, drsamangyi, mm-collections, trending videos, adult videos, streaming">
+    <link rel="canonical" href="https://drsamangyi.com/">
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://drsamangyi.com/">
+    <meta property="og:title" content="drsamangyi - Myanmar Trending Videos & Collections">
+    <meta property="og:description" content="Watch Myanmar trending videos, premium collections, categories, albums and latest updates on drsamangyi.">
+    <meta property="og:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://drsamangyi.com/">
+    <meta name="twitter:title" content="drsamangyi - Myanmar Trending Videos & Collections">
+    <meta name="twitter:description" content="Watch Myanmar trending videos, premium collections, categories, albums and latest updates on drsamangyi.">
+    <meta name="twitter:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
@@ -177,7 +197,7 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo">🎬 drsamangyi</a>
+        <a href="index.html" class="logo"> drsamangyi</a>
         <nav>
             <a href="index.html" class="active">Home</a>
             <a href="movies.html">Movies</a>
@@ -186,7 +206,7 @@
     </header>
 
     <div class="vpn-banner">
-        📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
+         ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
     </div>
 
     <div class="container">
@@ -196,7 +216,7 @@
                     <input type="text" id="searchInput" placeholder="Search movies by name..." oninput="filterMovies()">
                 </div>
                 <button class="filter-toggle-btn" id="filterBtn" onclick="toggleFilters()" title="Filter Options">
-                    ☰
+                    
                 </button>
             </div>
 
@@ -268,7 +288,7 @@
             });
         }
 
-        // 🛡️ Unicode-safe Base64 Encoder Helper (Original Unchanged)
+        //  Unicode-safe Base64 Encoder Helper (Original Unchanged)
         function b64EncodeUnicode(str) {
             return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
                 return String.fromCharCode('0x' + p1);
@@ -322,7 +342,7 @@
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
                 
-                // 🛡️ Base64 Security Layer (Original Unchanged)
+                //  Base64 Security Layer (Original Unchanged)
                 const encodedVideoUrl = b64EncodeUnicode(movie.video);
                 card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(encodedVideoUrl)}`;
                 
@@ -333,7 +353,7 @@
                         <h3>${movie.title}</h3>
                         <div class="movie-meta">
                             <span>${movie.genre}</span>
-                            <span>📅 ${new Date(movie.createdAt).toLocaleDateString()}</span>
+                            <span> ${new Date(movie.createdAt).toLocaleDateString()}</span>
                         </div>
                     </div>
                 `;
