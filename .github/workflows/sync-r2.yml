@@ -1,9 +1,9 @@
 name: Auto-Sync R2 to movies.json
 
 on:
-  workflow_dispatch: # Manual ဖြင့် လိုချင်သည့်အခါ နှိပ်၍ Run နိုင်သည်
+  workflow_dispatch: # လက်နဲ့ ချက်ချင်း Run နိုင်ရန် ဤလိုင်း လိုအပ်ပါသည်
   schedule:
-    - cron: '0 */6 * * *' # တစ်နေ့ ၄ ကြိမ် အလိုအလျောက် စစ်ဆေးမည်
+    - cron: '0 */6 * * *'
 
 jobs:
   sync:
