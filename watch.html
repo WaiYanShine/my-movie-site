@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -162,7 +163,6 @@
 
         /* =====================================
            PLYR RESPONSIVE CONTROL FIX
-           DESKTOP + MOBILE
         ===================================== */
 
         .plyr--video {
@@ -170,31 +170,97 @@
         }
 
         /* Progress Bar */
+
         .plyr--video .plyr__controls .plyr__progress {
             flex: 1 1 0% !important;
             min-width: 0 !important;
             width: auto !important;
         }
 
-        /* Volume Container */
-        .plyr--video .plyr__controls .plyr__volume {
-            flex: 0 0 65px !important;
-            width: 65px !important;
-            min-width: 0 !important;
-            max-width: 65px !important;
-        }
-
-        /* Volume Slider */
-        .plyr--video .plyr__volume input[type="range"] {
-            width: 100% !important;
-            max-width: 65px !important;
-        }
-
         /* Control Spacing */
+
         .plyr--video .plyr__controls {
             gap: 6px;
         }
 
+
+        /* =====================================
+           VOLUME POPUP
+        ===================================== */
+
+        .plyr--video .plyr__controls {
+            position: relative;
+        }
+
+        /* Volume Popup Default Hidden */
+
+        .plyr--video .plyr__controls .plyr__volume {
+            position: absolute !important;
+
+            bottom: calc(100% + 10px);
+            right: 10px;
+
+            width: 44px !important;
+            height: 125px !important;
+
+            min-width: 44px !important;
+            max-width: 44px !important;
+
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+
+            padding: 10px 0 !important;
+
+            background: rgba(25, 25, 25, 0.97);
+
+            border: 1px solid #444;
+            border-radius: 8px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+
+            transform: translateY(8px);
+
+            transition:
+                opacity 0.2s ease,
+                visibility 0.2s ease,
+                transform 0.2s ease;
+
+            z-index: 50;
+        }
+
+        /* Show Volume Popup */
+
+        .plyr--video.plyr--volume-open
+        .plyr__controls .plyr__volume {
+
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+
+            transform: translateY(0);
+        }
+
+        /* Vertical Volume Slider */
+
+        .plyr--video .plyr__volume input[type="range"] {
+
+            width: 8px !important;
+            height: 100px !important;
+
+            max-width: none !important;
+
+            writing-mode: vertical-lr;
+            direction: rtl;
+
+            cursor: pointer;
+
+            margin: 0 !important;
+        }
 
         /* =====================================
            DESKTOP VIEW
@@ -203,12 +269,15 @@
         @media (min-width: 768px) {
 
             .plyr--video .plyr__controls .plyr__volume {
-                flex-basis: 70px !important;
-                max-width: 70px !important;
+                right: 12px;
+                width: 46px !important;
+                min-width: 46px !important;
+                max-width: 46px !important;
+                height: 135px !important;
             }
 
             .plyr--video .plyr__volume input[type="range"] {
-                max-width: 70px !important;
+                height: 110px !important;
             }
 
         }
@@ -234,19 +303,21 @@
                 padding: 8px !important;
             }
 
-            .plyr--video .plyr__controls .plyr__volume {
-                flex: 0 0 45px !important;
-                width: 45px !important;
-                max-width: 45px !important;
-            }
-
-            .plyr--video .plyr__volume input[type="range"] {
-                max-width: 45px !important;
-            }
-
             .plyr--video .plyr__controls .plyr__progress {
                 flex: 1 1 0% !important;
                 min-width: 30px !important;
+            }
+
+            .plyr--video .plyr__controls .plyr__volume {
+                right: 8px;
+                width: 42px !important;
+                min-width: 42px !important;
+                max-width: 42px !important;
+                height: 115px !important;
+            }
+
+            .plyr--video .plyr__volume input[type="range"] {
+                height: 90px !important;
             }
 
         }
@@ -264,13 +335,14 @@
             }
 
             .plyr--video .plyr__controls .plyr__volume {
-                flex-basis: 35px !important;
-                width: 35px !important;
-                max-width: 35px !important;
+                width: 40px !important;
+                min-width: 40px !important;
+                max-width: 40px !important;
+                height: 105px !important;
             }
 
             .plyr--video .plyr__volume input[type="range"] {
-                max-width: 35px !important;
+                height: 80px !important;
             }
 
         }
@@ -477,6 +549,119 @@
 
 
         // =========================================
+        // VOLUME POPUP AUTO HIDE
+        // =========================================
+
+        function setupVolumePopup(player) {
+
+            const playerContainer =
+                player.elements.container;
+
+            const volumeButton =
+                playerContainer.querySelector(
+                    'button[data-plyr="mute"]'
+                );
+
+            const volumePopup =
+                playerContainer.querySelector(
+                    '.plyr__volume'
+                );
+
+            if (!volumeButton || !volumePopup) {
+                console.warn('Volume controls not found');
+                return;
+            }
+
+            let hideTimer = null;
+
+            const AUTO_HIDE_DELAY = 3000;
+
+
+            // Show Volume Popup
+
+            function showVolumePopup() {
+
+                clearTimeout(hideTimer);
+
+                playerContainer.classList.add(
+                    'plyr--volume-open'
+                );
+
+                hideTimer = setTimeout(() => {
+
+                    hideVolumePopup();
+
+                }, AUTO_HIDE_DELAY);
+
+            }
+
+
+            // Hide Volume Popup
+
+            function hideVolumePopup() {
+
+                clearTimeout(hideTimer);
+
+                playerContainer.classList.remove(
+                    'plyr--volume-open'
+                );
+
+            }
+
+
+            // Click Volume / Mute Button
+
+            volumeButton.addEventListener('click', () => {
+
+                showVolumePopup();
+
+            });
+
+
+            // Keep Popup Visible While Interacting
+
+            volumePopup.addEventListener(
+                'pointerdown',
+                showVolumePopup
+            );
+
+            volumePopup.addEventListener(
+                'input',
+                showVolumePopup
+            );
+
+            volumePopup.addEventListener(
+                'pointermove',
+                showVolumePopup
+            );
+
+
+            // Mouse interaction on Desktop
+
+            volumePopup.addEventListener(
+                'mouseenter',
+                showVolumePopup
+            );
+
+            volumePopup.addEventListener(
+                'mouseleave',
+                () => {
+
+                    clearTimeout(hideTimer);
+
+                    hideTimer = setTimeout(() => {
+
+                        hideVolumePopup();
+
+                    }, AUTO_HIDE_DELAY);
+
+                }
+            );
+
+        }
+
+
+        // =========================================
         // INITIALIZE PLAYER
         // =========================================
 
@@ -543,6 +728,13 @@
                     }
 
                 });
+
+
+                // =================================
+                // INITIALIZE VOLUME POPUP
+                // =================================
+
+                setupVolumePopup(player);
 
 
                 // =================================
