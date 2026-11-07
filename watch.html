@@ -6,8 +6,12 @@
 
     <title>Watch Movie - drsamangyi</title>
 
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#121212">
+
     <!-- Plyr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
 
     <style>
         * {
@@ -160,7 +164,7 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo"> drsamangyi</a>
+        <a href="index.html" class="logo">drsamangyi</a>
 
         <nav>
             <a href="index.html">Home</a>
@@ -176,9 +180,16 @@
         </h1>
 
         <div class="player-box">
-            <video id="player" playsinline controls preload="metadata">
+
+            <video
+                id="player"
+                playsinline
+                controls
+                preload="metadata"
+            >
                 Your browser does not support HTML5 video.
             </video>
+
         </div>
 
         <a href="index.html" class="back-btn">
@@ -192,158 +203,298 @@
     </footer>
 
     <!-- Plyr JS -->
-    <script src="https://cdn.jsdelivr.net/npm/plyr@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
 
     <script>
 
-        // =====================================
-        // GET URL PARAMETERS
-        // =====================================
+        // =========================================
+        // CONFIGURATION
+        // =========================================
 
-        const params = new URLSearchParams(window.location.search);
+        const R2_HOST =
+            'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev';
+
+        const EXOCLICK_VAST_URL =
+            'https://s.magsrv.com/v1/vast.php?idz=6083260';
+
+
+        // =========================================
+        // GET URL PARAMETERS
+        // =========================================
+
+        const params = new URLSearchParams(
+            window.location.search
+        );
 
         const movieTitle = params.get('title');
+
         const encodedVideo = params.get('v');
 
-        const titleElement = document.getElementById('movieTitle');
-        const videoElement = document.getElementById('player');
+        const titleElement =
+            document.getElementById('movieTitle');
+
+        const videoElement =
+            document.getElementById('player');
 
 
-        // =====================================
+        // =========================================
         // DISPLAY MOVIE TITLE
-        // =====================================
+        // =========================================
 
         titleElement.textContent =
             movieTitle || 'drsamangyi Exclusive Movie';
 
 
-        // =====================================
+        // =========================================
         // BASE64 UNICODE DECODER
-        // =====================================
+        // =========================================
 
         function b64DecodeUnicode(str) {
 
-            return decodeURIComponent(
-                atob(str)
-                    .split('')
-                    .map(c =>
-                        '%' +
-                        ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-                    )
-                    .join('')
+            if (!str) {
+                throw new Error('Video URL is missing');
+            }
+
+            // Support standard Base64 and Base64URL
+            let normalized = str
+                .replace(/ /g, '+')
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+
+            // Restore missing Base64 padding
+            while (normalized.length % 4 !== 0) {
+                normalized += '=';
+            }
+
+            const binary = atob(normalized);
+
+            const bytes = Uint8Array.from(
+                binary,
+                char => char.charCodeAt(0)
             );
+
+            return new TextDecoder('utf-8', {
+                fatal: true
+            }).decode(bytes);
 
         }
 
 
-        // =====================================
+        // =========================================
         // CLOUDFLARE R2 URL ENCODER
-        // =====================================
+        // =========================================
 
         function encodeR2VideoUrl(rawUrl) {
 
-            const match = rawUrl.match(
-                /^(https:\/\/[^/]+)(\/.*)$/i
-            );
+            let url;
 
-            if (!match) {
+            try {
+                url = new URL(rawUrl);
+            } catch (error) {
                 throw new Error('Invalid video URL');
             }
 
-            const origin = match[1];
-            const rawPath = match[2];
+            // HTTPS only
+            if (url.protocol !== 'https:') {
+                throw new Error('Invalid video protocol');
+            }
 
-            const encodedPath = rawPath
+            // Allow only our own R2 bucket domain
+            if (url.hostname !== R2_HOST) {
+                throw new Error('Untrusted video host');
+            }
+
+            if (url.username || url.password) {
+                throw new Error('Invalid video URL credentials');
+            }
+
+            // Encode each path segment separately
+            // This preserves folder separators and Unicode filenames
+
+            const encodedPath = url.pathname
                 .split('/')
                 .map(segment => {
 
                     let decodedSegment;
 
                     try {
-                        decodedSegment = decodeURIComponent(segment);
+                        decodedSegment =
+                            decodeURIComponent(segment);
                     } catch (error) {
                         decodedSegment = segment;
                     }
 
-                    decodedSegment = decodedSegment.normalize('NFC');
+                    decodedSegment =
+                        decodedSegment.normalize('NFC');
 
                     return encodeURIComponent(decodedSegment);
 
                 })
                 .join('/');
 
-            return new URL(origin + encodedPath);
+            url.pathname = encodedPath;
+
+            return url;
 
         }
 
 
-        // =====================================
-        // INITIALIZE VIDEO PLAYER WITH VAST AD
-        // =====================================
+        // =========================================
+        // VIDEO ERROR HANDLING
+        // =========================================
+
+        videoElement.addEventListener('error', () => {
+
+            const error = videoElement.error;
+
+            console.error('Video Playback Error:', error);
+
+            titleElement.textContent =
+                'Video playback failed. Please try again.';
+
+        });
+
+
+        // =========================================
+        // INITIALIZE PLAYER
+        // =========================================
 
         async function initPlayer() {
 
             try {
 
+                // Check video parameter
                 if (!encodedVideo) {
                     throw new Error('Video URL is missing');
                 }
 
-                const decodedUrl = b64DecodeUnicode(encodedVideo);
-                const videoUrl = encodeR2VideoUrl(decodedUrl);
+                // Decode Base64 URL
+                const decodedUrl =
+                    b64DecodeUnicode(encodedVideo);
 
-                if (videoUrl.protocol !== 'https:') {
-                    throw new Error('Invalid video protocol');
-                }
+                // Validate and encode R2 URL
+                const videoUrl =
+                    encodeR2VideoUrl(decodedUrl);
 
-                if (!videoUrl.hostname.endsWith('.r2.dev')) {
-                    throw new Error('Untrusted video host');
-                }
 
-                videoElement.addEventListener('error', () => {
-                    console.error('Video Error:', videoElement.error);
-                    titleElement.textContent = 'Video playback failed. Please try again.';
-                });
-
-                // =====================================
-                // INITIALIZE PLYR WITH EXOCLICK VAST AD
-                // =====================================
-
-                if (typeof Plyr !== 'undefined') {
-
-                    const player = new Plyr(videoElement, {
-                        controls: [
-                            'play-large',
-                            'play',
-                            'progress',
-                            'current-time',
-                            'duration',
-                            'mute',
-                            'volume',
-                            'settings',
-                            'pip',
-                            'fullscreen'
-                        ],
-                        // ExoClick VAST Preroll Ad Integration
-                        ads: {
-                            enabled: true,
-                            tagUrl: 'https://s.magsrv.com/v1/vast.php?idz=6083260'
-                        }
-                    });
-
-                } else {
-                    console.warn('Plyr library not loaded');
-                }
+                // =================================
+                // SET VIDEO SOURCE
+                // =================================
 
                 videoElement.src = videoUrl.href;
+
                 videoElement.load();
 
+
+                // =================================
+                // INITIALIZE PLYR
+                // =================================
+
+                if (typeof Plyr === 'undefined') {
+                    throw new Error('Plyr library failed to load');
+                }
+
+                const player = new Plyr(videoElement, {
+
+                    controls: [
+                        'play-large',
+                        'play',
+                        'progress',
+                        'current-time',
+                        'duration',
+                        'mute',
+                        'volume',
+                        'settings',
+                        'pip',
+                        'fullscreen'
+                    ],
+
+                    // =================================
+                    // EXOCLICK VAST PRE-ROLL ADS
+                    // =================================
+
+                    ads: {
+                        enabled: true,
+                        tagUrl: EXOCLICK_VAST_URL
+                    }
+
+                });
+
+
+                // =================================
+                // PLAYER EVENT HANDLING
+                // =================================
+
+                player.on('ready', () => {
+
+                    console.log(
+                        'Plyr Player Initialized Successfully'
+                    );
+
+                });
+
+
+                // Ad started
+                player.on('adstarted', () => {
+
+                    console.log('ExoClick Pre-roll Ad Started');
+
+                });
+
+
+                // Ad completed
+                player.on('adended', () => {
+
+                    console.log('ExoClick Ad Completed');
+
+                });
+
+
+                // Ad error
+                player.on('aderror', (event) => {
+
+                    console.warn(
+                        'ExoClick Ad Error:',
+                        event
+                    );
+
+                    // Plyr / IMA handles ad failure.
+                    // Content playback should continue
+                    // when the ad system reports an error.
+
+                });
+
+
+                // Video playback started
+                player.on('playing', () => {
+
+                    console.log('Movie Playback Started');
+
+                });
+
+
+                // Video playback ended
+                player.on('ended', () => {
+
+                    console.log('Movie Playback Completed');
+
+                });
+
             } catch (error) {
-                console.error('Player Error:', error);
-                titleElement.textContent = 'Unable to load movie.';
+
+                console.error('Player Initialization Error:', error);
+
+                titleElement.textContent =
+                    'Unable to load movie. Please try again.';
+
             }
 
         }
+
+
+        // =========================================
+        // START PLAYER
+        // =========================================
 
         initPlayer();
 
