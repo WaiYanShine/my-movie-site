@@ -1,0 +1,36 @@
+name: Auto-Sync R2 to movies.json
+
+on:
+  workflow_dispatch: # Manual ဖြင့် လိုချင်သည့်အခါ နှိပ်၍ Run နိုင်သည်
+  schedule:
+    - cron: '0 */6 * * *' # တစ်နေ့ ၄ ကြိမ် အလိုအလျောက် စစ်ဆေးမည်
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install boto3 requests
+
+      - name: Run Sync Script
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
+        run: python generate_movies_json.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+          git add movies.json
+          git diff --quiet && git diff --cached --quiet || (git commit -m "Auto-update movies.json from R2 bucket" && git push)
