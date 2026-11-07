@@ -2,6 +2,7 @@ name: Auto-Sync R2 to movies.json
 
 on:
   workflow_dispatch:
+
   schedule:
     - cron: '0 */6 * * *'
 
@@ -11,19 +12,27 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
+      # 1. Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'
 
+      # 3. Install Dependencies
       - name: Install Dependencies
-        run: pip install boto3 requests
+        run: |
+          python -m pip install --upgrade pip
+          pip install boto3 requests
 
-      - name: Run Sync Script
+      # 4. Generate movies.json from Cloudflare R2
+      - name: Run R2 Sync Script
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -31,9 +40,21 @@ jobs:
           R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
         run: python generate_movies_json.py
 
+      # 5. Generate sitemap.xml
+      - name: Generate Sitemap
+        run: python generate_sitemap.py
+
+      # 6. Commit and Push changes
       - name: Commit and Push changes
         run: |
-          git config --global user.name 'GitHub Actions Bot'
-          git config --global user.email 'actions@github.com'
-          git add movies.json
-          git diff --quiet && git diff --cached --quiet || (git commit -m "Auto-update movies.json from R2 bucket" && git push)
+          git config user.name 'GitHub Actions Bot'
+          git config user.email 'actions@github.com'
+
+          git add movies.json sitemap.xml
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update movies.json and sitemap.xml from R2"
+            git push
+          else
+            echo "No changes detected. Nothing to commit."
+          fi
