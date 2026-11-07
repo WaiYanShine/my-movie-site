@@ -158,6 +158,123 @@
             margin-top: 50px;
             border-top: 1px solid #333;
         }
+
+
+        /* =====================================
+           PLYR RESPONSIVE CONTROL FIX
+           DESKTOP + MOBILE
+        ===================================== */
+
+        .plyr--video {
+            --plyr-range-track-height: 5px;
+        }
+
+        /* Progress Bar */
+        .plyr--video .plyr__controls .plyr__progress {
+            flex: 1 1 0% !important;
+            min-width: 0 !important;
+            width: auto !important;
+        }
+
+        /* Volume Container */
+        .plyr--video .plyr__controls .plyr__volume {
+            flex: 0 0 65px !important;
+            width: 65px !important;
+            min-width: 0 !important;
+            max-width: 65px !important;
+        }
+
+        /* Volume Slider */
+        .plyr--video .plyr__volume input[type="range"] {
+            width: 100% !important;
+            max-width: 65px !important;
+        }
+
+        /* Control Spacing */
+        .plyr--video .plyr__controls {
+            gap: 6px;
+        }
+
+
+        /* =====================================
+           DESKTOP VIEW
+        ===================================== */
+
+        @media (min-width: 768px) {
+
+            .plyr--video .plyr__controls .plyr__volume {
+                flex-basis: 70px !important;
+                max-width: 70px !important;
+            }
+
+            .plyr--video .plyr__volume input[type="range"] {
+                max-width: 70px !important;
+            }
+
+        }
+
+
+        /* =====================================
+           MOBILE VIEW
+        ===================================== */
+
+        @media (max-width: 767px) {
+
+            .container {
+                margin: 25px auto;
+                padding: 0 12px;
+            }
+
+            .movie-title {
+                font-size: 1.4rem;
+            }
+
+            .plyr--video .plyr__controls {
+                gap: 3px;
+                padding: 8px !important;
+            }
+
+            .plyr--video .plyr__controls .plyr__volume {
+                flex: 0 0 45px !important;
+                width: 45px !important;
+                max-width: 45px !important;
+            }
+
+            .plyr--video .plyr__volume input[type="range"] {
+                max-width: 45px !important;
+            }
+
+            .plyr--video .plyr__controls .plyr__progress {
+                flex: 1 1 0% !important;
+                min-width: 30px !important;
+            }
+
+        }
+
+
+        /* =====================================
+           SMALL MOBILE VIEW
+        ===================================== */
+
+        @media (max-width: 360px) {
+
+            .plyr--video .plyr__controls {
+                gap: 2px;
+                padding: 6px !important;
+            }
+
+            .plyr--video .plyr__controls .plyr__volume {
+                flex-basis: 35px !important;
+                width: 35px !important;
+                max-width: 35px !important;
+            }
+
+            .plyr--video .plyr__volume input[type="range"] {
+                max-width: 35px !important;
+            }
+
+        }
+
     </style>
 </head>
 
@@ -201,6 +318,7 @@
     <footer>
         <p>&copy; 2026 drsamangyi. All rights reserved.</p>
     </footer>
+
 
     <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
@@ -256,12 +374,14 @@
             }
 
             // Support standard Base64 and Base64URL
+
             let normalized = str
                 .replace(/ /g, '+')
                 .replace(/-/g, '+')
                 .replace(/_/g, '/');
 
             // Restore missing Base64 padding
+
             while (normalized.length % 4 !== 0) {
                 normalized += '=';
             }
@@ -295,11 +415,13 @@
             }
 
             // HTTPS only
+
             if (url.protocol !== 'https:') {
                 throw new Error('Invalid video protocol');
             }
 
             // Allow only our own R2 bucket domain
+
             if (url.hostname !== R2_HOST) {
                 throw new Error('Untrusted video host');
             }
@@ -309,7 +431,6 @@
             }
 
             // Encode each path segment separately
-            // This preserves folder separators and Unicode filenames
 
             const encodedPath = url.pathname
                 .split('/')
@@ -364,15 +485,18 @@
             try {
 
                 // Check video parameter
+
                 if (!encodedVideo) {
                     throw new Error('Video URL is missing');
                 }
 
                 // Decode Base64 URL
+
                 const decodedUrl =
                     b64DecodeUnicode(encodedVideo);
 
                 // Validate and encode R2 URL
+
                 const videoUrl =
                     encodeR2VideoUrl(decodedUrl);
 
@@ -435,6 +559,7 @@
 
 
                 // Ad started
+
                 player.on('adstarted', () => {
 
                     console.log('ExoClick Pre-roll Ad Started');
@@ -443,6 +568,7 @@
 
 
                 // Ad completed
+
                 player.on('adended', () => {
 
                     console.log('ExoClick Ad Completed');
@@ -451,6 +577,7 @@
 
 
                 // Ad error
+
                 player.on('aderror', (event) => {
 
                     console.warn(
@@ -458,14 +585,11 @@
                         event
                     );
 
-                    // Plyr / IMA handles ad failure.
-                    // Content playback should continue
-                    // when the ad system reports an error.
-
                 });
 
 
                 // Video playback started
+
                 player.on('playing', () => {
 
                     console.log('Movie Playback Started');
@@ -474,6 +598,7 @@
 
 
                 // Video playback ended
+
                 player.on('ended', () => {
 
                     console.log('Movie Playback Completed');
