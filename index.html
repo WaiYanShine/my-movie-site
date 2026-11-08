@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- 🔍 JuicyAds Verification Tag -->
+    <!-- JuicyAds Verification Tag -->
     <meta name="juicyads-site-verification" content="814f9ac42f1ff27fd44d013a3f1fc1f3">
-    
-    <!--  Complete SEO Meta Tags & Description (မြန်မာကား Keyword သီးသန့် SEO Optimization) -->
+
+    <!-- Complete SEO Meta Tags -->
     <title>drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန် | Myanmar Trending Movies & Collections</title>
     <meta name="title" content="drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန် | Myanmar Trending Movies & Collections">
     <meta name="description" content="မြန်မာကား အသစ်များ၊ ဇာတ်လမ်းတွဲများ၊ Myanmar trending videos, premium collections နှင့် သီးသန့် အယ်လ်ဘမ်များကို drsamangyi တွင် HD အရည်အသွေးဖြင့် အလွယ်တကူ ကြည့်ရှုနိုင်ပါသည်။">
@@ -15,16 +15,16 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://drsamangyi.com/">
 
-    <!--  Website Favicon - Browser Tab & Google Search -->
+    <!-- Website Favicon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
 
-    <!--  Apple Touch Icon -->
+    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-    <!-- Open Graph / Social Media Meta Tags (Facebook & Telegram Sharing) -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://drsamangyi.com/">
     <meta property="og:title" content="drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန် | Myanmar Movies">
@@ -38,7 +38,7 @@
     <meta name="twitter:description" content="မြန်မာကား အသစ်များ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို drsamangyi တွင် ကြည့်ရှုပါ။">
     <meta name="twitter:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
 
-    <!--  Schema.org Structured Data for Google Snippets -->
+    <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -56,39 +56,67 @@
     </script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #121212; color: #ffffff; overflow-y: scroll; }
-        
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #121212; }
-        ::-webkit-scrollbar-thumb { background: #e50914; border-radius: 5px; }
-
-        header { 
-            background: #1f1f1f; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #333; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .logo { 
-            font-size: 20px; 
-            font-weight: bold; 
-            color: #e50914; 
-            text-decoration: none; 
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            overflow-y: scroll;
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb {
+            background: #e50914;
+            border-radius: 5px;
+        }
+
+        header {
+            background: #1f1f1f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e50914;
+            text-decoration: none;
             display: flex;
             align-items: center;
             gap: 5px;
             white-space: nowrap;
         }
 
-        nav { display: flex; align-items: center; gap: 15px; }
-        nav a { color: #fff; text-decoration: none; font-size: 14px; transition: 0.3s; white-space: nowrap; }
-        nav a:hover, nav a.active { color: #e50914; }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #e50914;
+        }
 
         @media (max-width: 480px) {
             header { padding: 12px 15px; }
@@ -97,7 +125,7 @@
             nav a { font-size: 13px; }
         }
 
-        /* VPN Notice Banner Styling */
+        /* VPN Notice Banner */
         .vpn-banner {
             background: #1f1f1f;
             color: #e50914;
@@ -117,8 +145,12 @@
             }
         }
 
-        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
-        
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
         .search-filter-wrapper {
             margin-bottom: 30px;
         }
@@ -129,8 +161,8 @@
             align-items: center;
         }
 
-        .search-box { 
-            flex: 1; 
+        .search-box {
+            flex: 1;
         }
 
         .search-box input {
@@ -143,7 +175,10 @@
             font-size: 14px;
         }
 
-        .search-box input:focus { outline: none; border-color: #e50914; }
+        .search-box input:focus {
+            outline: none;
+            border-color: #e50914;
+        }
 
         .filter-toggle-btn {
             background: #1f1f1f;
@@ -159,14 +194,15 @@
             transition: 0.3s;
         }
 
-        .filter-toggle-btn:hover, .filter-toggle-btn.active {
+        .filter-toggle-btn:hover,
+        .filter-toggle-btn.active {
             background: #e50914;
             border-color: #e50914;
         }
 
-        .filter-options { 
-            display: none; 
-            gap: 15px; 
+        .filter-options {
+            display: none;
+            gap: 15px;
             background: #1f1f1f;
             padding: 15px 20px;
             border-radius: 6px;
@@ -202,33 +238,127 @@
             cursor: pointer;
         }
 
-        .filter-options select:focus { outline: none; border-color: #e50914; }
+        .filter-options select:focus {
+            outline: none;
+            border-color: #e50914;
+        }
 
-        .section-title { margin-bottom: 25px; font-size: 1.8rem; border-left: 4px solid #e50914; padding-left: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { background: #e50914; font-size: 14px; padding: 4px 10px; border-radius: 20px; }
+        .section-title {
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            border-left: 4px solid #e50914;
+            padding-left: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        .movie-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        @media (min-width: 600px) { .movie-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .movie-grid { grid-template-columns: repeat(6, 1fr); } }
+        .badge {
+            background: #e50914;
+            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
 
-        .movie-card { background: #1f1f1f; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.4); transition: transform 0.3s; text-decoration: none; color: inherit; display: block; }
-        .movie-card:hover { transform: translateY(-8px); box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3); }
-        .movie-card img { width: 100%; height: 280px; object-fit: cover; }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .movie-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .movie-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        .movie-card {
+            background: #1f1f1f;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            transition: transform 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+
         .movie-info { padding: 12px; }
-        .movie-info h3 { font-size: 1rem; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-meta { display: flex; justify-content: space-between; color: #aaa; font-size: 0.85rem; }
 
-        .pagination { display: flex; justify-content: center; align-items: center; margin-top: 40px; gap: 10px; }
-        .pagination a, .pagination span { background: #1f1f1f; color: #fff; padding: 10px 16px; border-radius: 5px; text-decoration: none; font-weight: bold; transition: 0.3s; border: 1px solid #333; cursor: pointer; }
-        .pagination a:hover, .pagination .active { background: #e50914; border-color: #e50914; }
+        .movie-info h3 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-        footer { text-align: center; padding: 25px; background: #1f1f1f; color: #777; margin-top: 50px; border-top: 1px solid #333; }
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            gap: 10px;
+        }
+
+        .pagination a,
+        .pagination span {
+            background: #1f1f1f;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+
+        .pagination a:hover,
+        .pagination .active {
+            background: #e50914;
+            border-color: #e50914;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #1f1f1f;
+            color: #777;
+            margin-top: 50px;
+            border-top: 1px solid #333;
+        }
     </style>
 </head>
+
 <body>
 
     <header>
-        <a href="index.html" class="logo"> drsamangyi</a>
+        <a href="index.html" class="logo">drsamangyi</a>
         <nav>
             <a href="index.html" class="active">Home</a>
             <a href="movies.html">Movies</a>
@@ -237,21 +367,33 @@
     </header>
 
     <div class="vpn-banner">
-         ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
+        ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
     </div>
 
     <div class="container">
+
         <div class="search-filter-wrapper">
             <div class="search-row">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search movies by name..." oninput="filterMovies()">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search movies by name..."
+                        oninput="filterMovies()"
+                    >
                 </div>
-                <button class="filter-toggle-btn" id="filterBtn" onclick="toggleFilters()" title="Filter Options">
-                    
+
+                <button
+                    class="filter-toggle-btn"
+                    id="filterBtn"
+                    onclick="toggleFilters()"
+                    title="Filter Options"
+                >
                 </button>
             </div>
 
             <div class="filter-options" id="filterDrawer">
+
                 <div class="filter-group">
                     <label>Sort By</label>
                     <select id="sortFilter" onchange="filterMovies()">
@@ -259,6 +401,7 @@
                         <option value="oldest">Oldest</option>
                     </select>
                 </div>
+
                 <div class="filter-group">
                     <label>Category</label>
                     <select id="categoryFilter" onchange="filterMovies()">
@@ -266,6 +409,7 @@
                         <option value="mm-collections">MM Collections</option>
                     </select>
                 </div>
+
             </div>
         </div>
 
@@ -276,6 +420,7 @@
 
         <div id="movieGrid" class="movie-grid"></div>
         <div id="pagination" class="pagination"></div>
+
     </div>
 
     <footer>
@@ -289,6 +434,7 @@
         function toggleFilters() {
             const drawer = document.getElementById('filterDrawer');
             const btn = document.getElementById('filterBtn');
+
             drawer.classList.toggle('show');
             btn.classList.toggle('active');
         }
@@ -296,14 +442,26 @@
         async function initMovies() {
             try {
                 const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
+
                 if (cachedMovies) {
                     allMovies = JSON.parse(cachedMovies);
                 } else {
                     const response = await fetch('movies.json');
+
+                    if (!response.ok) {
+                        throw new Error(`Failed to load movies: ${response.status}`);
+                    }
+
                     allMovies = await response.json();
-                    sessionStorage.setItem('drsamangyi_movies', JSON.stringify(allMovies));
+
+                    sessionStorage.setItem(
+                        'drsamangyi_movies',
+                        JSON.stringify(allMovies)
+                    );
                 }
+
                 filterMovies();
+
             } catch (error) {
                 console.error('Error loading movies:', error);
             }
@@ -311,36 +469,53 @@
 
         function sanitizeInput(str) {
             return str.replace(/[&<>"']/g, function(m) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
             });
         }
 
-        //  Unicode-safe Base64 Encoder Helper (Original Unchanged)
+        // Unicode-safe Base64 Encoder
         function b64EncodeUnicode(str) {
-            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-                return String.fromCharCode('0x' + p1);
-            }));
+            return btoa(
+                encodeURIComponent(str).replace(
+                    /%([0-9A-F]{2})/g,
+                    function(match, p1) {
+                        return String.fromCharCode(parseInt(p1, 16));
+                    }
+                )
+            );
         }
 
         function filterMovies() {
             const rawQuery = document.getElementById('searchInput').value;
             const searchQuery = sanitizeInput(rawQuery.toLowerCase());
+
             const sortBy = document.getElementById('sortFilter').value;
             const category = document.getElementById('categoryFilter').value;
 
-            let filtered = allMovies.filter(movie => 
+            let filtered = allMovies.filter(movie =>
                 movie.title.toLowerCase().includes(searchQuery)
             );
 
             if (category !== 'all') {
-                filtered = filtered.filter(movie => movie.genre === category);
+                filtered = filtered.filter(movie =>
+                    movie.genre === category
+                );
             }
 
             if (sortBy === 'oldest') {
-                filtered.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+                filtered.sort((a, b) =>
+                    new Date(a.createdAt || 0) - new Date(b.createdAt || 0)
+                );
             } else {
-                // Default: Latest (createdAt အပေါ်မူတည်ပြီး အသစ်ဆုံးများ ရှေ့ဆုံးသို့ ရောက်စေခြင်း)
-                filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                filtered.sort((a, b) =>
+                    new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+                );
             }
 
             renderPage(filtered);
@@ -348,55 +523,81 @@
 
         function renderPage(movies) {
             const urlParams = new URLSearchParams(window.location.search);
+
             let currentPage = parseInt(urlParams.get('page')) || 1;
+
+            const totalPages = Math.ceil(movies.length / moviesPerPage);
+
+            currentPage = Math.max(
+                1,
+                Math.min(currentPage, Math.max(totalPages, 1))
+            );
 
             const grid = document.getElementById('movieGrid');
             const paginationDiv = document.getElementById('pagination');
-            
+
             const startIndex = (currentPage - 1) * moviesPerPage;
             const endIndex = startIndex + moviesPerPage;
+
             const paginatedMovies = movies.slice(startIndex, endIndex);
 
-            document.getElementById('pageBadge').innerText = `Page ${currentPage}`;
+            document.getElementById('pageBadge').innerText =
+                `Page ${currentPage}`;
 
             grid.innerHTML = '';
+
             if (paginatedMovies.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No movies found.</p>';
+                grid.innerHTML =
+                    '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No movies found.</p>';
+
                 paginationDiv.innerHTML = '';
                 return;
             }
 
             paginatedMovies.forEach(movie => {
                 const card = document.createElement('a');
-                
-                //  Base64 Security Layer (Original Unchanged)
+
+                // Base64 Security Layer
                 const encodedVideoUrl = b64EncodeUnicode(movie.video);
-                card.href = `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(encodedVideoUrl)}`;
-                
+
+                card.href =
+                    `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(encodedVideoUrl)}`;
+
                 card.className = 'movie-card';
+
                 card.innerHTML = `
-                    <img src="${movie.img}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
+                    <img
+                        src="${movie.img}"
+                        alt="${movie.title}"
+                        loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'"
+                    >
+
                     <div class="movie-info">
                         <h3>${movie.title}</h3>
+
                         <div class="movie-meta">
                             <span>${movie.genre}</span>
-                            <span> ${new Date(movie.createdAt).toLocaleDateString()}</span>
+                            <span>${new Date(movie.createdAt).toLocaleDateString()}</span>
                         </div>
                     </div>
                 `;
+
                 grid.appendChild(card);
             });
 
-            const totalPages = Math.ceil(movies.length / moviesPerPage);
             paginationDiv.innerHTML = '';
 
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement('a');
+
                 btn.href = `index.html?page=${i}`;
                 btn.innerText = i;
+
                 if (i === currentPage) {
                     btn.className = 'active';
                 }
+
                 paginationDiv.appendChild(btn);
             }
         }
@@ -404,14 +605,30 @@
         initMovies();
     </script>
 
-    <!--  Advertisement Scripts (Adsterra & ExoClick Integrated) -->
+    <!-- Advertisement Scripts (Adsterra & JuicyAds) -->
+
     <!-- Adsterra Script -->
-    <script data-cfasync="false" src="https://ahuramazda.org/1/cef0f06666b7e7f6cd1720e114018bba"></script>
-    <!-- JuicyAds v3.2P Start -->
-    <script type="text/javascript">
-    var juicy_tags = ['a', 'img'];
-    </script>    
-    <script type="text/javascript" src="https://js.juicyads.com/jp.php?c=4474y233w254u4r2p2e4136434&u=https%3A%2F%2Fwww.juicyads.rocks"></script>
-    <!-- JuicyAds v3.2P End -->
+    <script
+        data-cfasync="false"
+        src="https://ahuramazda.org/1/cef0f06666b7e7f6cd1720e114018bba">
+    </script>
+
+    <!-- JuicyAds v3.0 - Zone 1131434 -->
+    <script
+        type="text/javascript"
+        data-cfasync="false"
+        async
+        src="https://poweredby.jads.co/js/jads.js">
+    </script>
+
+    <ins id="1131434" data-width="308" data-height="286"></ins>
+
+    <script type="text/javascript" data-cfasync="false" async>
+        (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone': 1131434
+        });
+    </script>
+    <!-- JuicyAds END -->
+
 </body>
 </html>
