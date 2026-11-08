@@ -6,10 +6,19 @@
 
     <!-- Complete SEO Meta Tags -->
     <title>drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန် | Myanmar Trending Movies & Collections</title>
+
     <meta name="title" content="drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန် | Myanmar Trending Movies & Collections">
-    <meta name="description" content="မြန်မာကား အသစ်များ၊ ဇာတ်လမ်းတွဲများ၊ Myanmar trending videos, premium collections နှင့် သီးသန့် အယ်လ်ဘမ်များကို drsamangyi တွင် HD အရည်အသွေးဖြင့် အလွယ်တကူ ကြည့်ရှုနိုင်ပါသည်။">
-    <meta name="keywords" content="မြန်မာကား, မြန်မာဇာတ်ကား, Myanmar movies, drsamangyi, mm-collections, trending videos, streaming">
-    <meta name="robots" content="index, follow">
+
+    <meta name="description" content="drsamangyi တွင် မြန်မာကားအသစ်များ၊ မြန်မာဇာတ်ကားများ၊ ဇာတ်လမ်းတွဲများ၊ Myanmar Trending Movies, HD Videos နှင့် MM Collections များကို အလွယ်တကူ ရှာဖွေကြည့်ရှုနိုင်ပါသည်။ Latest Myanmar Movies and Video Collections updated regularly.">
+
+    <meta name="keywords" content="မြန်မာကား, မြန်မာဇာတ်ကား, မြန်မာကားအသစ်, မြန်မာဗီဒီယို, Myanmar movies, Myanmar videos, Myanmar trending movies, drsamangyi, mm-collections, HD movies, streaming">
+
+    <meta name="author" content="drsamangyi">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="googlebot" content="index, follow, max-image-preview:large">
+    <meta name="language" content="Myanmar">
+    <meta name="theme-color" content="#121212">
+
     <link rel="canonical" href="https://drsamangyi.com/">
 
     <!-- Website Favicon -->
@@ -23,16 +32,27 @@
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="drsamangyi">
+    <meta property="og:locale" content="my_MM">
     <meta property="og:url" content="https://drsamangyi.com/">
+
     <meta property="og:title" content="drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန် | Myanmar Movies">
-    <meta property="og:description" content="မြန်မာကား အသစ်များ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို HD အရည်အသွေးဖြင့် drsamangyi တွင် ကြည့်ရှုပါ။">
+
+    <meta property="og:description" content="မြန်မာကားအသစ်များ၊ မြန်မာဇာတ်ကားများ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို HD အရည်အသွေးဖြင့် drsamangyi တွင် ရှာဖွေကြည့်ရှုပါ။">
+
     <meta property="og:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
+
+    <meta property="og:image:alt" content="drsamangyi Myanmar Movie Collections">
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
+
     <meta name="twitter:url" content="https://drsamangyi.com/">
+
     <meta name="twitter:title" content="drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန်">
-    <meta name="twitter:description" content="မြန်မာကား အသစ်များ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို drsamangyi တွင် ကြည့်ရှုပါ။">
+
+    <meta name="twitter:description" content="မြန်မာကားအသစ်များ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို HD အရည်အသွေးဖြင့် drsamangyi တွင် ကြည့်ရှုပါ။">
+
     <meta name="twitter:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
 
     <!-- Schema.org Structured Data -->
@@ -41,12 +61,19 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "drsamangyi",
-      "alternateName": ["မြန်မာကား - drsamangyi", "Drsamangyi Movies"],
+      "alternateName": [
+        "မြန်မာကား - drsamangyi",
+        "Drsamangyi Movies"
+      ],
       "url": "https://drsamangyi.com/",
-      "description": "မြန်မာကား အသစ်များ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို HD အရည်အသွေးဖြင့် ကြည့်ရှုနိုင်ပါသည်။",
+      "inLanguage": "my",
+      "description": "မြန်မာကားအသစ်များ၊ မြန်မာဇာတ်ကားများ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို ရှာဖွေကြည့်ရှုနိုင်သော Website ဖြစ်ပါသည်။",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://drsamangyi.com/?s={search_term_string}",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://drsamangyi.com/?q={search_term_string}"
+        },
         "query-input": "required name=search_term_string"
       }
     }
@@ -66,8 +93,14 @@
             overflow-y: scroll;
         }
 
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+
         ::-webkit-scrollbar-thumb {
             background: #e50914;
             border-radius: 5px;
@@ -116,10 +149,21 @@
         }
 
         @media (max-width: 480px) {
-            header { padding: 12px 15px; }
-            .logo { font-size: 18px; }
-            nav { gap: 10px; }
-            nav a { font-size: 13px; }
+            header {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            nav {
+                gap: 10px;
+            }
+
+            nav a {
+                font-size: 13px;
+            }
         }
 
         /* VPN Notice Banner */
@@ -297,7 +341,9 @@
             object-fit: cover;
         }
 
-        .movie-info { padding: 12px; }
+        .movie-info {
+            padding: 12px;
+        }
 
         .movie-info h3 {
             font-size: 1rem;
@@ -320,6 +366,7 @@
             align-items: center;
             margin-top: 40px;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .pagination a,
@@ -341,6 +388,10 @@
             border-color: #e50914;
         }
 
+        .pagination .active {
+            cursor: default;
+        }
+
         footer {
             text-align: center;
             padding: 25px;
@@ -355,7 +406,8 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo"> drsamangyi</a>
+        <a href="index.html" class="logo">drsamangyi</a>
+
         <nav>
             <a href="index.html" class="active">Home</a>
             <a href="movies.html">Movies</a>
@@ -364,19 +416,22 @@
     </header>
 
     <div class="vpn-banner">
-         ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
+        ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
     </div>
 
     <div class="container">
 
         <div class="search-filter-wrapper">
+
             <div class="search-row">
+
                 <div class="search-box">
                     <input
                         type="text"
                         id="searchInput"
                         placeholder="Search movies by name..."
-                        oninput="filterMovies()"
+                        aria-label="Search movies by name"
+                        oninput="filterMovies(true)"
                     >
                 </div>
 
@@ -385,24 +440,35 @@
                     id="filterBtn"
                     onclick="toggleFilters()"
                     title="Filter Options"
+                    aria-label="Toggle filter options"
+                    aria-expanded="false"
                 >
-                    
+                    ☰
                 </button>
+
             </div>
 
             <div class="filter-options" id="filterDrawer">
 
                 <div class="filter-group">
-                    <label>Sort By</label>
-                    <select id="sortFilter" onchange="filterMovies()">
+                    <label for="sortFilter">Sort By</label>
+
+                    <select
+                        id="sortFilter"
+                        onchange="filterMovies(true)"
+                    >
                         <option value="latest">Latest</option>
                         <option value="oldest">Oldest</option>
                     </select>
                 </div>
 
                 <div class="filter-group">
-                    <label>Category</label>
-                    <select id="categoryFilter" onchange="filterMovies()">
+                    <label for="categoryFilter">Category</label>
+
+                    <select
+                        id="categoryFilter"
+                        onchange="filterMovies(true)"
+                    >
                         <option value="all">All Categories</option>
                         <option value="mm-collections">MM Collections</option>
                     </select>
@@ -417,6 +483,7 @@
         </div>
 
         <div id="movieGrid" class="movie-grid"></div>
+
         <div id="pagination" class="pagination"></div>
 
     </div>
@@ -426,191 +493,565 @@
     </footer>
 
     <script>
+        /* =========================================
+           MOVIE CONFIGURATION
+        ========================================= */
+
         const moviesPerPage = 24;
+
+        const FALLBACK_IMAGE =
+            'https://via.placeholder.com/500x750?text=No+Poster';
+
+        const CACHE_KEY = 'drsamangyi_movies';
+
         let allMovies = [];
 
+        /* =========================================
+           FILTER DRAWER
+        ========================================= */
+
         function toggleFilters() {
+
             const drawer = document.getElementById('filterDrawer');
             const btn = document.getElementById('filterBtn');
 
             drawer.classList.toggle('show');
             btn.classList.toggle('active');
+
+            btn.setAttribute(
+                'aria-expanded',
+                drawer.classList.contains('show')
+            );
         }
 
-        async function initMovies() {
+        /* =========================================
+           SAFE URL VALIDATION
+        ========================================= */
+
+        function getSafeUrl(value) {
+
+            if (typeof value !== 'string' || !value.trim()) {
+                return null;
+            }
+
             try {
-                const cachedMovies = sessionStorage.getItem('drsamangyi_movies');
 
-                if (cachedMovies) {
-                    allMovies = JSON.parse(cachedMovies);
-                } else {
-                    const response = await fetch('movies.json');
+                const url = new URL(
+                    value,
+                    window.location.origin
+                );
 
-                    if (!response.ok) {
-                        throw new Error(`Failed to load movies: ${response.status}`);
-                    }
-
-                    allMovies = await response.json();
-
-                    sessionStorage.setItem(
-                        'drsamangyi_movies',
-                        JSON.stringify(allMovies)
-                    );
+                if (
+                    url.protocol === 'https:' ||
+                    url.protocol === 'http:'
+                ) {
+                    return url.href;
                 }
 
-                filterMovies();
+                return null;
 
             } catch (error) {
-                console.error('Error loading movies:', error);
+
+                return null;
             }
         }
 
-        function sanitizeInput(str) {
-            return str.replace(/[&<>"']/g, function(m) {
-                return {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#039;'
-                }[m];
-            });
-        }
+        /* =========================================
+           UNICODE SAFE BASE64 ENCODER
+        ========================================= */
 
-        // Unicode-safe Base64 Encoder
         function b64EncodeUnicode(str) {
+
             return btoa(
                 encodeURIComponent(str).replace(
                     /%([0-9A-F]{2})/g,
                     function(match, p1) {
-                        return String.fromCharCode(parseInt(p1, 16));
+
+                        return String.fromCharCode(
+                            parseInt(p1, 16)
+                        );
+
                     }
                 )
             );
         }
 
-        function filterMovies() {
-            const rawQuery = document.getElementById('searchInput').value;
-            const searchQuery = sanitizeInput(rawQuery.toLowerCase());
+        /* =========================================
+           LOAD MOVIES
+        ========================================= */
 
-            const sortBy = document.getElementById('sortFilter').value;
-            const category = document.getElementById('categoryFilter').value;
+        async function initMovies() {
 
-            let filtered = allMovies.filter(movie =>
-                movie.title.toLowerCase().includes(searchQuery)
-            );
+            const grid = document.getElementById('movieGrid');
 
-            if (category !== 'all') {
-                filtered = filtered.filter(movie =>
-                    movie.genre === category
-                );
+            try {
+
+                const cachedMovies =
+                    sessionStorage.getItem(CACHE_KEY);
+
+                if (cachedMovies) {
+
+                    const parsedMovies = JSON.parse(cachedMovies);
+
+                    if (Array.isArray(parsedMovies)) {
+
+                        allMovies = parsedMovies;
+
+                    } else {
+
+                        sessionStorage.removeItem(CACHE_KEY);
+                    }
+                }
+
+                if (allMovies.length === 0) {
+
+                    const response = await fetch('movies.json');
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            `Failed to load movies: ${response.status}`
+                        );
+                    }
+
+                    const data = await response.json();
+
+                    if (!Array.isArray(data)) {
+
+                        throw new Error(
+                            'Invalid movies.json format'
+                        );
+                    }
+
+                    allMovies = data;
+
+                    sessionStorage.setItem(
+                        CACHE_KEY,
+                        JSON.stringify(allMovies)
+                    );
+                }
+
+                /* Restore URL Search / Filter State */
+
+                restoreFiltersFromURL();
+
+                filterMovies(false);
+
+            } catch (error) {
+
+                console.error('Error loading movies:', error);
+
+                grid.textContent =
+                    'Unable to load movies. Please refresh the page.';
             }
-
-            if (sortBy === 'oldest') {
-                filtered.sort((a, b) =>
-                    new Date(a.createdAt || 0) - new Date(b.createdAt || 0)
-                );
-            } else {
-                filtered.sort((a, b) =>
-                    new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-                );
-            }
-
-            renderPage(filtered);
         }
 
-        function renderPage(movies) {
-            const urlParams = new URLSearchParams(window.location.search);
+        /* =========================================
+           RESTORE FILTERS FROM URL
+        ========================================= */
 
-            let currentPage = parseInt(urlParams.get('page')) || 1;
+        function restoreFiltersFromURL() {
 
-            const totalPages = Math.ceil(movies.length / moviesPerPage);
+            const params = new URLSearchParams(
+                window.location.search
+            );
+
+            const searchInput =
+                document.getElementById('searchInput');
+
+            const sortFilter =
+                document.getElementById('sortFilter');
+
+            const categoryFilter =
+                document.getElementById('categoryFilter');
+
+            searchInput.value = params.get('q') || '';
+
+            const sort = params.get('sort');
+
+            if (sort === 'latest' || sort === 'oldest') {
+
+                sortFilter.value = sort;
+            }
+
+            const category = params.get('category');
+
+            if (
+                category === 'all' ||
+                category === 'mm-collections'
+            ) {
+
+                categoryFilter.value = category;
+            }
+        }
+
+        /* =========================================
+           UPDATE URL WITHOUT PAGE RELOAD
+        ========================================= */
+
+        function updateFilterURL(page = 1) {
+
+            const params = new URLSearchParams();
+
+            const searchQuery =
+                document.getElementById('searchInput')
+                    .value.trim();
+
+            const sortBy =
+                document.getElementById('sortFilter').value;
+
+            const category =
+                document.getElementById('categoryFilter').value;
+
+            if (searchQuery) {
+
+                params.set('q', searchQuery);
+            }
+
+            if (sortBy !== 'latest') {
+
+                params.set('sort', sortBy);
+            }
+
+            if (category !== 'all') {
+
+                params.set('category', category);
+            }
+
+            if (page > 1) {
+
+                params.set('page', page);
+            }
+
+            const queryString = params.toString();
+
+            const newURL = queryString
+                ? `index.html?${queryString}`
+                : 'index.html';
+
+            window.history.replaceState(
+                {},
+                '',
+                newURL
+            );
+        }
+
+        /* =========================================
+           FILTER AND SORT MOVIES
+        ========================================= */
+
+        function filterMovies(resetPage = false) {
+
+            const rawQuery =
+                document.getElementById('searchInput')
+                    .value.trim().toLowerCase();
+
+            const sortBy =
+                document.getElementById('sortFilter').value;
+
+            const category =
+                document.getElementById('categoryFilter').value;
+
+            const urlParams = new URLSearchParams(
+                window.location.search
+            );
+
+            let currentPage = resetPage
+                ? 1
+                : parseInt(urlParams.get('page'), 10) || 1;
+
+            /* Search */
+
+            let filtered = allMovies.filter(movie => {
+
+                const title = String(
+                    movie.title || ''
+                ).toLowerCase();
+
+                return title.includes(rawQuery);
+            });
+
+            /* Category Filter */
+
+            if (category !== 'all') {
+
+                filtered = filtered.filter(movie => {
+
+                    return movie.genre === category;
+
+                });
+            }
+
+            /* Sorting */
+
+            filtered.sort((a, b) => {
+
+                const dateA = new Date(
+                    a.createdAt || 0
+                ).getTime() || 0;
+
+                const dateB = new Date(
+                    b.createdAt || 0
+                ).getTime() || 0;
+
+                if (sortBy === 'oldest') {
+
+                    return dateA - dateB;
+                }
+
+                return dateB - dateA;
+            });
+
+            updateFilterURL(currentPage);
+
+            renderPage(filtered, currentPage);
+        }
+
+        /* =========================================
+           RENDER MOVIES
+        ========================================= */
+
+        function renderPage(movies, currentPage = 1) {
+
+            const totalPages = Math.ceil(
+                movies.length / moviesPerPage
+            );
 
             currentPage = Math.max(
                 1,
-                Math.min(currentPage, Math.max(totalPages, 1))
+                Math.min(
+                    currentPage,
+                    Math.max(totalPages, 1)
+                )
             );
 
-            const grid = document.getElementById('movieGrid');
-            const paginationDiv = document.getElementById('pagination');
+            const grid =
+                document.getElementById('movieGrid');
 
-            const startIndex = (currentPage - 1) * moviesPerPage;
-            const endIndex = startIndex + moviesPerPage;
+            const paginationDiv =
+                document.getElementById('pagination');
 
-            const paginatedMovies = movies.slice(startIndex, endIndex);
+            const pageBadge =
+                document.getElementById('pageBadge');
 
-            document.getElementById('pageBadge').innerText =
+            const startIndex =
+                (currentPage - 1) * moviesPerPage;
+
+            const endIndex =
+                startIndex + moviesPerPage;
+
+            const paginatedMovies =
+                movies.slice(startIndex, endIndex);
+
+            pageBadge.textContent =
                 `Page ${currentPage}`;
 
-            grid.innerHTML = '';
+            grid.replaceChildren();
+
+            /* No Movies Found */
 
             if (paginatedMovies.length === 0) {
-                grid.innerHTML =
-                    '<p style="grid-column: 1 / -1; text-align: center; color: #777;">No movies found.</p>';
 
-                paginationDiv.innerHTML = '';
+                const emptyMessage =
+                    document.createElement('p');
+
+                emptyMessage.style.gridColumn = '1 / -1';
+                emptyMessage.style.textAlign = 'center';
+                emptyMessage.style.color = '#777';
+
+                emptyMessage.textContent =
+                    'No movies found.';
+
+                grid.appendChild(emptyMessage);
+
+                paginationDiv.replaceChildren();
+
                 return;
             }
 
-            paginatedMovies.forEach(movie => {
-                const card = document.createElement('a');
+            /* Movie Cards */
 
-                // Base64 Security Layer
-                const encodedVideoUrl = b64EncodeUnicode(movie.video);
+            paginatedMovies.forEach(movie => {
+
+                const title = String(
+                    movie.title || 'Untitled Movie'
+                );
+
+                const videoURL = String(
+                    movie.video || ''
+                );
+
+                const imageURL = getSafeUrl(
+                    movie.img
+                );
+
+                const card =
+                    document.createElement('a');
+
+                /* Base64 Video URL */
+
+                const encodedVideoURL =
+                    b64EncodeUnicode(videoURL);
 
                 card.href =
-                    `watch.html?title=${encodeURIComponent(movie.title)}&v=${encodeURIComponent(encodedVideoUrl)}`;
+                    `watch.html?title=${encodeURIComponent(title)}&v=${encodeURIComponent(encodedVideoURL)}`;
 
                 card.className = 'movie-card';
 
-                card.innerHTML = `
-                    <img
-                        src="${movie.img}"
-                        alt="${movie.title}"
-                        loading="lazy"
-                        onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'"
-                    >
+                /* Movie Poster */
 
-                    <div class="movie-info">
-                        <h3>${movie.title}</h3>
+                const poster =
+                    document.createElement('img');
 
-                        <div class="movie-meta">
-                            <span>${movie.genre}</span>
-                            <span> ${new Date(movie.createdAt).toLocaleDateString()}</span>
-                        </div>
-                    </div>
-                `;
+                poster.src =
+                    imageURL || FALLBACK_IMAGE;
+
+                poster.alt = title;
+
+                poster.loading = 'lazy';
+
+                poster.onerror = function() {
+
+                    this.onerror = null;
+
+                    this.src = FALLBACK_IMAGE;
+                };
+
+                /* Movie Information */
+
+                const movieInfo =
+                    document.createElement('div');
+
+                movieInfo.className = 'movie-info';
+
+                const movieTitle =
+                    document.createElement('h3');
+
+                movieTitle.textContent = title;
+
+                const movieMeta =
+                    document.createElement('div');
+
+                movieMeta.className = 'movie-meta';
+
+                const genre =
+                    document.createElement('span');
+
+                genre.textContent = String(
+                    movie.genre || 'Uncategorized'
+                );
+
+                const date =
+                    document.createElement('span');
+
+                const createdAt = movie.createdAt
+                    ? new Date(movie.createdAt)
+                    : null;
+
+                date.textContent =
+                    createdAt &&
+                    !isNaN(createdAt.getTime())
+                        ? createdAt.toLocaleDateString()
+                        : '';
+
+                movieMeta.appendChild(genre);
+                movieMeta.appendChild(date);
+
+                movieInfo.appendChild(movieTitle);
+                movieInfo.appendChild(movieMeta);
+
+                card.appendChild(poster);
+                card.appendChild(movieInfo);
 
                 grid.appendChild(card);
+
             });
 
-            paginationDiv.innerHTML = '';
+            /* Pagination */
+
+            renderPagination(
+                paginationDiv,
+                currentPage,
+                totalPages
+            );
+        }
+
+        /* =========================================
+           PAGINATION WITH FILTER PRESERVATION
+        ========================================= */
+
+        function renderPagination(
+            container,
+            currentPage,
+            totalPages
+        ) {
+
+            container.replaceChildren();
+
+            if (totalPages <= 1) {
+
+                return;
+            }
 
             for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('a');
 
-                btn.href = `index.html?page=${i}`;
-                btn.innerText = i;
+                const params = new URLSearchParams(
+                    window.location.search
+                );
 
-                if (i === currentPage) {
-                    btn.className = 'active';
+                if (i > 1) {
+
+                    params.set('page', i);
+
+                } else {
+
+                    params.delete('page');
                 }
 
-                paginationDiv.appendChild(btn);
+                const queryString = params.toString();
+
+                const btn =
+                    document.createElement('a');
+
+                btn.href = queryString
+                    ? `index.html?${queryString}`
+                    : 'index.html';
+
+                btn.textContent = i;
+
+                if (i === currentPage) {
+
+                    btn.className = 'active';
+
+                    btn.setAttribute(
+                        'aria-current',
+                        'page'
+                    );
+                }
+
+                container.appendChild(btn);
             }
         }
 
+        /* =========================================
+           INITIALIZE WEBSITE
+        ========================================= */
+
         initMovies();
+
     </script>
 
-    <!-- 💰 Adsterra Popunder Script -->
+    <!-- Adsterra Popunder Script -->
     <script
         data-cfasync="false"
         src="https://ahuramazda.org/1/cef0f06666b7e7f6cd1720e114018bba">
     </script>
-    
-    <!-- 💰 Adsterra Social Bar Script -->
-    <script data-cfasync="false" src="https://brijmohan.org/14/29fc431336d99acbc31255c55635bc31"></script>
+
+    <!-- Adsterra Social Bar Script -->
+    <script
+        data-cfasync="false"
+        src="https://brijmohan.org/14/29fc431336d99acbc31255c55635bc31">
+    </script>
 
 </body>
 </html>
