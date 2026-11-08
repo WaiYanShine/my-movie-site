@@ -35,13 +35,9 @@
     <meta property="og:site_name" content="drsamangyi">
     <meta property="og:locale" content="my_MM">
     <meta property="og:url" content="https://drsamangyi.com/">
-
     <meta property="og:title" content="drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန် | Myanmar Movies">
-
     <meta property="og:description" content="မြန်မာကားအသစ်များ၊ မြန်မာဇာတ်ကားများ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို HD အရည်အသွေးဖြင့် drsamangyi တွင် ရှာဖွေကြည့်ရှုပါ။">
-
     <meta property="og:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
-
     <meta property="og:image:alt" content="drsamangyi Myanmar Movie Collections">
 
     <!-- Twitter Meta Tags -->
@@ -647,9 +643,16 @@
                 return null;
             }
 
+            if (
+                !window.crypto ||
+                !window.crypto.subtle
+            ) {
+                throw new Error('SHA-256 is not available');
+            }
+
             const data = new TextEncoder().encode(canonicalUrl);
 
-            const hashBuffer = await crypto.subtle.digest(
+            const hashBuffer = await window.crypto.subtle.digest(
                 'SHA-256',
                 data
             );
@@ -712,7 +715,6 @@
                 });
             }
         }
-
 
         /* =========================================
            LOAD MOVIES
@@ -850,22 +852,18 @@
                 document.getElementById('categoryFilter').value;
 
             if (searchQuery) {
-
                 params.set('q', searchQuery);
             }
 
             if (sortBy !== 'latest') {
-
                 params.set('sort', sortBy);
             }
 
             if (category !== 'all') {
-
                 params.set('category', category);
             }
 
             if (page > 1) {
-
                 params.set('page', page);
             }
 
@@ -977,51 +975,36 @@
         function renderPage(movies, currentPage = 1) {
 
             const totalPages = Math.ceil(
-
                 movies.length / moviesPerPage
-
             );
 
             currentPage = Math.max(
-
                 1,
-
                 Math.min(
-
                     currentPage,
-
                     Math.max(totalPages, 1)
-
                 )
-
             );
 
             const grid =
-
                 document.getElementById('movieGrid');
 
             const paginationDiv =
-
                 document.getElementById('pagination');
 
             const pageBadge =
-
                 document.getElementById('pageBadge');
 
             const startIndex =
-
                 (currentPage - 1) * moviesPerPage;
 
             const endIndex =
-
                 startIndex + moviesPerPage;
 
             const paginatedMovies =
-
                 movies.slice(startIndex, endIndex);
 
             pageBadge.textContent =
-
                 `Page ${currentPage}`;
 
             grid.replaceChildren();
@@ -1031,17 +1014,13 @@
             if (paginatedMovies.length === 0) {
 
                 const emptyMessage =
-
                     document.createElement('p');
 
                 emptyMessage.style.gridColumn = '1 / -1';
-
                 emptyMessage.style.textAlign = 'center';
-
                 emptyMessage.style.color = '#777';
 
                 emptyMessage.textContent =
-
                     'No movies found.';
 
                 grid.appendChild(emptyMessage);
@@ -1049,7 +1028,6 @@
                 paginationDiv.replaceChildren();
 
                 return;
-
             }
 
             /* Movie Cards */
@@ -1057,35 +1035,26 @@
             paginatedMovies.forEach(movie => {
 
                 const title = String(
-
                     movie.title || 'Untitled Movie'
-
                 );
 
                 const videoURL = String(
-
                     movie.video || ''
-
                 );
 
                 const imageURL = getSafeUrl(
-
                     movie.img
-
                 );
 
                 const card =
-
                     document.createElement('a');
 
                 /* Base64 Video URL */
 
                 const encodedVideoURL =
-
                     b64EncodeUnicode(videoURL);
 
                 card.href =
-
                     `watch.html?title=${encodeURIComponent(title)}&v=${encodeURIComponent(encodedVideoURL)}`;
 
                 card.className = 'movie-card';
@@ -1093,21 +1062,17 @@
                 /* Movie Poster */
 
                 const poster =
-
                     document.createElement('img');
 
                 poster.src =
-
                     imageURL || FALLBACK_IMAGE;
 
                 poster.alt = title;
-
                 poster.loading = 'lazy';
 
                 poster.onerror = function() {
 
                     this.onerror = null;
-
                     this.src = FALLBACK_IMAGE;
 
                 };
@@ -1115,56 +1080,45 @@
                 /* Movie Information */
 
                 const movieInfo =
-
                     document.createElement('div');
 
                 movieInfo.className = 'movie-info';
 
                 const movieTitle =
-
                     document.createElement('h3');
 
                 movieTitle.textContent = title;
 
                 const movieMeta =
-
                     document.createElement('div');
 
                 movieMeta.className = 'movie-meta';
 
                 const genre =
-
                     document.createElement('span');
 
                 genre.textContent = String(
-
                     movie.genre || 'Uncategorized'
-
                 );
 
                 const date =
-
                     document.createElement('span');
 
                 const createdAt = movie.createdAt
-
                     ? new Date(movie.createdAt)
-
                     : null;
 
                 date.textContent =
-
                     createdAt &&
-
                     !isNaN(createdAt.getTime())
-
                         ? createdAt.toLocaleDateString()
-
                         : '';
 
                 movieMeta.appendChild(genre);
 
-                const views = document.createElement('span');
+                const views =
+                    document.createElement('span');
+
                 views.textContent =
                     '👁 ' + (Number(movie.views) || 0).toLocaleString();
 
@@ -1172,11 +1126,9 @@
                 movieMeta.appendChild(date);
 
                 movieInfo.appendChild(movieTitle);
-
                 movieInfo.appendChild(movieMeta);
 
                 card.appendChild(poster);
-
                 card.appendChild(movieInfo);
 
                 grid.appendChild(card);
@@ -1186,13 +1138,9 @@
             /* Pagination */
 
             renderPagination(
-
                 paginationDiv,
-
                 currentPage,
-
                 totalPages
-
             );
 
         }
@@ -1202,51 +1150,36 @@
         ========================================= */
 
         function renderPagination(
-
             container,
-
             currentPage,
-
             totalPages
-
         ) {
 
             container.replaceChildren();
 
             if (totalPages <= 1) {
-
                 return;
-
             }
 
             for (let i = 1; i <= totalPages; i++) {
 
                 const params = new URLSearchParams(
-
                     window.location.search
-
                 );
 
                 if (i > 1) {
-
                     params.set('page', i);
-
                 } else {
-
                     params.delete('page');
-
                 }
 
                 const queryString = params.toString();
 
                 const btn =
-
                     document.createElement('a');
 
                 btn.href = queryString
-
                     ? `index.html?${queryString}`
-
                     : 'index.html';
 
                 btn.textContent = i;
@@ -1256,11 +1189,8 @@
                     btn.className = 'active';
 
                     btn.setAttribute(
-
                         'aria-current',
-
                         'page'
-
                     );
 
                 }
