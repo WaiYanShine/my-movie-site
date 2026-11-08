@@ -518,6 +518,10 @@
 
         const CACHE_KEY = 'drsamangyi_movies';
 
+        // Cloudflare Worker View API
+        const VIEW_API =
+            'https://drsamangyi-view-counter.channeltv4u.workers.dev';
+
         let allMovies = [];
 
         /* =========================================
@@ -591,6 +595,126 @@
         }
 
         /* =========================================
+           VIEW COUNTER - LOAD SHARED VIEWS
+        ========================================= */
+
+        // Keep URL normalization identical to watch.html
+        function getCanonicalVideoUrl(rawUrl) {
+
+            let url;
+
+            try {
+                url = new URL(rawUrl);
+            } catch (error) {
+                return null;
+            }
+
+            if (
+                url.protocol !== 'https:' ||
+                url.hostname !== 'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev'
+            ) {
+                return null;
+            }
+
+            const encodedPath = url.pathname
+                .split('/')
+                .map(segment => {
+
+                    let decodedSegment;
+
+                    try {
+                        decodedSegment = decodeURIComponent(segment);
+                    } catch (error) {
+                        decodedSegment = segment;
+                    }
+
+                    decodedSegment = decodedSegment.normalize('NFC');
+
+                    return encodeURIComponent(decodedSegment);
+                })
+                .join('/');
+
+            url.pathname = encodedPath;
+
+            return url.href;
+        }
+
+        async function getMovieKey(videoUrl) {
+
+            const canonicalUrl = getCanonicalVideoUrl(videoUrl);
+
+            if (!canonicalUrl) {
+                return null;
+            }
+
+            const data = new TextEncoder().encode(canonicalUrl);
+
+            const hashBuffer = await crypto.subtle.digest(
+                'SHA-256',
+                data
+            );
+
+            return Array.from(new Uint8Array(hashBuffer))
+                .map(byte => byte.toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+        async function loadMovieViews() {
+
+            try {
+
+                const response = await fetch(
+                    VIEW_API + '/views',
+                    {
+                        method: 'GET',
+                        mode: 'cors',
+                        cache: 'no-store'
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('View API HTTP error: ' + response.status);
+                }
+
+                const result = await response.json();
+
+                if (!result.success || !Array.isArray(result.views)) {
+                    throw new Error('Invalid View API response');
+                }
+
+                const viewMap = new Map(
+                    result.views.map(item => [
+                        String(item.movie_key),
+                        Number(item.views) || 0
+                    ])
+                );
+
+                await Promise.all(
+                    allMovies.map(async movie => {
+
+                        const key = await getMovieKey(movie.video || '');
+
+                        movie.views = key
+                            ? (viewMap.get(key) || 0)
+                            : 0;
+                    })
+                );
+
+                console.log('Movie views loaded successfully');
+
+            } catch (error) {
+
+                console.error('Unable to load movie views:', error);
+
+                // Keep the website working if the View API is unavailable.
+                allMovies.forEach(movie => {
+                    movie.views = Number(movie.views) || 0;
+                });
+            }
+        }
+
+
+        /* =========================================
            LOAD MOVIES
         ========================================= */
 
@@ -644,6 +768,9 @@
                         JSON.stringify(allMovies)
                     );
                 }
+
+                // Load shared view counts before sorting and rendering.
+                await loadMovieViews();
 
                 /* Restore URL Search / Filter State */
 
@@ -1037,6 +1164,11 @@
 
                 movieMeta.appendChild(genre);
 
+                const views = document.createElement('span');
+                views.textContent =
+                    '👁 ' + (Number(movie.views) || 0).toLocaleString();
+
+                movieMeta.appendChild(views);
                 movieMeta.appendChild(date);
 
                 movieInfo.appendChild(movieTitle);
