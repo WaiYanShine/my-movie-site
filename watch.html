@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -249,6 +248,7 @@
                 max-width: 35px !important;
             }
         }
+
     </style>
 </head>
 
@@ -439,26 +439,59 @@
 
         // =========================================
         // GENERATE STABLE MOVIE KEY
+        // SHA-256 WITH FALLBACK
         // =========================================
 
         async function generateMovieKey(videoUrl) {
 
-            const data = new TextEncoder().encode(
-                videoUrl
-            );
+            try {
 
-            const hashBuffer = await crypto.subtle.digest(
-                'SHA-256',
-                data
-            );
+                const data = new TextEncoder().encode(
+                    videoUrl
+                );
 
-            const hashArray = Array.from(
-                new Uint8Array(hashBuffer)
-            );
+                if (
+                    window.crypto &&
+                    window.crypto.subtle
+                ) {
 
-            return hashArray
-                .map(byte => byte.toString(16).padStart(2, '0'))
-                .join('');
+                    const hashBuffer =
+                        await window.crypto.subtle.digest(
+                            'SHA-256',
+                            data
+                        );
+
+                    const hashArray = Array.from(
+                        new Uint8Array(hashBuffer)
+                    );
+
+                    return hashArray
+                        .map(byte =>
+                            byte.toString(16).padStart(2, '0')
+                        )
+                        .join('');
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    'SHA-256 unavailable:',
+                    error
+                );
+            }
+
+            // Fallback movie key
+
+            let hash = 2166136261;
+
+            for (let i = 0; i < videoUrl.length; i++) {
+
+                hash ^= videoUrl.charCodeAt(i);
+
+                hash = Math.imul(hash, 16777619);
+            }
+
+            return 'movie-' + (hash >>> 0).toString(16);
         }
 
 
@@ -478,9 +511,9 @@
 
                     id = (
                         window.crypto &&
-                        typeof crypto.randomUUID === 'function'
+                        typeof window.crypto.randomUUID === 'function'
                     )
-                        ? crypto.randomUUID()
+                        ? window.crypto.randomUUID()
                         : (
                             Date.now().toString(36) +
                             Math.random().toString(36).slice(2)
@@ -545,6 +578,7 @@
                 );
 
                 if (!response.ok) {
+
                     throw new Error(
                         'View API HTTP error: ' + response.status
                     );
@@ -653,6 +687,7 @@
             lastTick = now;
 
             // Ignore unusually large timer gaps
+
             if (elapsed > 1500 || elapsed < 0) {
                 return;
             }
@@ -666,10 +701,12 @@
             );
 
             // Submit after 30 seconds
+
             if (
                 watchedMilliseconds >=
                 REQUIRED_VIEW_SECONDS * 1000
             ) {
+                stopViewTracking();
                 submitMovieView();
             }
 
@@ -767,6 +804,7 @@
 
         // =========================================
         // INITIALIZE PLAYER
+        // VIDEO MUST NOT WAIT FOR VIEW COUNTER
         // =========================================
 
         async function initPlayer() {
@@ -777,30 +815,19 @@
                     throw new Error('Video URL is missing');
                 }
 
+                // Decode video URL
+
                 const decodedUrl =
                     b64DecodeUnicode(encodedVideo);
+
+                // Validate R2 URL
 
                 const videoUrl =
                     encodeR2VideoUrl(decodedUrl);
 
 
                 // =================================
-                // PREPARE VIEW COUNTER IDENTIFIERS
-                // =================================
-
-                movieKey = await generateMovieKey(
-                    videoUrl.href
-                );
-
-                visitorId = getVisitorId();
-
-                console.log(
-                    'View Counter Initialized'
-                );
-
-
-                // =================================
-                // SET VIDEO SOURCE
+                // SET VIDEO SOURCE FIRST
                 // =================================
 
                 videoElement.src = videoUrl.href;
@@ -857,6 +884,44 @@
                     console.log('Movie Playback Completed');
 
                 });
+
+
+                // =================================
+                // INITIALIZE VIEW COUNTER SEPARATELY
+                // =================================
+
+                generateMovieKey(videoUrl.href)
+                    .then(key => {
+
+                        movieKey = key;
+
+                        visitorId = getVisitorId();
+
+                        console.log(
+                            'View Counter Initialized'
+                        );
+
+                        // If video is already playing,
+                        // start tracking after initialization.
+
+                        if (
+                            !videoElement.paused &&
+                            !videoElement.ended &&
+                            !document.hidden &&
+                            videoElement.readyState >= 3
+                        ) {
+                            startViewTracking();
+                        }
+
+                    })
+                    .catch(error => {
+
+                        console.warn(
+                            'View Counter Initialization Failed:',
+                            error
+                        );
+
+                    });
 
             } catch (error) {
 
