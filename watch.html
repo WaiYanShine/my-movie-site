@@ -442,24 +442,36 @@
         // SHA-256 WITH FALLBACK
         // =========================================
 
-        async function generateMovieKey(videoUrl) {
+        
+async function generateMovieKey(videoUrl) {
 
-            try {
+    if (
+        !window.crypto ||
+        !window.crypto.subtle
+    ) {
+        throw new Error(
+            "SHA-256 is not available"
+        );
+    }
 
-                const data = new TextEncoder().encode(
-                    videoUrl
-                );
+    const data = new TextEncoder().encode(
+        videoUrl
+    );
 
-                if (
-                    window.crypto &&
-                    window.crypto.subtle
-                ) {
+    const hashBuffer = await window.crypto.subtle.digest(
+        "SHA-256",
+        data
+    );
 
-                    const hashBuffer =
-                        await window.crypto.subtle.digest(
-                            'SHA-256',
-                            data
-                        );
+    return Array.from(
+        new Uint8Array(hashBuffer)
+    )
+        .map(byte =>
+            byte.toString(16).padStart(2, "0")
+        )
+        .join("");
+}
+
 
                     const hashArray = Array.from(
                         new Uint8Array(hashBuffer)
