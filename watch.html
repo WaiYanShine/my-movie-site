@@ -439,71 +439,36 @@
 
         // =========================================
         // GENERATE STABLE MOVIE KEY
-        // SHA-256 WITH FALLBACK
+        // SHA-256 ONLY
         // =========================================
 
-        
-async function generateMovieKey(videoUrl) {
+        async function generateMovieKey(videoUrl) {
 
-    if (
-        !window.crypto ||
-        !window.crypto.subtle
-    ) {
-        throw new Error(
-            "SHA-256 is not available"
-        );
-    }
-
-    const data = new TextEncoder().encode(
-        videoUrl
-    );
-
-    const hashBuffer = await window.crypto.subtle.digest(
-        "SHA-256",
-        data
-    );
-
-    return Array.from(
-        new Uint8Array(hashBuffer)
-    )
-        .map(byte =>
-            byte.toString(16).padStart(2, "0")
-        )
-        .join("");
-}
-
-
-                    const hashArray = Array.from(
-                        new Uint8Array(hashBuffer)
-                    );
-
-                    return hashArray
-                        .map(byte =>
-                            byte.toString(16).padStart(2, '0')
-                        )
-                        .join('');
-                }
-
-            } catch (error) {
-
-                console.warn(
-                    'SHA-256 unavailable:',
-                    error
+            if (
+                !window.crypto ||
+                !window.crypto.subtle
+            ) {
+                throw new Error(
+                    'SHA-256 is not available'
                 );
             }
 
-            // Fallback movie key
+            const data = new TextEncoder().encode(
+                videoUrl
+            );
 
-            let hash = 2166136261;
+            const hashBuffer = await window.crypto.subtle.digest(
+                'SHA-256',
+                data
+            );
 
-            for (let i = 0; i < videoUrl.length; i++) {
-
-                hash ^= videoUrl.charCodeAt(i);
-
-                hash = Math.imul(hash, 16777619);
-            }
-
-            return 'movie-' + (hash >>> 0).toString(16);
+            return Array.from(
+                new Uint8Array(hashBuffer)
+            )
+                .map(byte =>
+                    byte.toString(16).padStart(2, '0')
+                )
+                .join('');
         }
 
 
