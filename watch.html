@@ -169,14 +169,12 @@
             --plyr-range-track-height: 5px;
         }
 
-        /* Progress Bar */
         .plyr--video .plyr__controls .plyr__progress {
             flex: 1 1 0% !important;
             min-width: 0 !important;
             width: auto !important;
         }
 
-        /* Volume Container */
         .plyr--video .plyr__controls .plyr__volume {
             flex: 0 0 65px !important;
             width: 65px !important;
@@ -184,23 +182,16 @@
             max-width: 65px !important;
         }
 
-        /* Volume Slider */
         .plyr--video .plyr__volume input[type="range"] {
             width: 100% !important;
             max-width: 65px !important;
         }
 
-        /* Control Spacing */
         .plyr--video .plyr__controls {
             gap: 6px;
         }
 
-        /* =====================================
-           DESKTOP VIEW
-        ===================================== */
-
         @media (min-width: 768px) {
-
             .plyr--video .plyr__controls .plyr__volume {
                 flex-basis: 70px !important;
                 max-width: 70px !important;
@@ -209,15 +200,9 @@
             .plyr--video .plyr__volume input[type="range"] {
                 max-width: 70px !important;
             }
-
         }
 
-        /* =====================================
-           MOBILE VIEW
-        ===================================== */
-
         @media (max-width: 767px) {
-
             .container {
                 margin: 25px auto;
                 padding: 0 12px;
@@ -246,15 +231,9 @@
                 flex: 1 1 0% !important;
                 min-width: 30px !important;
             }
-
         }
 
-        /* =====================================
-           SMALL MOBILE VIEW
-        ===================================== */
-
         @media (max-width: 360px) {
-
             .plyr--video .plyr__controls {
                 gap: 2px;
                 padding: 6px !important;
@@ -269,9 +248,7 @@
             .plyr--video .plyr__volume input[type="range"] {
                 max-width: 35px !important;
             }
-
         }
-
     </style>
 </head>
 
@@ -328,6 +305,9 @@
         const R2_HOST =
             'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev';
 
+        const VIEW_API =
+            'https://drsamangyi-view-counter.channeltv4u.workers.dev';
+
 
         // =========================================
         // GET URL PARAMETERS
@@ -338,7 +318,6 @@
         );
 
         const movieTitle = params.get('title');
-
         const encodedVideo = params.get('v');
 
         const titleElement =
@@ -366,14 +345,10 @@
                 throw new Error('Video URL is missing');
             }
 
-            // Support standard Base64 and Base64URL
-
             let normalized = str
                 .replace(/ /g, '+')
                 .replace(/-/g, '+')
                 .replace(/_/g, '/');
-
-            // Restore missing Base64 padding
 
             while (normalized.length % 4 !== 0) {
                 normalized += '=';
@@ -389,7 +364,6 @@
             return new TextDecoder('utf-8', {
                 fatal: true
             }).decode(bytes);
-
         }
 
 
@@ -407,13 +381,9 @@
                 throw new Error('Invalid video URL');
             }
 
-            // HTTPS only
-
             if (url.protocol !== 'https:') {
                 throw new Error('Invalid video protocol');
             }
-
-            // Allow only our own R2 bucket domain
 
             if (url.hostname !== R2_HOST) {
                 throw new Error('Untrusted video host');
@@ -422,8 +392,6 @@
             if (url.username || url.password) {
                 throw new Error('Invalid video URL credentials');
             }
-
-            // Encode each path segment separately
 
             const encodedPath = url.pathname
                 .split('/')
@@ -449,8 +417,335 @@
             url.pathname = encodedPath;
 
             return url;
-
         }
+
+
+        // =========================================
+        // VIEW COUNTER CONFIGURATION
+        // =========================================
+
+        const REQUIRED_VIEW_SECONDS = 30;
+
+        let movieKey = null;
+        let visitorId = null;
+
+        let watchedMilliseconds = 0;
+        let lastTick = 0;
+
+        let isTracking = false;
+        let viewSubmitted = false;
+        let viewRequestInProgress = false;
+
+
+        // =========================================
+        // GENERATE STABLE MOVIE KEY
+        // =========================================
+
+        async function generateMovieKey(videoUrl) {
+
+            const data = new TextEncoder().encode(
+                videoUrl
+            );
+
+            const hashBuffer = await crypto.subtle.digest(
+                'SHA-256',
+                data
+            );
+
+            const hashArray = Array.from(
+                new Uint8Array(hashBuffer)
+            );
+
+            return hashArray
+                .map(byte => byte.toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+
+        // =========================================
+        // GET OR CREATE VISITOR ID
+        // =========================================
+
+        function getVisitorId() {
+
+            const storageKey = 'drsamangyi_visitor_id';
+
+            try {
+
+                let id = localStorage.getItem(storageKey);
+
+                if (!id) {
+
+                    id = (
+                        window.crypto &&
+                        typeof crypto.randomUUID === 'function'
+                    )
+                        ? crypto.randomUUID()
+                        : (
+                            Date.now().toString(36) +
+                            Math.random().toString(36).slice(2)
+                        );
+
+                    localStorage.setItem(storageKey, id);
+                }
+
+                return id;
+
+            } catch (error) {
+
+                console.warn(
+                    'Visitor ID storage unavailable:',
+                    error
+                );
+
+                return (
+                    Date.now().toString(36) +
+                    Math.random().toString(36).slice(2)
+                );
+            }
+        }
+
+
+        // =========================================
+        // SEND VIEW TO CLOUDFLARE WORKER
+        // =========================================
+
+        async function submitMovieView() {
+
+            if (
+                viewSubmitted ||
+                viewRequestInProgress ||
+                !movieKey ||
+                !visitorId
+            ) {
+                return;
+            }
+
+            viewRequestInProgress = true;
+
+            try {
+
+                const response = await fetch(
+                    VIEW_API + '/view',
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            movieKey: movieKey,
+                            visitorId: visitorId
+                        }),
+
+                        mode: 'cors',
+                        credentials: 'omit'
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(
+                        'View API HTTP error: ' + response.status
+                    );
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+
+                    viewSubmitted = true;
+
+                    console.log(
+                        'Movie View Recorded:',
+                        result
+                    );
+
+                } else {
+
+                    console.warn(
+                        'View Counter Error:',
+                        result.error
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(
+                    'Unable to submit movie view:',
+                    error
+                );
+
+            } finally {
+
+                viewRequestInProgress = false;
+            }
+        }
+
+
+        // =========================================
+        // STOP VIEW TIMER
+        // =========================================
+
+        function stopViewTracking() {
+
+            isTracking = false;
+            lastTick = 0;
+        }
+
+
+        // =========================================
+        // START VIEW TIMER
+        // =========================================
+
+        function startViewTracking() {
+
+            if (
+                viewSubmitted ||
+                !movieKey ||
+                !visitorId ||
+                videoElement.paused ||
+                videoElement.ended ||
+                document.hidden
+            ) {
+                return;
+            }
+
+            isTracking = true;
+            lastTick = performance.now();
+
+            console.log('View Timer Started');
+        }
+
+
+        // =========================================
+        // VIEW TIMER
+        // COUNT ACTUAL PLAYBACK TIME ONLY
+        // =========================================
+
+        setInterval(() => {
+
+            if (!isTracking || viewSubmitted) {
+                lastTick = 0;
+                return;
+            }
+
+            const now = performance.now();
+
+            if (
+                videoElement.paused ||
+                videoElement.ended ||
+                videoElement.seeking ||
+                document.hidden ||
+                videoElement.readyState < 3
+            ) {
+                lastTick = 0;
+                return;
+            }
+
+            if (lastTick === 0) {
+                lastTick = now;
+                return;
+            }
+
+            const elapsed = now - lastTick;
+
+            lastTick = now;
+
+            // Ignore unusually large timer gaps
+            if (elapsed > 1500 || elapsed < 0) {
+                return;
+            }
+
+            watchedMilliseconds += elapsed;
+
+            console.log(
+                'Watched:',
+                Math.floor(watchedMilliseconds / 1000),
+                'seconds'
+            );
+
+            // Submit after 30 seconds
+            if (
+                watchedMilliseconds >=
+                REQUIRED_VIEW_SECONDS * 1000
+            ) {
+                submitMovieView();
+            }
+
+        }, 250);
+
+
+        // =========================================
+        // VIDEO PLAYBACK EVENTS
+        // =========================================
+
+        videoElement.addEventListener(
+            'playing',
+            startViewTracking
+        );
+
+        videoElement.addEventListener(
+            'pause',
+            stopViewTracking
+        );
+
+        videoElement.addEventListener(
+            'waiting',
+            stopViewTracking
+        );
+
+        videoElement.addEventListener(
+            'stalled',
+            stopViewTracking
+        );
+
+        videoElement.addEventListener(
+            'ended',
+            stopViewTracking
+        );
+
+        videoElement.addEventListener(
+            'seeking',
+            stopViewTracking
+        );
+
+        videoElement.addEventListener(
+            'seeked',
+            () => {
+
+                if (
+                    !videoElement.paused &&
+                    videoElement.readyState >= 3
+                ) {
+                    startViewTracking();
+                }
+            }
+        );
+
+
+        // =========================================
+        // TAB VISIBILITY HANDLING
+        // =========================================
+
+        document.addEventListener(
+            'visibilitychange',
+            () => {
+
+                if (document.hidden) {
+
+                    stopViewTracking();
+
+                } else if (
+                    !videoElement.paused &&
+                    !videoElement.ended &&
+                    videoElement.readyState >= 3
+                ) {
+
+                    startViewTracking();
+                }
+            }
+        );
 
 
         // =========================================
@@ -466,6 +761,7 @@
             titleElement.textContent =
                 'Video playback failed. Please try again.';
 
+            stopViewTracking();
         });
 
 
@@ -477,21 +773,30 @@
 
             try {
 
-                // Check video parameter
-
                 if (!encodedVideo) {
                     throw new Error('Video URL is missing');
                 }
 
-                // Decode Base64 URL
-
                 const decodedUrl =
                     b64DecodeUnicode(encodedVideo);
 
-                // Validate and encode R2 URL
-
                 const videoUrl =
                     encodeR2VideoUrl(decodedUrl);
+
+
+                // =================================
+                // PREPARE VIEW COUNTER IDENTIFIERS
+                // =================================
+
+                movieKey = await generateMovieKey(
+                    videoUrl.href
+                );
+
+                visitorId = getVisitorId();
+
+                console.log(
+                    'View Counter Initialized'
+                );
 
 
                 // =================================
@@ -541,17 +846,11 @@
 
                 });
 
-
-                // Video playback started
-
                 player.on('playing', () => {
 
                     console.log('Movie Playback Started');
 
                 });
-
-
-                // Video playback ended
 
                 player.on('ended', () => {
 
@@ -561,13 +860,15 @@
 
             } catch (error) {
 
-                console.error('Player Initialization Error:', error);
+                console.error(
+                    'Player Initialization Error:',
+                    error
+                );
 
                 titleElement.textContent =
                     'Unable to load movie. Please try again.';
 
             }
-
         }
 
 
