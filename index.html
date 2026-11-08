@@ -360,6 +360,16 @@
             font-size: 0.85rem;
         }
 
+        /* Adsterra Native Ad Slot Container */
+        .ad-container {
+            margin: 30px 0 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 100px;
+        }
+
         .pagination {
             display: flex;
             justify-content: center;
@@ -443,7 +453,7 @@
                     aria-label="Toggle filter options"
                     aria-expanded="false"
                 >
-                    ☰
+                    
                 </button>
 
             </div>
@@ -483,6 +493,12 @@
         </div>
 
         <div id="movieGrid" class="movie-grid"></div>
+
+        <!--  Adsterra Native Banner Unit -->
+        <div class="ad-container">
+            <script async="async" data-cfasync="false" src="https://brijmohan.org/21/d9c1b3c701b1b404148b736e1c20304e"></script>
+            <div id="container-d9c1b3c701b1b404148b736e1c20304e"></div>
+        </div>
 
         <div id="pagination" class="pagination"></div>
 
@@ -797,14 +813,17 @@
                 if (sortBy === 'oldest') {
 
                     return dateA - dateB;
+
                 }
 
                 return dateB - dateA;
+
             });
 
             updateFilterURL(currentPage);
 
             renderPage(filtered, currentPage);
+
         }
 
         /* =========================================
@@ -814,36 +833,51 @@
         function renderPage(movies, currentPage = 1) {
 
             const totalPages = Math.ceil(
+
                 movies.length / moviesPerPage
+
             );
 
             currentPage = Math.max(
+
                 1,
+
                 Math.min(
+
                     currentPage,
+
                     Math.max(totalPages, 1)
+
                 )
+
             );
 
             const grid =
+
                 document.getElementById('movieGrid');
 
             const paginationDiv =
+
                 document.getElementById('pagination');
 
             const pageBadge =
+
                 document.getElementById('pageBadge');
 
             const startIndex =
+
                 (currentPage - 1) * moviesPerPage;
 
             const endIndex =
+
                 startIndex + moviesPerPage;
 
             const paginatedMovies =
+
                 movies.slice(startIndex, endIndex);
 
             pageBadge.textContent =
+
                 `Page ${currentPage}`;
 
             grid.replaceChildren();
@@ -853,13 +887,17 @@
             if (paginatedMovies.length === 0) {
 
                 const emptyMessage =
+
                     document.createElement('p');
 
                 emptyMessage.style.gridColumn = '1 / -1';
+
                 emptyMessage.style.textAlign = 'center';
+
                 emptyMessage.style.color = '#777';
 
                 emptyMessage.textContent =
+
                     'No movies found.';
 
                 grid.appendChild(emptyMessage);
@@ -867,6 +905,7 @@
                 paginationDiv.replaceChildren();
 
                 return;
+
             }
 
             /* Movie Cards */
@@ -874,26 +913,35 @@
             paginatedMovies.forEach(movie => {
 
                 const title = String(
+
                     movie.title || 'Untitled Movie'
+
                 );
 
                 const videoURL = String(
+
                     movie.video || ''
+
                 );
 
                 const imageURL = getSafeUrl(
+
                     movie.img
+
                 );
 
                 const card =
+
                     document.createElement('a');
 
                 /* Base64 Video URL */
 
                 const encodedVideoURL =
+
                     b64EncodeUnicode(videoURL);
 
                 card.href =
+
                     `watch.html?title=${encodeURIComponent(title)}&v=${encodeURIComponent(encodedVideoURL)}`;
 
                 card.className = 'movie-card';
@@ -901,9 +949,11 @@
                 /* Movie Poster */
 
                 const poster =
+
                     document.createElement('img');
 
                 poster.src =
+
                     imageURL || FALLBACK_IMAGE;
 
                 poster.alt = title;
@@ -915,52 +965,69 @@
                     this.onerror = null;
 
                     this.src = FALLBACK_IMAGE;
+
                 };
 
                 /* Movie Information */
 
                 const movieInfo =
+
                     document.createElement('div');
 
                 movieInfo.className = 'movie-info';
 
                 const movieTitle =
+
                     document.createElement('h3');
 
                 movieTitle.textContent = title;
 
                 const movieMeta =
+
                     document.createElement('div');
 
                 movieMeta.className = 'movie-meta';
 
                 const genre =
+
                     document.createElement('span');
 
                 genre.textContent = String(
+
                     movie.genre || 'Uncategorized'
+
                 );
 
                 const date =
+
                     document.createElement('span');
 
                 const createdAt = movie.createdAt
+
                     ? new Date(movie.createdAt)
+
                     : null;
 
                 date.textContent =
+
                     createdAt &&
+
                     !isNaN(createdAt.getTime())
+
                         ? createdAt.toLocaleDateString()
+
                         : '';
 
                 movieMeta.appendChild(genre);
+
                 movieMeta.appendChild(date);
 
                 movieInfo.appendChild(movieTitle);
+
                 movieInfo.appendChild(movieMeta);
 
                 card.appendChild(poster);
+
                 card.appendChild(movieInfo);
 
                 grid.appendChild(card);
@@ -970,10 +1037,15 @@
             /* Pagination */
 
             renderPagination(
+
                 paginationDiv,
+
                 currentPage,
+
                 totalPages
+
             );
+
         }
 
         /* =========================================
@@ -981,9 +1053,13 @@
         ========================================= */
 
         function renderPagination(
+
             container,
+
             currentPage,
+
             totalPages
+
         ) {
 
             container.replaceChildren();
@@ -991,12 +1067,15 @@
             if (totalPages <= 1) {
 
                 return;
+
             }
 
             for (let i = 1; i <= totalPages; i++) {
 
                 const params = new URLSearchParams(
+
                     window.location.search
+
                 );
 
                 if (i > 1) {
@@ -1006,15 +1085,19 @@
                 } else {
 
                     params.delete('page');
+
                 }
 
                 const queryString = params.toString();
 
                 const btn =
+
                     document.createElement('a');
 
                 btn.href = queryString
+
                     ? `index.html?${queryString}`
+
                     : 'index.html';
 
                 btn.textContent = i;
@@ -1024,13 +1107,19 @@
                     btn.className = 'active';
 
                     btn.setAttribute(
+
                         'aria-current',
+
                         'page'
+
                     );
+
                 }
 
                 container.appendChild(btn);
+
             }
+
         }
 
         /* =========================================
