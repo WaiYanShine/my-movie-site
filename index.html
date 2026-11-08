@@ -46,13 +46,9 @@
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-
     <meta name="twitter:url" content="https://drsamangyi.com/">
-
     <meta name="twitter:title" content="drsamangyi - မြန်မာကား အသစ်များ ကြည့်ရန်">
-
     <meta name="twitter:description" content="မြန်မာကားအသစ်များ၊ ဇာတ်လမ်းတွဲများနှင့် Trending Collections များကို HD အရည်အသွေးဖြင့် drsamangyi တွင် ကြည့်ရှုပါ။">
-
     <meta name="twitter:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
 
     <!-- Schema.org Structured Data -->
@@ -453,7 +449,7 @@
                     aria-label="Toggle filter options"
                     aria-expanded="false"
                 >
-                    
+                    ☰
                 </button>
 
             </div>
@@ -469,6 +465,8 @@
                     >
                         <option value="latest">Latest</option>
                         <option value="oldest">Oldest</option>
+                        <option value="most_viewed">Most Viewed</option>
+                        <option value="top_rated">Top Rated</option>
                     </select>
                 </div>
 
@@ -494,7 +492,7 @@
 
         <div id="movieGrid" class="movie-grid"></div>
 
-        <!--  Adsterra Native Banner Unit -->
+        <!-- Adsterra Native Banner Unit -->
         <div class="ad-container">
             <script async="async" data-cfasync="false" src="https://brijmohan.org/21/d9c1b3c701b1b404148b736e1c20304e"></script>
             <div id="container-d9c1b3c701b1b404148b736e1c20304e"></div>
@@ -685,7 +683,12 @@
 
             const sort = params.get('sort');
 
-            if (sort === 'latest' || sort === 'oldest') {
+            if (
+                sort === 'latest' ||
+                sort === 'oldest' ||
+                sort === 'most_viewed' ||
+                sort === 'top_rated'
+            ) {
 
                 sortFilter.value = sort;
             }
@@ -810,13 +813,27 @@
                     b.createdAt || 0
                 ).getTime() || 0;
 
-                if (sortBy === 'oldest') {
+                const viewsA = Number(a.views) || 0;
+                const viewsB = Number(b.views) || 0;
 
-                    return dateA - dateB;
+                const ratingA = parseFloat(a.rating) || 0;
+                const ratingB = parseFloat(b.rating) || 0;
 
+                switch (sortBy) {
+
+                    case 'oldest':
+                        return dateA - dateB;
+
+                    case 'most_viewed':
+                        return viewsB - viewsA;
+
+                    case 'top_rated':
+                        return ratingB - ratingA;
+
+                    case 'latest':
+                    default:
+                        return dateB - dateA;
                 }
-
-                return dateB - dateA;
 
             });
 
