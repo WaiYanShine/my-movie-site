@@ -8,8 +8,10 @@
     <title>Loading Movie - drsamangyi</title>
 
     <meta name="description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။">
-    <meta name="robots" content="noindex, follow">
-    <meta name="googlebot" content="noindex, follow">
+
+    <!-- IMPORTANT: Valid movie ID pages are indexable from initial HTML -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
+
     <meta name="theme-color" content="#121212">
 
     <meta property="og:site_name" content="drsamangyi">
@@ -22,7 +24,9 @@
     <meta name="twitter:title" content="Loading Movie - drsamangyi">
     <meta name="twitter:description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။">
 
-    <!-- Plyr CSS -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev" crossorigin>
+
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
 
@@ -305,7 +309,6 @@
         <p>&copy; 2026 drsamangyi. All rights reserved.</p>
     </footer>
 
-    <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
 
     <script>
@@ -348,7 +351,7 @@
 
 
         // =========================================
-        // DYNAMIC SEO ELEMENT HELPERS
+        // ROBOTS INITIALIZATION
         // =========================================
 
         function setMeta(name, content, attribute = 'name') {
@@ -358,17 +361,41 @@
             );
 
             if (!element) {
-
                 element = document.createElement('meta');
-
                 element.setAttribute(attribute, name);
-
                 document.head.appendChild(element);
             }
 
             element.setAttribute('content', content);
         }
 
+
+        function setIndexable(indexable) {
+
+            const robots = indexable
+                ? 'index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1'
+                : 'noindex, follow';
+
+            setMeta('robots', robots);
+        }
+
+
+        // A valid ID URL starts as indexable in the original HTML.
+        // Invalid IDs and legacy URLs are changed to noindex immediately.
+
+        if (
+            requestedMovieId !== null &&
+            /^movie\d{5}$/i.test(requestedMovieId)
+        ) {
+            setIndexable(true);
+        } else {
+            setIndexable(false);
+        }
+
+
+        // =========================================
+        // CANONICAL URL
+        // =========================================
 
         function setCanonical(url) {
 
@@ -377,11 +404,8 @@
             );
 
             if (!canonical) {
-
                 canonical = document.createElement('link');
-
                 canonical.rel = 'canonical';
-
                 document.head.appendChild(canonical);
             }
 
@@ -389,17 +413,9 @@
         }
 
 
-        function setIndexable(indexable) {
-
-            const robots = indexable
-                ? 'index, follow, max-image-preview:large'
-                : 'noindex, follow';
-
-            setMeta('robots', robots);
-
-            setMeta('googlebot', robots);
-        }
-
+        // =========================================
+        // DYNAMIC MOVIE SEO
+        // =========================================
 
         function setMovieSEO(movie, movieId, videoUrl, imageUrl) {
 
@@ -420,27 +436,23 @@
             setMeta('description', description);
 
             setMeta('og:title', pageTitle, 'property');
-
             setMeta('og:description', description, 'property');
-
             setMeta('og:url', canonicalUrl, 'property');
-
             setMeta('og:type', 'video.other', 'property');
+            setMeta('og:site_name', 'drsamangyi', 'property');
 
             setMeta('og:video', videoUrl, 'property');
-
+            setMeta('og:video:secure_url', videoUrl, 'property');
             setMeta('og:video:type', 'video/mp4', 'property');
 
+            setMeta('twitter:card', 'summary_large_image');
             setMeta('twitter:title', pageTitle);
-
             setMeta('twitter:description', description);
 
             if (imageUrl) {
-
                 setMeta('og:image', imageUrl, 'property');
-
+                setMeta('og:image:secure_url', imageUrl, 'property');
                 setMeta('twitter:image', imageUrl);
-
             }
 
             setCanonical(canonicalUrl);
@@ -574,7 +586,6 @@
             });
 
             if (!response.ok) {
-
                 throw new Error(
                     'Unable to load movies.json: ' +
                     response.status
@@ -628,14 +639,10 @@
                 typeof movie.img === 'string' &&
                 movie.img.trim()
             ) {
-
                 try {
-
                     imageUrl =
                         encodeR2VideoUrl(movie.img).href;
-
                 } catch (error) {
-
                     console.warn(
                         'Invalid movie thumbnail:',
                         error
@@ -662,10 +669,8 @@
 
             const movies = await loadMoviesCatalog();
 
-            // -------------------------------------
-            // NEW URL FORMAT
+            // NEW URL FORMAT:
             // /watch?id=movie00049
-            // -------------------------------------
 
             if (requestedMovieId !== null) {
 
@@ -686,14 +691,12 @@
                     }
 
                     try {
-
                         const videoUrl =
                             encodeR2VideoUrl(item.video);
 
                         return extractMovieId(videoUrl) === targetId;
 
                     } catch (error) {
-
                         return false;
                     }
                 });
@@ -706,10 +709,8 @@
             }
 
 
-            // -------------------------------------
-            // LEGACY URL FORMAT
+            // LEGACY URL FORMAT:
             // ?title=...&v=...
-            // -------------------------------------
 
             if (!encodedVideo) {
                 throw new Error('Video URL is missing');
@@ -731,27 +732,21 @@
                 }
 
                 try {
-
                     return encodeR2VideoUrl(
                         item.video
                     ).href === validatedUrl.href;
 
                 } catch (error) {
-
                     return false;
                 }
             });
 
-            // If legacy URL matches movies.json,
-            // use the new canonical movie ID.
-
             if (matchingMovie) {
-
                 return validateMovie(matchingMovie);
             }
 
-            // Preserve playback for old URLs that
-            // are no longer listed in movies.json.
+            // Preserve playback for old URLs that are
+            // no longer listed in movies.json.
 
             return {
                 movie: null,
@@ -769,7 +764,8 @@
 
 
         // =========================================
-        // VIDEOOBJECT STRUCTURED DATA
+        // VALIDATE UPLOAD DATE
+        // SUPPORTS createdAt FROM movies.json
         // =========================================
 
         function getValidUploadDate(movie) {
@@ -780,6 +776,7 @@
 
             const possibleDates = [
                 movie.uploadDate,
+                movie.createdAt,
                 movie.datePublished,
                 movie.date
             ];
@@ -796,7 +793,6 @@
                 const timestamp = Date.parse(value);
 
                 if (Number.isFinite(timestamp)) {
-
                     return new Date(timestamp).toISOString();
                 }
             }
@@ -804,6 +800,10 @@
             return null;
         }
 
+
+        // =========================================
+        // VIDEOOBJECT STRUCTURED DATA
+        // =========================================
 
         function addVideoStructuredData(
             movie,
@@ -819,9 +819,6 @@
             if (existing) {
                 existing.remove();
             }
-
-            // A valid thumbnail is required
-            // for Google's video rich result.
 
             if (!imageUrl) {
                 console.warn(
@@ -876,7 +873,6 @@
                     movie.duration
                 )
             ) {
-
                 videoObject.duration = movie.duration;
             }
 
@@ -1033,7 +1029,6 @@
                 );
 
                 if (!response.ok) {
-
                     throw new Error(
                         'View API HTTP error: ' + response.status
                     );
@@ -1077,7 +1072,6 @@
         // =========================================
 
         function stopViewTracking() {
-
             isTracking = false;
             lastTick = 0;
         }
@@ -1146,12 +1140,6 @@
             }
 
             watchedMilliseconds += elapsed;
-
-            console.log(
-                'Watched:',
-                Math.floor(watchedMilliseconds / 1000),
-                'seconds'
-            );
 
             if (
                 watchedMilliseconds >=
@@ -1273,9 +1261,7 @@
                 titleElement.textContent = safeTitle;
 
 
-                // -------------------------------------
                 // SEO AND CANONICAL CONFIGURATION
-                // -------------------------------------
 
                 if (
                     currentMovie &&
@@ -1298,9 +1284,6 @@
 
                 } else {
 
-                    // Old URL that is not found in
-                    // movies.json must not be indexed.
-
                     document.title =
                         safeTitle + ' - drsamangyi';
 
@@ -1308,26 +1291,20 @@
                 }
 
 
-                // -------------------------------------
                 // VALIDATE VIDEO URL
-                // -------------------------------------
 
                 const videoUrl =
                     encodeR2VideoUrl(movieData.videoUrl);
 
 
-                // -------------------------------------
-                // SET VIDEO SOURCE FIRST
-                // -------------------------------------
+                // SET VIDEO SOURCE
 
                 videoElement.src = videoUrl.href;
 
                 videoElement.load();
 
 
-                // -------------------------------------
                 // INITIALIZE PLYR
-                // -------------------------------------
 
                 if (typeof Plyr === 'undefined') {
                     throw new Error('Plyr library failed to load');
@@ -1351,34 +1328,24 @@
                 });
 
 
-                // -------------------------------------
                 // PLAYER EVENT HANDLING
-                // -------------------------------------
 
                 player.on('ready', () => {
-
                     console.log(
                         'Plyr Player Initialized Successfully'
                     );
-
                 });
 
                 player.on('playing', () => {
-
                     console.log('Movie Playback Started');
-
                 });
 
                 player.on('ended', () => {
-
                     console.log('Movie Playback Completed');
-
                 });
 
 
-                // -------------------------------------
-                // INITIALIZE VIEW COUNTER SEPARATELY
-                // -------------------------------------
+                // INITIALIZE VIEW COUNTER
 
                 generateMovieKey(videoUrl.href)
                     .then(key => {
@@ -1417,14 +1384,10 @@
                     error
                 );
 
-                // Invalid or unavailable movie:
-                // do not allow indexing.
-
                 setIndexable(false);
 
                 titleElement.textContent =
                     'Unable to load movie. Please try again.';
-
             }
         }
 
