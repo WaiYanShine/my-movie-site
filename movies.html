@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Primary SEO -->
     <title>မြန်မာရုပ်ရှင်များ စုစည်းမှု | drsamangyi</title>
+
     <meta name="description" content="drsamangyi တွင် မြန်မာရုပ်ရှင်များနှင့် ဗီဒီယိုစုစည်းမှုများကို ရှာဖွေကြည့်ရှုနိုင်ပါသည်။">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="googlebot" content="index, follow, max-image-preview:large">
@@ -14,14 +14,11 @@
     <meta name="theme-color" content="#121212">
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
-    <!-- Canonical -->
     <link rel="canonical" href="https://drsamangyi.com/movies.html">
 
-    <!-- Performance -->
     <link rel="preconnect" href="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev" crossorigin>
     <link rel="dns-prefetch" href="//pub-18678a28a2634123aa1c63d0b4feca75.r2.dev">
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="drsamangyi">
     <meta property="og:locale" content="my_MM">
@@ -31,13 +28,11 @@
     <meta property="og:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
     <meta property="og:image:alt" content="drsamangyi Myanmar Movie Collections">
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="မြန်မာရုပ်ရှင်များ စုစည်းမှု | drsamangyi">
     <meta name="twitter:description" content="မြန်မာရုပ်ရှင်များနှင့် ဗီဒီယိုစုစည်းမှုများကို drsamangyi တွင် ရှာဖွေကြည့်ရှုနိုင်ပါသည်။">
     <meta name="twitter:image" content="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev/.thumb/movie00001.jpg">
 
-    <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -404,1100 +399,1107 @@
 
 <body>
 
-    <header>
-        <a href="/" class="logo" aria-label="drsamangyi Home">🎬 drsamangyi</a>
+<header>
+    <a href="/" class="logo" aria-label="drsamangyi Home">🎬 drsamangyi</a>
 
-        <nav aria-label="Main navigation">
-            <a href="/">Home</a>
-            <a href="/movies.html" class="active" aria-current="page">Movies</a>
-            <a href="/contact.html">Contact</a>
-        </nav>
-    </header>
+    <nav aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/movies.html" class="active" aria-current="page">Movies</a>
+        <a href="/contact.html">Contact</a>
+    </nav>
+</header>
 
-    <div class="vpn-banner">
-        📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
+<div class="vpn-banner">
+    📢 ရုပ်ရှင်များကြည့်ရတာ အဆင်မပြေရင် VPN လေးချိတ်ပေးကြပါခင်ဗျာ။
+</div>
+
+<main class="container">
+
+    <div class="search-filter-wrapper">
+
+        <div class="search-row">
+            <div class="search-box">
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search all movies..."
+                    aria-label="Search movies"
+                    autocomplete="off"
+                >
+            </div>
+
+            <button
+                type="button"
+                class="filter-toggle-btn"
+                id="filterBtn"
+                aria-label="Toggle filter options"
+                aria-expanded="false"
+                aria-controls="filterDrawer"
+                title="Filter Options"
+            >
+                ☰
+            </button>
+        </div>
+
+        <div class="filter-options" id="filterDrawer">
+
+            <div class="filter-group">
+                <label for="sortFilter">Sort By</label>
+
+                <select id="sortFilter">
+                    <option value="latest">Latest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="most_viewed">Most Viewed</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="categoryFilter">Category</label>
+
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="mm-collections">Myanmar Collections</option>
+                </select>
+            </div>
+
+        </div>
     </div>
 
-    <main class="container">
+    <div class="section-title">
+        <span>Explore All Movies</span>
+        <span id="pageBadge" class="badge">Page 1</span>
+    </div>
 
-        <div class="search-filter-wrapper">
+    <div
+        id="movieGrid"
+        class="movie-grid"
+        aria-live="polite"
+        aria-busy="true"
+    >
+        <p class="status-message">Loading movies...</p>
+    </div>
 
-            <div class="search-row">
-                <div class="search-box">
-                    <input
-                        type="search"
-                        id="searchInput"
-                        placeholder="Search all movies..."
-                        aria-label="Search movies"
-                        autocomplete="off"
-                    >
-                </div>
+    <nav
+        id="pagination"
+        class="pagination"
+        aria-label="Movie pagination"
+    ></nav>
 
-                <button
-                    type="button"
-                    class="filter-toggle-btn"
-                    id="filterBtn"
-                    aria-label="Toggle filter options"
-                    aria-expanded="false"
-                    aria-controls="filterDrawer"
-                    title="Filter Options"
-                >
-                    ☰
-                </button>
-            </div>
+</main>
 
-            <div class="filter-options" id="filterDrawer">
+<footer>
+    <p>&copy; 2026 drsamangyi. All rights reserved.</p>
+</footer>
 
-                <div class="filter-group">
-                    <label for="sortFilter">Sort By</label>
+<script>
+(() => {
+    'use strict';
 
-                    <select id="sortFilter">
-                        <option value="latest">Latest</option>
-                        <option value="oldest">Oldest</option>
-                        <option value="most_viewed">Most Viewed</option>
-                    </select>
-                </div>
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
 
-                <div class="filter-group">
-                    <label for="categoryFilter">Category</label>
+    const MOVIES_JSON = '/movies.json';
 
-                    <select id="categoryFilter">
-                        <option value="all">All Categories</option>
-                        <option value="mm-collections">Myanmar Collections</option>
-                    </select>
-                </div>
+    const VIEW_API =
+        'https://drsamangyi-view-counter.channeltv4u.workers.dev';
 
-            </div>
-        </div>
+    const R2_HOST =
+        'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev';
 
-        <div class="section-title">
-            <span>Explore All Movies</span>
-            <span id="pageBadge" class="badge">Page 1</span>
-        </div>
+    const MOVIES_PER_PAGE = 24;
 
-        <div
-            id="movieGrid"
-            class="movie-grid"
-            aria-live="polite"
-            aria-busy="true"
-        >
-            <p class="status-message">Loading movies...</p>
-        </div>
+    const CACHE_KEY = 'drsamangyi_movies_v3';
 
-        <nav
-            id="pagination"
-            class="pagination"
-            aria-label="Movie pagination"
-        ></nav>
+    const CACHE_TTL = 10 * 60 * 1000;
 
-    </main>
+    let allMovies = [];
+    let movieViews = Object.create(null);
+    let filteredMovies = [];
+    let currentPage = 1;
+    let searchTimer = null;
 
-    <footer>
-        <p>&copy; 2026 drsamangyi. All rights reserved.</p>
-    </footer>
+    // ==========================================
+    // DOM ELEMENTS
+    // ==========================================
 
-    <script>
-    (() => {
-        'use strict';
+    const grid = document.getElementById('movieGrid');
+    const pagination = document.getElementById('pagination');
+    const searchInput = document.getElementById('searchInput');
+    const sortFilter = document.getElementById('sortFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const pageBadge = document.getElementById('pageBadge');
+    const filterBtn = document.getElementById('filterBtn');
+    const filterDrawer = document.getElementById('filterDrawer');
 
-        // ==========================================
-        // WEBSITE CONFIGURATION
-        // ==========================================
+    // ==========================================
+    // FILTER DRAWER
+    // ==========================================
 
-        const SITE_URL = 'https://drsamangyi.com';
+    function toggleFilters() {
+        const isOpen = filterDrawer.classList.toggle('show');
 
-        const MOVIES_JSON = '/movies.json';
+        filterBtn.classList.toggle('active', isOpen);
 
-        const VIEW_API =
-            'https://drsamangyi-view-counter.channeltv4u.workers.dev';
+        filterBtn.setAttribute(
+            'aria-expanded',
+            String(isOpen)
+        );
+    }
 
-        const R2_HOST =
-            'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev';
+    filterBtn.addEventListener('click', toggleFilters);
 
-        const MOVIES_PER_PAGE = 24;
+    // ==========================================
+    // VIDEO URL VALIDATION
+    // ==========================================
 
-        const CACHE_KEY = 'drsamangyi_movies_v3';
-
-        const CACHE_TTL = 10 * 60 * 1000;
-
-        let allMovies = [];
-
-        let movieViews = {};
-
-        let filteredMovies = [];
-
-        let currentPage = 1;
-
-        let searchTimer = null;
-
-
-        // ==========================================
-        // DOM ELEMENTS
-        // ==========================================
-
-        const grid = document.getElementById('movieGrid');
-
-        const pagination =
-            document.getElementById('pagination');
-
-        const searchInput =
-            document.getElementById('searchInput');
-
-        const sortFilter =
-            document.getElementById('sortFilter');
-
-        const categoryFilter =
-            document.getElementById('categoryFilter');
-
-        const pageBadge =
-            document.getElementById('pageBadge');
-
-        const filterBtn =
-            document.getElementById('filterBtn');
-
-        const filterDrawer =
-            document.getElementById('filterDrawer');
-
-
-        // ==========================================
-        // FILTER DRAWER
-        // ==========================================
-
-        function toggleFilters() {
-            const isOpen =
-                filterDrawer.classList.toggle('show');
-
-            filterBtn.classList.toggle('active', isOpen);
-
-            filterBtn.setAttribute(
-                'aria-expanded',
-                String(isOpen)
-            );
+    function getCanonicalVideoUrl(value) {
+        if (
+            typeof value !== 'string' ||
+            !value.trim()
+        ) {
+            return null;
         }
 
-        filterBtn.addEventListener('click', toggleFilters);
-
-
-        // ==========================================
-        // SAFE VIDEO URL VALIDATION
-        // ==========================================
-
-        function getCanonicalVideoUrl(value) {
-            if (typeof value !== 'string' || !value.trim()) {
-                return null;
-            }
-
-            try {
-                const url = new URL(value);
-
-                if (
-                    url.protocol !== 'https:' ||
-                    url.hostname !== R2_HOST ||
-                    url.username ||
-                    url.password ||
-                    url.port ||
-                    url.search ||
-                    url.hash
-                ) {
-                    return null;
-                }
-
-                const normalizedPath =
-                    url.pathname
-                        .split('/')
-                        .map(segment => {
-                            const decoded = decodeURIComponent(segment);
-
-                            return encodeURIComponent(
-                                decoded.normalize('NFC')
-                            );
-                        })
-                        .join('/');
-
-                return `https://${R2_HOST}${normalizedPath}`;
-
-            } catch (error) {
-                return null;
-            }
-        }
-
-
-        // ==========================================
-        // SAFE IMAGE URL VALIDATION
-        // ==========================================
-
-        function getSafeImageUrl(value) {
-            if (typeof value !== 'string' || !value.trim()) {
-                return null;
-            }
-
-            try {
-                const url = new URL(value);
-
-                if (
-                    url.protocol !== 'https:' ||
-                    url.hostname !== R2_HOST ||
-                    url.username ||
-                    url.password ||
-                    url.port
-                ) {
-                    return null;
-                }
-
-                return url.href;
-
-            } catch (error) {
-                return null;
-            }
-        }
-
-
-        // ==========================================
-        // UTF-8 BASE64 ENCODING
-        // Compatible with watch.html
-        // ==========================================
-
-        function b64EncodeUnicode(value) {
-            return btoa(
-                encodeURIComponent(value).replace(
-                    /%([0-9A-F]{2})/g,
-                    (_, hex) =>
-                        String.fromCharCode(
-                            parseInt(hex, 16)
-                        )
-                )
-            );
-        }
-
-
-        // ==========================================
-        // MOVIE WATCH URL
-        // ==========================================
-
-        function getMovieWatchUrl(movie) {
-            const videoUrl =
-                getCanonicalVideoUrl(movie.video);
-
-            if (!videoUrl) {
-                return null;
-            }
-
-            const title =
-                String(movie.title || 'drsamangyi Movie');
-
-            const encodedVideo =
-                b64EncodeUnicode(videoUrl);
-
-            const params = new URLSearchParams({
-                title: title,
-                v: encodedVideo
-            });
-
-            return `/watch.html?${params.toString()}`;
-        }
-
-
-        // ==========================================
-        // MOVIE DATE
-        // ==========================================
-
-        function getMovieDate(movie) {
-            const value = movie.createdAt;
-
-            if (!value) {
-                return 0;
-            }
-
-            const timestamp = Date.parse(value);
-
-            return Number.isFinite(timestamp)
-                ? timestamp
-                : 0;
-        }
-
-
-        // ==========================================
-        // MOVIE VIEW KEY
-        // ==========================================
-
-        async function getMovieKey(videoUrl) {
-            const canonicalUrl =
-                getCanonicalVideoUrl(videoUrl);
-
-            if (!canonicalUrl) {
-                return null;
-            }
-
-            if (!crypto.subtle) {
-                return null;
-            }
-
-            try {
-                const data = new TextEncoder().encode(
-                    canonicalUrl
-                );
-
-                const hashBuffer =
-                    await crypto.subtle.digest(
-                        'SHA-256',
-                        data
-                    );
-
-                return Array.from(
-                    new Uint8Array(hashBuffer)
-                )
-                .map(byte =>
-                    byte.toString(16).padStart(2, '0')
-                )
-                .join('');
-
-            } catch (error) {
-                console.warn(
-                    'Unable to generate movie key:',
-                    error
-                );
-
-                return null;
-            }
-        }
-
-
-        // ==========================================
-        // LOAD VIEW COUNTS
-        // ==========================================
-
-        function extractViewData(data) {
-            if (!data || typeof data !== 'object') {
-                return {};
-            }
-
-            if (Array.isArray(data)) {
-                const result = {};
-
-                data.forEach(item => {
-                    if (
-                        item &&
-                        typeof item.key === 'string'
-                    ) {
-                        result[item.key] =
-                            Number(item.views) || 0;
-                    }
-                });
-
-                return result;
-            }
+        try {
+            const url = new URL(value);
 
             if (
-                data.views &&
-                typeof data.views === 'object' &&
-                !Array.isArray(data.views)
+                url.protocol !== 'https:' ||
+                url.hostname !== R2_HOST ||
+                url.username ||
+                url.password ||
+                url.port ||
+                url.search ||
+                url.hash
             ) {
-                return data.views;
+                return null;
             }
 
-            return data;
+            const normalizedPath = url.pathname
+                .split('/')
+                .map(segment => {
+                    const decoded = decodeURIComponent(segment);
+
+                    return encodeURIComponent(
+                        decoded.normalize('NFC')
+                    );
+                })
+                .join('/');
+
+            return `https://${R2_HOST}${normalizedPath}`;
+
+        } catch (error) {
+            console.warn('Invalid video URL:', error);
+            return null;
+        }
+    }
+
+    // ==========================================
+    // IMAGE URL VALIDATION
+    // ==========================================
+
+    function getSafeImageUrl(value) {
+        if (
+            typeof value !== 'string' ||
+            !value.trim()
+        ) {
+            return null;
         }
 
+        try {
+            const url = new URL(value);
 
-        async function loadMovieViews() {
+            if (
+                url.protocol !== 'https:' ||
+                url.hostname !== R2_HOST ||
+                url.username ||
+                url.password ||
+                url.port
+            ) {
+                return null;
+            }
+
+            return url.href;
+
+        } catch (error) {
+            return null;
+        }
+    }
+
+    // ==========================================
+    // UTF-8 BASE64
+    // ==========================================
+
+    function b64EncodeUnicode(value) {
+        const bytes = new TextEncoder().encode(value);
+
+        let binary = '';
+
+        bytes.forEach(byte => {
+            binary += String.fromCharCode(byte);
+        });
+
+        return btoa(binary);
+    }
+
+    // ==========================================
+    // MOVIE WATCH URL
+    // ==========================================
+
+    function getMovieWatchUrl(movie) {
+        const videoUrl =
+            getCanonicalVideoUrl(movie.video);
+
+        if (!videoUrl) {
+            return null;
+        }
+
+        const title = String(
+            movie.title || 'drsamangyi Movie'
+        );
+
+        const encodedVideo =
+            b64EncodeUnicode(videoUrl);
+
+        const params = new URLSearchParams({
+            title,
+            v: encodedVideo
+        });
+
+        return `/watch.html?${params.toString()}`;
+    }
+
+    // ==========================================
+    // MOVIE DATE
+    // ==========================================
+
+    function getMovieDate(movie) {
+        if (!movie.createdAt) {
+            return 0;
+        }
+
+        const timestamp = Date.parse(movie.createdAt);
+
+        return Number.isFinite(timestamp)
+            ? timestamp
+            : 0;
+    }
+
+    // ==========================================
+    // SHA-256 MOVIE KEY
+    // Must match View Counter Worker
+    // ==========================================
+
+    async function getMovieKey(videoUrl) {
+        const canonicalUrl =
+            getCanonicalVideoUrl(videoUrl);
+
+        if (!canonicalUrl) {
+            return null;
+        }
+
+        if (
+            !window.crypto ||
+            !window.crypto.subtle
+        ) {
+            console.error(
+                'Web Crypto API is unavailable.'
+            );
+
+            return null;
+        }
+
+        try {
+            const data = new TextEncoder().encode(
+                canonicalUrl
+            );
+
+            const hashBuffer =
+                await crypto.subtle.digest(
+                    'SHA-256',
+                    data
+                );
+
+            return Array.from(
+                new Uint8Array(hashBuffer)
+            )
+            .map(byte =>
+                byte.toString(16).padStart(2, '0')
+            )
+            .join('');
+
+        } catch (error) {
+            console.error(
+                'Movie key generation failed:',
+                error
+            );
+
+            return null;
+        }
+    }
+
+    // ==========================================
+    // EXTRACT VIEW API RESPONSE
+    //
+    // Expected:
+    // {
+    //   success: true,
+    //   views: [
+    //     { movie_key: "...", views: 3 }
+    //   ]
+    // }
+    // ==========================================
+
+    function extractViewData(data) {
+        const result = Object.create(null);
+
+        if (
+            !data ||
+            data.success !== true ||
+            !Array.isArray(data.views)
+        ) {
+            console.warn(
+                'Invalid View API response:',
+                data
+            );
+
+            return result;
+        }
+
+        data.views.forEach(item => {
+            if (
+                !item ||
+                typeof item.movie_key !== 'string' ||
+                !/^[a-f0-9]{64}$/i.test(item.movie_key)
+            ) {
+                return;
+            }
+
+            const count = Number(item.views);
+
+            result[item.movie_key.toLowerCase()] =
+                Number.isFinite(count) && count >= 0
+                    ? count
+                    : 0;
+        });
+
+        return result;
+    }
+
+    // ==========================================
+    // LOAD VIEW COUNTS
+    // ==========================================
+
+    async function loadMovieViews() {
+        try {
+            const response = await fetch(
+                `${VIEW_API}/views`,
+                {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    `View API HTTP Error: ${response.status}`
+                );
+            }
+
+            const data = await response.json();
+
+            movieViews = extractViewData(data);
+
+            console.info(
+                'View counts loaded:',
+                Object.keys(movieViews).length
+            );
+
+        } catch (error) {
+            console.error(
+                'Unable to load view counts:',
+                error
+            );
+
+            movieViews = Object.create(null);
+        }
+    }
+
+    // ==========================================
+    // ATTACH VIEW COUNTS TO MOVIES
+    // ==========================================
+
+    async function attachMovieViews() {
+        await Promise.all(
+            allMovies.map(async movie => {
+                const key = await getMovieKey(
+                    movie.video
+                );
+
+                movie._viewKey = key;
+
+                movie._views = key
+                    ? Number(movieViews[key]) || 0
+                    : 0;
+            })
+        );
+    }
+
+    // ==========================================
+    // LOAD MOVIES JSON
+    // ==========================================
+
+    async function loadMovies() {
+        try {
+            let cachedMovies = null;
+
             try {
+                const cache =
+                    sessionStorage.getItem(CACHE_KEY);
+
+                if (cache) {
+                    const parsed = JSON.parse(cache);
+
+                    if (
+                        parsed &&
+                        Array.isArray(parsed.data) &&
+                        Number.isFinite(parsed.timestamp) &&
+                        Date.now() - parsed.timestamp < CACHE_TTL
+                    ) {
+                        cachedMovies = parsed.data;
+                    }
+                }
+
+            } catch (error) {
+                try {
+                    sessionStorage.removeItem(CACHE_KEY);
+                } catch (_) {
+                    // Storage may be unavailable.
+                }
+            }
+
+            if (cachedMovies) {
+                allMovies = cachedMovies;
+
+            } else {
                 const response = await fetch(
-                    `${VIEW_API}/views`,
+                    MOVIES_JSON,
                     {
-                        method: 'GET',
-                        cache: 'no-store'
+                        cache: 'no-cache',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
                     }
                 );
 
                 if (!response.ok) {
                     throw new Error(
-                        `View API error: ${response.status}`
+                        `Movies JSON HTTP Error: ${response.status}`
                     );
                 }
 
                 const data = await response.json();
 
-                movieViews = extractViewData(data);
-
-            } catch (error) {
-                console.warn(
-                    'Unable to load view counts:',
-                    error
-                );
-
-                movieViews = {};
-            }
-        }
-
-
-        async function attachMovieViews() {
-            await Promise.all(
-                allMovies.map(async movie => {
-                    const key = await getMovieKey(
-                        movie.video
+                if (!Array.isArray(data)) {
+                    throw new Error(
+                        'movies.json must contain an array.'
                     );
+                }
 
-                    movie._viewKey = key;
-
-                    movie._views = key
-                        ? Number(movieViews[key]) || 0
-                        : 0;
-                })
-            );
-        }
-
-
-        // ==========================================
-        // LOAD MOVIE DATA
-        // ==========================================
-
-        async function loadMovies() {
-            try {
-                let cachedMovies = null;
+                allMovies = data.filter(movie => {
+                    return (
+                        movie &&
+                        typeof movie === 'object' &&
+                        typeof movie.title === 'string' &&
+                        typeof movie.video === 'string' &&
+                        typeof movie.img === 'string' &&
+                        getCanonicalVideoUrl(movie.video)
+                    );
+                });
 
                 try {
-                    const cache =
-                        sessionStorage.getItem(CACHE_KEY);
-
-                    if (cache) {
-                        const parsed = JSON.parse(cache);
-
-                        if (
-                            parsed &&
-                            Array.isArray(parsed.data) &&
-                            Date.now() - parsed.timestamp < CACHE_TTL
-                        ) {
-                            cachedMovies = parsed.data;
-                        }
-                    }
-                } catch (error) {
-                    sessionStorage.removeItem(CACHE_KEY);
-                }
-
-                if (cachedMovies) {
-                    allMovies = cachedMovies;
-
-                } else {
-                    const response = await fetch(
-                        MOVIES_JSON,
-                        { cache: 'no-cache' }
+                    sessionStorage.setItem(
+                        CACHE_KEY,
+                        JSON.stringify({
+                            timestamp: Date.now(),
+                            data: allMovies
+                        })
                     );
-
-                    if (!response.ok) {
-                        throw new Error(
-                            `Movies JSON error: ${response.status}`
-                        );
-                    }
-
-                    const data = await response.json();
-
-                    if (!Array.isArray(data)) {
-                        throw new Error(
-                            'movies.json must contain an array.'
-                        );
-                    }
-
-                    allMovies = data.filter(movie => {
-                        return (
-                            movie &&
-                            typeof movie === 'object' &&
-                            typeof movie.title === 'string' &&
-                            typeof movie.video === 'string' &&
-                            typeof movie.img === 'string' &&
-                            getCanonicalVideoUrl(movie.video)
-                        );
-                    });
-
-                    try {
-                        sessionStorage.setItem(
-                            CACHE_KEY,
-                            JSON.stringify({
-                                timestamp: Date.now(),
-                                data: allMovies
-                            })
-                        );
-                    } catch (error) {
-                        console.warn(
-                            'Session cache unavailable:',
-                            error
-                        );
-                    }
+                } catch (error) {
+                    console.warn(
+                        'Session cache unavailable:',
+                        error
+                    );
                 }
-
-                // Load view counts separately.
-                await loadMovieViews();
-
-                await attachMovieViews();
-
-                restoreFiltersFromURL();
-
-                filterMovies(false);
-
-            } catch (error) {
-                console.error(
-                    'Error loading movies:',
-                    error
-                );
-
-                showMessage(
-                    'ရုပ်ရှင်များကို ဖွင့်မရသေးပါ။ ခဏနေပြီး ပြန်လည်ကြိုးစားပေးပါ။'
-                );
             }
-        }
 
+            // Always fetch fresh view counts.
+            await loadMovieViews();
 
-        // ==========================================
-        // RESTORE FILTERS FROM URL
-        // ==========================================
+            // Match API movie_key with each movie.
+            await attachMovieViews();
 
-        function restoreFiltersFromURL() {
-            const params = new URLSearchParams(
-                window.location.search
+            // Restore URL filters.
+            restoreFiltersFromURL();
+
+            // Render movie list.
+            filterMovies(false);
+
+        } catch (error) {
+            console.error(
+                'Error loading movies:',
+                error
             );
 
-            searchInput.value =
-                params.get('q') || '';
-
-            const sort = params.get('sort');
-
-            const allowedSorts = [
-                'latest',
-                'oldest',
-                'most_viewed'
-            ];
-
-            if (allowedSorts.includes(sort)) {
-                sortFilter.value = sort;
-            }
-
-            const category = params.get('category');
-
-            if (
-                category === 'all' ||
-                category === 'mm-collections'
-            ) {
-                categoryFilter.value = category;
-            }
-
-            const page = Number.parseInt(
-                params.get('page'),
-                10
+            showMessage(
+                'ရုပ်ရှင်များကို ဖွင့်မရသေးပါ။ ခဏနေပြီး ပြန်လည်ကြိုးစားပေးပါ။'
             );
+        }
+    }
 
-            currentPage =
-                Number.isInteger(page) && page > 0
-                    ? page
-                    : 1;
+    // ==========================================
+    // RESTORE FILTERS FROM URL
+    // ==========================================
+
+    function restoreFiltersFromURL() {
+        const params = new URLSearchParams(
+            window.location.search
+        );
+
+        searchInput.value =
+            params.get('q') || '';
+
+        const sort = params.get('sort');
+
+        const allowedSorts = [
+            'latest',
+            'oldest',
+            'most_viewed'
+        ];
+
+        if (allowedSorts.includes(sort)) {
+            sortFilter.value = sort;
         }
 
+        const category = params.get('category');
 
-        // ==========================================
-        // UPDATE URL WITHOUT PAGE RELOAD
-        // ==========================================
+        if (
+            category === 'all' ||
+            category === 'mm-collections'
+        ) {
+            categoryFilter.value = category;
+        }
 
-        function updateFilterURL() {
-            const params = new URLSearchParams();
+        const page = Number.parseInt(
+            params.get('page'),
+            10
+        );
 
-            const query = searchInput.value.trim();
+        currentPage =
+            Number.isInteger(page) && page > 0
+                ? page
+                : 1;
+    }
 
-            if (query) {
-                params.set('q', query);
-            }
+    // ==========================================
+    // UPDATE FILTER URL
+    // ==========================================
 
-            if (sortFilter.value !== 'latest') {
-                params.set('sort', sortFilter.value);
-            }
+    function updateFilterURL() {
+        const params = new URLSearchParams();
 
-            if (categoryFilter.value !== 'all') {
-                params.set(
-                    'category',
-                    categoryFilter.value
-                );
-            }
+        const query = searchInput.value.trim();
 
-            if (currentPage > 1) {
-                params.set(
-                    'page',
-                    String(currentPage)
-                );
-            }
+        if (query) {
+            params.set('q', query);
+        }
 
-            const queryString = params.toString();
+        if (sortFilter.value !== 'latest') {
+            params.set('sort', sortFilter.value);
+        }
 
-            const newURL = queryString
-                ? `/movies.html?${queryString}`
-                : '/movies.html';
-
-            history.replaceState(
-                null,
-                '',
-                newURL
+        if (categoryFilter.value !== 'all') {
+            params.set(
+                'category',
+                categoryFilter.value
             );
         }
 
+        if (currentPage > 1) {
+            params.set(
+                'page',
+                String(currentPage)
+            );
+        }
 
-        // ==========================================
-        // SEARCH / FILTER / SORT
-        // ==========================================
+        const queryString = params.toString();
 
-        function filterMovies(resetPage = true) {
-            const query =
-                searchInput.value
-                    .trim()
-                    .toLocaleLowerCase();
+        const newURL = queryString
+            ? `/movies.html?${queryString}`
+            : '/movies.html';
 
-            const sortBy = sortFilter.value;
+        history.replaceState(
+            null,
+            '',
+            newURL
+        );
+    }
 
-            const category = categoryFilter.value;
+    // ==========================================
+    // SEARCH / FILTER / SORT
+    // ==========================================
 
-            let filtered = allMovies.filter(movie => {
-                const title = String(
-                    movie.title || ''
-                ).toLocaleLowerCase();
+    function filterMovies(resetPage = true) {
+        const query =
+            searchInput.value
+                .trim()
+                .toLocaleLowerCase();
 
-                return title.includes(query);
+        const sortBy = sortFilter.value;
+
+        const category = categoryFilter.value;
+
+        let filtered = allMovies.filter(movie => {
+            const title = String(
+                movie.title || ''
+            ).toLocaleLowerCase();
+
+            return title.includes(query);
+        });
+
+        if (category !== 'all') {
+            filtered = filtered.filter(movie => {
+                return movie.genre === category;
             });
-
-            if (category !== 'all') {
-                filtered = filtered.filter(movie => {
-                    return movie.genre === category;
-                });
-            }
-
-            if (sortBy === 'latest') {
-                filtered.sort(
-                    (a, b) =>
-                        getMovieDate(b) - getMovieDate(a)
-                );
-
-            } else if (sortBy === 'oldest') {
-                filtered.sort(
-                    (a, b) =>
-                        getMovieDate(a) - getMovieDate(b)
-                );
-
-            } else if (sortBy === 'most_viewed') {
-                filtered.sort(
-                    (a, b) =>
-                        (b._views || 0) -
-                        (a._views || 0)
-                );
-            }
-
-            filteredMovies = filtered;
-
-            if (resetPage) {
-                currentPage = 1;
-            }
-
-            renderPage();
-
-            updateFilterURL();
         }
 
-
-        // ==========================================
-        // SAFE STATUS MESSAGE
-        // ==========================================
-
-        function showMessage(message) {
-            grid.replaceChildren();
-
-            const paragraph =
-                document.createElement('p');
-
-            paragraph.className = 'status-message';
-
-            paragraph.textContent = message;
-
-            grid.appendChild(paragraph);
-
-            grid.setAttribute(
-                'aria-busy',
-                'false'
+        if (sortBy === 'latest') {
+            filtered.sort(
+                (a, b) =>
+                    getMovieDate(b) - getMovieDate(a)
             );
 
-            pagination.replaceChildren();
+        } else if (sortBy === 'oldest') {
+            filtered.sort(
+                (a, b) =>
+                    getMovieDate(a) - getMovieDate(b)
+            );
+
+        } else if (sortBy === 'most_viewed') {
+            filtered.sort(
+                (a, b) =>
+                    (b._views || 0) -
+                    (a._views || 0)
+            );
         }
 
+        filteredMovies = filtered;
 
-        // ==========================================
-        // CREATE MOVIE CARD
-        // ==========================================
+        if (resetPage) {
+            currentPage = 1;
+        }
 
-        function createMovieCard(movie, index) {
-            const card =
+        renderPage();
+
+        updateFilterURL();
+    }
+
+    // ==========================================
+    // STATUS MESSAGE
+    // ==========================================
+
+    function showMessage(message) {
+        grid.replaceChildren();
+
+        const paragraph =
+            document.createElement('p');
+
+        paragraph.className = 'status-message';
+
+        paragraph.textContent = message;
+
+        grid.appendChild(paragraph);
+
+        grid.setAttribute(
+            'aria-busy',
+            'false'
+        );
+
+        pagination.replaceChildren();
+    }
+
+    // ==========================================
+    // CREATE MOVIE CARD
+    // ==========================================
+
+    function createMovieCard(movie, index) {
+        const watchUrl =
+            getMovieWatchUrl(movie);
+
+        if (!watchUrl) {
+            return null;
+        }
+
+        const card =
+            document.createElement('a');
+
+        card.className = 'movie-card';
+
+        card.href = watchUrl;
+
+        card.setAttribute(
+            'aria-label',
+            `Watch ${movie.title}`
+        );
+
+        const image =
+            document.createElement('img');
+
+        const imageUrl =
+            getSafeImageUrl(movie.img);
+
+        image.alt = String(movie.title);
+
+        if (imageUrl) {
+            image.src = imageUrl;
+        } else {
+            image.alt = 'Movie poster unavailable';
+        }
+
+        image.loading =
+            index === 0 ? 'eager' : 'lazy';
+
+        image.decoding = 'async';
+
+        image.width = 500;
+        image.height = 750;
+
+        if (index === 0) {
+            image.fetchPriority = 'high';
+        }
+
+        image.addEventListener(
+            'error',
+            () => {
+                image.removeAttribute('src');
+                image.alt = 'Poster unavailable';
+                image.style.objectFit = 'contain';
+            },
+            { once: true }
+        );
+
+        const info =
+            document.createElement('div');
+
+        info.className = 'movie-info';
+
+        const title =
+            document.createElement('h3');
+
+        title.textContent =
+            String(movie.title);
+
+        title.title =
+            String(movie.title);
+
+        const meta =
+            document.createElement('div');
+
+        meta.className = 'movie-meta';
+
+        const date =
+            document.createElement('span');
+
+        date.textContent =
+            movie.createdAt
+                ? formatDisplayDate(movie.createdAt)
+                : 'Myanmar Collection';
+
+        const views =
+            document.createElement('span');
+
+        views.className = 'rating';
+
+        views.textContent =
+            `▶ ${formatViews(movie._views || 0)}`;
+
+        views.title =
+            `${Number(movie._views) || 0} views`;
+
+        meta.append(date, views);
+
+        info.append(title, meta);
+
+        card.append(image, info);
+
+        return card;
+    }
+
+    // ==========================================
+    // FORMAT DATE
+    // ==========================================
+
+    function formatDisplayDate(value) {
+        const timestamp = Date.parse(value);
+
+        if (!Number.isFinite(timestamp)) {
+            return 'Movie';
+        }
+
+        return new Intl.DateTimeFormat(
+            'en-GB',
+            {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }
+        ).format(timestamp);
+    }
+
+    // ==========================================
+    // FORMAT VIEWS
+    // ==========================================
+
+    function formatViews(value) {
+        const views = Number(value) || 0;
+
+        return new Intl.NumberFormat(
+            'en-US',
+            {
+                notation: 'compact',
+                maximumFractionDigits: 1
+            }
+        ).format(views);
+    }
+
+    // ==========================================
+    // RENDER MOVIES
+    // ==========================================
+
+    function renderPage() {
+        const totalPages = Math.ceil(
+            filteredMovies.length / MOVIES_PER_PAGE
+        );
+
+        currentPage = totalPages > 0
+            ? Math.min(
+                Math.max(1, currentPage),
+                totalPages
+            )
+            : 1;
+
+        const startIndex =
+            (currentPage - 1) * MOVIES_PER_PAGE;
+
+        const paginatedMovies =
+            filteredMovies.slice(
+                startIndex,
+                startIndex + MOVIES_PER_PAGE
+            );
+
+        pageBadge.textContent =
+            `Page ${currentPage} · ${filteredMovies.length} Movies`;
+
+        grid.replaceChildren();
+
+        if (paginatedMovies.length === 0) {
+            showMessage('No movies found.');
+
+            pageBadge.textContent = '0 Movies';
+
+            return;
+        }
+
+        const fragment =
+            document.createDocumentFragment();
+
+        paginatedMovies.forEach((movie, index) => {
+            const card = createMovieCard(
+                movie,
+                index
+            );
+
+            if (card) {
+                fragment.appendChild(card);
+            }
+        });
+
+        grid.appendChild(fragment);
+
+        grid.setAttribute(
+            'aria-busy',
+            'false'
+        );
+
+        renderPagination(totalPages);
+    }
+
+    // ==========================================
+    // PAGINATION
+    // ==========================================
+
+    function renderPagination(totalPages) {
+        pagination.replaceChildren();
+
+        if (totalPages <= 1) {
+            return;
+        }
+
+        const fragment =
+            document.createDocumentFragment();
+
+        function createPageButton(
+            label,
+            page,
+            active = false,
+            disabled = false
+        ) {
+            const link =
                 document.createElement('a');
 
-            const watchUrl =
-                getMovieWatchUrl(movie);
+            link.href = '#';
 
-            if (!watchUrl) {
-                return null;
-            }
+            link.textContent = label;
 
-            card.className = 'movie-card';
+            if (active) {
+                link.classList.add('active');
 
-            card.href = watchUrl;
-
-            card.setAttribute(
-                'aria-label',
-                `Watch ${movie.title}`
-            );
-
-            const image =
-                document.createElement('img');
-
-            const imageUrl =
-                getSafeImageUrl(movie.img);
-
-            if (imageUrl) {
-                image.src = imageUrl;
-            } else {
-                image.alt = 'Movie poster unavailable';
-            }
-
-            image.alt = String(movie.title);
-
-            image.loading =
-                index === 0 ? 'eager' : 'lazy';
-
-            image.decoding = 'async';
-
-            image.width = 500;
-
-            image.height = 750;
-
-            if (index === 0) {
-                image.fetchPriority = 'high';
-            }
-
-            image.addEventListener(
-                'error',
-                () => {
-                    image.removeAttribute('src');
-
-                    image.alt = 'Poster unavailable';
-
-                    image.style.objectFit = 'contain';
-                },
-                { once: true }
-            );
-
-            const info =
-                document.createElement('div');
-
-            info.className = 'movie-info';
-
-            const title =
-                document.createElement('h3');
-
-            title.textContent =
-                String(movie.title);
-
-            title.title =
-                String(movie.title);
-
-            const meta =
-                document.createElement('div');
-
-            meta.className = 'movie-meta';
-
-            const date =
-                document.createElement('span');
-
-            date.textContent =
-                movie.createdAt
-                    ? formatDisplayDate(movie.createdAt)
-                    : 'Myanmar Collection';
-
-            const views =
-                document.createElement('span');
-
-            views.className = 'rating';
-
-            views.textContent =
-                `▶ ${formatViews(movie._views || 0)}`;
-
-            meta.append(date, views);
-
-            info.append(title, meta);
-
-            card.append(image, info);
-
-            return card;
-        }
-
-
-        // ==========================================
-        // FORMAT DISPLAY DATE
-        // ==========================================
-
-        function formatDisplayDate(value) {
-            const timestamp = Date.parse(value);
-
-            if (!Number.isFinite(timestamp)) {
-                return 'Movie';
-            }
-
-            return new Intl.DateTimeFormat(
-                'en-GB',
-                {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                }
-            ).format(timestamp);
-        }
-
-
-        // ==========================================
-        // FORMAT VIEW COUNT
-        // ==========================================
-
-        function formatViews(value) {
-            const views = Number(value) || 0;
-
-            return new Intl.NumberFormat(
-                'en-US',
-                {
-                    notation: 'compact',
-                    maximumFractionDigits: 1
-                }
-            ).format(views);
-        }
-
-
-        // ==========================================
-        // RENDER MOVIE GRID
-        // ==========================================
-
-        function renderPage() {
-            const totalPages = Math.ceil(
-                filteredMovies.length / MOVIES_PER_PAGE
-            );
-
-            if (totalPages > 0) {
-                currentPage = Math.min(
-                    Math.max(1, currentPage),
-                    totalPages
+                link.setAttribute(
+                    'aria-current',
+                    'page'
                 );
-            } else {
-                currentPage = 1;
             }
 
-            const startIndex =
-                (currentPage - 1) * MOVIES_PER_PAGE;
+            if (disabled) {
+                link.classList.add('disabled');
 
-            const paginatedMovies =
-                filteredMovies.slice(
-                    startIndex,
-                    startIndex + MOVIES_PER_PAGE
+                link.setAttribute(
+                    'aria-disabled',
+                    'true'
                 );
 
-            pageBadge.textContent =
-                `Page ${currentPage} · ${filteredMovies.length} Movies`;
-
-            grid.replaceChildren();
-
-            if (paginatedMovies.length === 0) {
-                showMessage('No movies found.');
-
-                pageBadge.textContent = '0 Movies';
-
-                return;
+                link.tabIndex = -1;
             }
 
-            const fragment =
-                document.createDocumentFragment();
+            link.addEventListener(
+                'click',
+                event => {
+                    event.preventDefault();
 
-            paginatedMovies.forEach((movie, index) => {
-                const card = createMovieCard(
-                    movie,
-                    index
-                );
-
-                if (card) {
-                    fragment.appendChild(card);
-                }
-            });
-
-            grid.appendChild(fragment);
-
-            grid.setAttribute(
-                'aria-busy',
-                'false'
-            );
-
-            renderPagination(totalPages);
-        }
-
-
-        // ==========================================
-        // PAGINATION
-        // ==========================================
-
-        function renderPagination(totalPages) {
-            pagination.replaceChildren();
-
-            if (totalPages <= 1) {
-                return;
-            }
-
-            const fragment =
-                document.createDocumentFragment();
-
-            function createPageButton(
-                label,
-                page,
-                active = false,
-                disabled = false
-            ) {
-                const link =
-                    document.createElement('a');
-
-                link.href = '#';
-
-                link.textContent = label;
-
-                if (active) {
-                    link.classList.add('active');
-
-                    link.setAttribute(
-                        'aria-current',
-                        'page'
-                    );
-                }
-
-                if (disabled) {
-                    link.classList.add('disabled');
-
-                    link.setAttribute(
-                        'aria-disabled',
-                        'true'
-                    );
-
-                    link.tabIndex = -1;
-                }
-
-                link.addEventListener(
-                    'click',
-                    event => {
-                        event.preventDefault();
-
-                        if (disabled) {
-                            return;
-                        }
-
-                        currentPage = page;
-
-                        renderPage();
-
-                        updateFilterURL();
-
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
+                    if (disabled) {
+                        return;
                     }
-                );
 
-                return link;
-            }
+                    currentPage = page;
 
-            fragment.appendChild(
-                createPageButton(
-                    '‹',
-                    currentPage - 1,
-                    false,
-                    currentPage === 1
-                )
+                    renderPage();
+
+                    updateFilterURL();
+
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
             );
 
-            const maxVisiblePages = 5;
-
-            let startPage = Math.max(
-                1,
-                currentPage - 2
-            );
-
-            let endPage = Math.min(
-                totalPages,
-                startPage + maxVisiblePages - 1
-            );
-
-            startPage = Math.max(
-                1,
-                endPage - maxVisiblePages + 1
-            );
-
-            for (
-                let page = startPage;
-                page <= endPage;
-                page++
-            ) {
-                fragment.appendChild(
-                    createPageButton(
-                        String(page),
-                        page,
-                        page === currentPage
-                    )
-                );
-            }
-
-            fragment.appendChild(
-                createPageButton(
-                    '›',
-                    currentPage + 1,
-                    false,
-                    currentPage === totalPages
-                )
-            );
-
-            pagination.appendChild(fragment);
+            return link;
         }
 
-
-        // ==========================================
-        // SEARCH EVENT
-        // ==========================================
-
-        searchInput.addEventListener(
-            'input',
-            () => {
-                clearTimeout(searchTimer);
-
-                searchTimer = setTimeout(
-                    () => filterMovies(true),
-                    200
-                );
-            }
+        fragment.appendChild(
+            createPageButton(
+                '‹',
+                currentPage - 1,
+                false,
+                currentPage === 1
+            )
         );
 
+        const maxVisiblePages = 5;
 
-        // ==========================================
-        // SORT / CATEGORY EVENTS
-        // ==========================================
-
-        sortFilter.addEventListener(
-            'change',
-            () => filterMovies(true)
+        let startPage = Math.max(
+            1,
+            currentPage - 2
         );
 
-        categoryFilter.addEventListener(
-            'change',
-            () => filterMovies(true)
+        let endPage = Math.min(
+            totalPages,
+            startPage + maxVisiblePages - 1
         );
 
+        startPage = Math.max(
+            1,
+            endPage - maxVisiblePages + 1
+        );
 
-        // ==========================================
-        // INITIALIZE
-        // ==========================================
+        for (
+            let page = startPage;
+            page <= endPage;
+            page++
+        ) {
+            fragment.appendChild(
+                createPageButton(
+                    String(page),
+                    page,
+                    page === currentPage
+                )
+            );
+        }
 
-        loadMovies();
+        fragment.appendChild(
+            createPageButton(
+                '›',
+                currentPage + 1,
+                false,
+                currentPage === totalPages
+            )
+        );
 
-    })();
-    </script>
+        pagination.appendChild(fragment);
+    }
+
+    // ==========================================
+    // SEARCH EVENTS
+    // ==========================================
+
+    searchInput.addEventListener(
+        'input',
+        () => {
+            clearTimeout(searchTimer);
+
+            searchTimer = setTimeout(
+                () => filterMovies(true),
+                200
+            );
+        }
+    );
+
+    // ==========================================
+    // FILTER EVENTS
+    // ==========================================
+
+    sortFilter.addEventListener(
+        'change',
+        () => filterMovies(true)
+    );
+
+    categoryFilter.addEventListener(
+        'change',
+        () => filterMovies(true)
+    );
+
+    // ==========================================
+    // INITIALIZE
+    // ==========================================
+
+    loadMovies();
+
+})();
+</script>
 
 </body>
 </html>
