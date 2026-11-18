@@ -5,18 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- SEO Meta Tags -->
+    <!-- SEO -->
     <title>drsamangyi - မြန်မာကားများ | Myanmar Movie Collections</title>
 
-    <meta name="description" content="drsamangyi တွင် မြန်မာဇာတ်ကားများ၊ ဗီဒီယိုစုစည်းမှုများနှင့် Myanmar Movie Collections များကို ရှာဖွေကြည့်ရှုနိုင်ပါသည်။">
+    <meta name="description" content="drsamangyi တွင် မြန်မာဇာတ်ကားများနှင့် ဗီဒီယိုစုစည်းမှုများကို ရှာဖွေကြည့်ရှုနိုင်ပါသည်။">
     <meta name="author" content="drsamangyi">
-
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="googlebot" content="index, follow, max-image-preview:large">
-
     <meta name="theme-color" content="#121212">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="color-scheme" content="dark">
 
     <link rel="canonical" href="https://drsamangyi.com/">
+
+    <!-- Image Connection -->
+    <link rel="preconnect"
+          href="https://pub-18678a28a2634123aa1c63d0b4feca75.r2.dev"
+          crossorigin>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -140,7 +145,6 @@
             }
         }
 
-        /* VPN Notice Banner */
         .vpn-banner {
             background: #1f1f1f;
             color: #e50914;
@@ -318,9 +322,11 @@
 
         .movie-card img {
             width: 100%;
-            height: 280px;
+            aspect-ratio: 2 / 3;
+            height: auto;
             object-fit: cover;
             display: block;
+            background: #1f1f1f;
         }
 
         .movie-info {
@@ -340,6 +346,7 @@
             justify-content: space-between;
             color: #aaa;
             font-size: 0.85rem;
+            gap: 5px;
         }
 
         .pagination {
@@ -388,7 +395,9 @@
 <body>
 
     <header>
-        <a href="/" class="logo" aria-label="drsamangyi Homepage">drsamangyi</a>
+        <a href="/" class="logo" aria-label="drsamangyi Homepage">
+            drsamangyi
+        </a>
 
         <nav aria-label="Main navigation">
             <a href="/" class="active">Home</a>
@@ -413,6 +422,7 @@
                         id="searchInput"
                         placeholder="Search movies by name..."
                         aria-label="Search movies by name"
+                        autocomplete="off"
                         oninput="filterMovies(true)"
                     >
                 </div>
@@ -487,9 +497,9 @@
         const FALLBACK_IMAGE =
             'https://via.placeholder.com/500x750?text=No+Poster';
 
-        const CACHE_KEY = 'drsamangyi_movies';
+        const CACHE_KEY = 'drsamangyi_movies_v2';
+        const CACHE_TTL = 10 * 60 * 1000;
 
-        // Cloudflare Worker View API
         const VIEW_API =
             'https://drsamangyi-view-counter.channeltv4u.workers.dev';
 
@@ -569,7 +579,6 @@
            VIEW COUNTER - LOAD SHARED VIEWS
         ========================================= */
 
-        // Keep URL normalization identical to watch.html
         function getCanonicalVideoUrl(rawUrl) {
 
             let url;
@@ -651,7 +660,9 @@
                 );
 
                 if (!response.ok) {
-                    throw new Error('View API HTTP error: ' + response.status);
+                    throw new Error(
+                        'View API HTTP error: ' + response.status
+                    );
                 }
 
                 const result = await response.json();
@@ -684,7 +695,6 @@
 
                 console.error('Unable to load movie views:', error);
 
-                // Keep the website working if the View API is unavailable.
                 allMovies.forEach(movie => {
                     movie.views = Number(movie.views) || 0;
                 });
@@ -692,7 +702,7 @@
         }
 
         /* =========================================
-           LOAD MOVIES
+           LOAD MOVIES WITH CACHE EXPIRATION
         ========================================= */
 
         async function initMovies() {
@@ -704,23 +714,43 @@
                 const cachedMovies =
                     sessionStorage.getItem(CACHE_KEY);
 
-                if (cachedMovies) {
+                const cachedTime = Number(
+                    sessionStorage.getItem(CACHE_KEY + '_time')
+                );
 
-                    const parsedMovies = JSON.parse(cachedMovies);
+                if (cachedMovies && cachedTime) {
 
-                    if (Array.isArray(parsedMovies)) {
+                    try {
 
-                        allMovies = parsedMovies;
+                        const parsedMovies = JSON.parse(cachedMovies);
 
-                    } else {
+                        const cacheIsValid =
+                            Array.isArray(parsedMovies) &&
+                            Date.now() - cachedTime < CACHE_TTL;
+
+                        if (cacheIsValid) {
+
+                            allMovies = parsedMovies;
+
+                        } else {
+
+                            sessionStorage.removeItem(CACHE_KEY);
+                            sessionStorage.removeItem(CACHE_KEY + '_time');
+                        }
+
+                    } catch (error) {
 
                         sessionStorage.removeItem(CACHE_KEY);
+                        sessionStorage.removeItem(CACHE_KEY + '_time');
                     }
                 }
 
                 if (allMovies.length === 0) {
 
-                    const response = await fetch('/movies.json');
+                    const response = await fetch(
+                        '/movies.json',
+                        { cache: 'no-cache' }
+                    );
 
                     if (!response.ok) {
 
@@ -740,16 +770,29 @@
 
                     allMovies = data;
 
-                    sessionStorage.setItem(
-                        CACHE_KEY,
-                        JSON.stringify(allMovies)
-                    );
+                    try {
+
+                        sessionStorage.setItem(
+                            CACHE_KEY,
+                            JSON.stringify(allMovies)
+                        );
+
+                        sessionStorage.setItem(
+                            CACHE_KEY + '_time',
+                            String(Date.now())
+                        );
+
+                    } catch (storageError) {
+
+                        console.warn(
+                            'Session cache unavailable:',
+                            storageError
+                        );
+                    }
                 }
 
-                // Load shared view counts before sorting and rendering.
                 await loadMovieViews();
 
-                // Restore URL Search / Filter State
                 restoreFiltersFromURL();
 
                 filterMovies(false);
@@ -791,7 +834,6 @@
                 sort === 'oldest' ||
                 sort === 'most_viewed'
             ) {
-
                 sortFilter.value = sort;
             }
 
@@ -801,7 +843,6 @@
                 category === 'all' ||
                 category === 'mm-collections'
             ) {
-
                 categoryFilter.value = category;
             }
         }
@@ -877,7 +918,6 @@
                 ? 1
                 : parseInt(urlParams.get('page'), 10) || 1;
 
-            // Search
             let filtered = allMovies.filter(movie => {
 
                 const title = String(
@@ -887,17 +927,13 @@
                 return title.includes(rawQuery);
             });
 
-            // Category Filter
             if (category !== 'all') {
 
                 filtered = filtered.filter(movie => {
-
                     return movie.genre === category;
-
                 });
             }
 
-            // Sorting
             filtered.sort((a, b) => {
 
                 const dateA = new Date(
@@ -923,7 +959,6 @@
                     default:
                         return dateB - dateA;
                 }
-
             });
 
             const totalPages = Math.ceil(
@@ -938,7 +973,6 @@
             updateFilterURL(currentPage);
 
             renderPage(filtered, currentPage);
-
         }
 
         /* =========================================
@@ -982,7 +1016,6 @@
 
             grid.replaceChildren();
 
-            // No Movies Found
             if (paginatedMovies.length === 0) {
 
                 const emptyMessage =
@@ -1002,7 +1035,6 @@
                 return;
             }
 
-            // Movie Cards
             paginatedMovies.forEach((movie, index) => {
 
                 const title = String(
@@ -1013,14 +1045,11 @@
                     movie.video || ''
                 );
 
-                const imageURL = getSafeUrl(
-                    movie.img
-                );
+                const imageURL = getSafeUrl(movie.img);
 
                 const card =
                     document.createElement('a');
 
-                // Base64 Video URL
                 const encodedVideoURL =
                     b64EncodeUnicode(videoURL);
 
@@ -1029,7 +1058,6 @@
 
                 card.className = 'movie-card';
 
-                // Movie Poster
                 const poster =
                     document.createElement('img');
 
@@ -1044,9 +1072,12 @@
                 poster.decoding = 'async';
 
                 if (index === 0) {
+
                     poster.loading = 'eager';
                     poster.fetchPriority = 'high';
+
                 } else {
+
                     poster.loading = 'lazy';
                 }
 
@@ -1054,10 +1085,8 @@
 
                     this.onerror = null;
                     this.src = FALLBACK_IMAGE;
-
                 };
 
-                // Movie Information
                 const movieInfo =
                     document.createElement('div');
 
@@ -1093,14 +1122,14 @@
                         ? createdAt.toLocaleDateString()
                         : '';
 
-                movieMeta.appendChild(genre);
-
                 const views =
                     document.createElement('span');
 
                 views.textContent =
-                    '👁 ' + (Number(movie.views) || 0).toLocaleString();
+                    '👁 ' +
+                    (Number(movie.views) || 0).toLocaleString();
 
+                movieMeta.appendChild(genre);
                 movieMeta.appendChild(views);
                 movieMeta.appendChild(date);
 
@@ -1111,20 +1140,17 @@
                 card.appendChild(movieInfo);
 
                 grid.appendChild(card);
-
             });
 
-            // Pagination
             renderPagination(
                 paginationDiv,
                 currentPage,
                 totalPages
             );
-
         }
 
         /* =========================================
-           PAGINATION WITH FILTER PRESERVATION
+           PAGINATION
         ========================================= */
 
         function renderPagination(
@@ -1162,6 +1188,11 @@
 
                 btn.textContent = i;
 
+                btn.setAttribute(
+                    'aria-label',
+                    `Go to movie page ${i}`
+                );
+
                 if (i === currentPage) {
 
                     btn.className = 'active';
@@ -1170,13 +1201,10 @@
                         'aria-current',
                         'page'
                     );
-
                 }
 
                 container.appendChild(btn);
-
             }
-
         }
 
         /* =========================================
