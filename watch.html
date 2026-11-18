@@ -1,14 +1,18 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Watch Movie - drsamangyi</title>
 
-    <meta name="robots" content="index, follow">
+    <meta name="description" content="Watch video on drsamangyi.">
+    <meta name="robots" content="noindex, follow">
+    <meta name="googlebot" content="noindex, follow">
     <meta name="theme-color" content="#121212">
+
+    <link rel="canonical" href="https://drsamangyi.com/watch.html">
 
     <!-- Plyr CSS -->
     <link rel="stylesheet"
@@ -113,6 +117,7 @@
             color: #fff;
             border-left: 4px solid #e50914;
             padding-left: 12px;
+            overflow-wrap: anywhere;
         }
 
         .player-box {
@@ -160,10 +165,7 @@
             border-top: 1px solid #333;
         }
 
-        /* =====================================
-           PLYR RESPONSIVE CONTROL FIX
-           DESKTOP + MOBILE
-        ===================================== */
+        /* PLYR RESPONSIVE CONTROL FIX */
 
         .plyr--video {
             --plyr-range-track-height: 5px;
@@ -249,23 +251,24 @@
                 max-width: 35px !important;
             }
         }
-
     </style>
 </head>
 
 <body>
 
     <header>
-        <a href="index.html" class="logo">drsamangyi</a>
+        <a href="/" class="logo" aria-label="drsamangyi Homepage">
+            drsamangyi
+        </a>
 
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="movies.html">Movies</a>
-            <a href="contact.html">Contact</a>
+        <nav aria-label="Main navigation">
+            <a href="/">Home</a>
+            <a href="/movies.html">Movies</a>
+            <a href="/contact.html">Contact</a>
         </nav>
     </header>
 
-    <div class="container">
+    <main class="container">
 
         <h1 id="movieTitle" class="movie-title">
             Loading Movie...
@@ -284,11 +287,11 @@
 
         </div>
 
-        <a href="index.html" class="back-btn">
+        <a href="/" class="back-btn">
             &#8592; Back to Home
         </a>
 
-    </div>
+    </main>
 
     <footer>
         <p>&copy; 2026 drsamangyi. All rights reserved.</p>
@@ -332,8 +335,15 @@
         // DISPLAY MOVIE TITLE
         // =========================================
 
-        titleElement.textContent =
-            movieTitle || 'drsamangyi Exclusive Movie';
+        const safeTitle =
+            movieTitle && movieTitle.trim()
+                ? movieTitle.trim().slice(0, 200)
+                : 'Watch Movie';
+
+        titleElement.textContent = safeTitle;
+
+        // Dynamic browser title (not search promotion)
+        document.title = safeTitle + ' - drsamangyi';
 
 
         // =========================================
@@ -394,6 +404,10 @@
                 throw new Error('Invalid video URL credentials');
             }
 
+            if (url.port || url.search || url.hash) {
+                throw new Error('Invalid video URL format');
+            }
+
             const encodedPath = url.pathname
                 .split('/')
                 .map(segment => {
@@ -404,7 +418,7 @@
                         decodedSegment =
                             decodeURIComponent(segment);
                     } catch (error) {
-                        decodedSegment = segment;
+                        throw new Error('Invalid video URL encoding');
                     }
 
                     decodedSegment =
@@ -664,8 +678,6 @@
 
             lastTick = now;
 
-            // Ignore unusually large timer gaps
-
             if (elapsed > 1500 || elapsed < 0) {
                 return;
             }
@@ -677,8 +689,6 @@
                 Math.floor(watchedMilliseconds / 1000),
                 'seconds'
             );
-
-            // Submit after 30 seconds
 
             if (
                 watchedMilliseconds >=
@@ -793,29 +803,21 @@
                     throw new Error('Video URL is missing');
                 }
 
-                // Decode video URL
-
                 const decodedUrl =
                     b64DecodeUnicode(encodedVideo);
-
-                // Validate R2 URL
 
                 const videoUrl =
                     encodeR2VideoUrl(decodedUrl);
 
 
-                // =================================
                 // SET VIDEO SOURCE FIRST
-                // =================================
 
                 videoElement.src = videoUrl.href;
 
                 videoElement.load();
 
 
-                // =================================
                 // INITIALIZE PLYR
-                // =================================
 
                 if (typeof Plyr === 'undefined') {
                     throw new Error('Plyr library failed to load');
@@ -839,9 +841,7 @@
                 });
 
 
-                // =================================
                 // PLAYER EVENT HANDLING
-                // =================================
 
                 player.on('ready', () => {
 
@@ -864,9 +864,7 @@
                 });
 
 
-                // =================================
                 // INITIALIZE VIEW COUNTER SEPARATELY
-                // =================================
 
                 generateMovieKey(videoUrl.href)
                     .then(key => {
@@ -878,9 +876,6 @@
                         console.log(
                             'View Counter Initialized'
                         );
-
-                        // If video is already playing,
-                        // start tracking after initialization.
 
                         if (
                             !videoElement.paused &&
@@ -915,9 +910,7 @@
         }
 
 
-        // =========================================
         // START PLAYER
-        // =========================================
 
         initPlayer();
 
