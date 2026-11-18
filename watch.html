@@ -5,14 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Watch Movie - drsamangyi</title>
+    <title>Loading Movie - drsamangyi</title>
 
-    <meta name="description" content="Watch video on drsamangyi.">
+    <meta name="description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။">
     <meta name="robots" content="noindex, follow">
     <meta name="googlebot" content="noindex, follow">
     <meta name="theme-color" content="#121212">
 
-    <link rel="canonical" href="https://drsamangyi.com/watch.html">
+    <meta property="og:site_name" content="drsamangyi">
+    <meta property="og:type" content="video.other">
+    <meta property="og:title" content="Loading Movie - drsamangyi">
+    <meta property="og:description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။">
+    <meta property="og:locale" content="my_MM">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Loading Movie - drsamangyi">
+    <meta name="twitter:description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။">
 
     <!-- Plyr CSS -->
     <link rel="stylesheet"
@@ -301,10 +309,11 @@
     <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
 
     <script>
-
         // =========================================
         // CONFIGURATION
         // =========================================
+
+        const SITE_URL = 'https://drsamangyi.com';
 
         const R2_HOST =
             'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev';
@@ -312,9 +321,11 @@
         const VIEW_API =
             'https://drsamangyi-view-counter.channeltv4u.workers.dev';
 
+        const MOVIES_JSON = '/movies.json';
+
 
         // =========================================
-        // GET URL PARAMETERS
+        // URL PARAMETERS
         // =========================================
 
         const params = new URLSearchParams(
@@ -332,6 +343,110 @@
             document.getElementById('player');
 
         let safeTitle = 'Watch Movie';
+        let currentMovie = null;
+        let currentMovieId = null;
+
+
+        // =========================================
+        // DYNAMIC SEO ELEMENT HELPERS
+        // =========================================
+
+        function setMeta(name, content, attribute = 'name') {
+
+            let element = document.querySelector(
+                `meta[${attribute}="${name}"]`
+            );
+
+            if (!element) {
+
+                element = document.createElement('meta');
+
+                element.setAttribute(attribute, name);
+
+                document.head.appendChild(element);
+            }
+
+            element.setAttribute('content', content);
+        }
+
+
+        function setCanonical(url) {
+
+            let canonical = document.querySelector(
+                'link[rel="canonical"]'
+            );
+
+            if (!canonical) {
+
+                canonical = document.createElement('link');
+
+                canonical.rel = 'canonical';
+
+                document.head.appendChild(canonical);
+            }
+
+            canonical.href = url;
+        }
+
+
+        function setIndexable(indexable) {
+
+            const robots = indexable
+                ? 'index, follow, max-image-preview:large'
+                : 'noindex, follow';
+
+            setMeta('robots', robots);
+
+            setMeta('googlebot', robots);
+        }
+
+
+        function setMovieSEO(movie, movieId, videoUrl, imageUrl) {
+
+            const canonicalUrl =
+                `${SITE_URL}/watch?id=${encodeURIComponent(movieId)}`;
+
+            const description =
+                typeof movie.description === 'string' &&
+                movie.description.trim()
+                    ? movie.description.trim().slice(0, 300)
+                    : `${movie.title} ကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။`;
+
+            const pageTitle =
+                `${movie.title} | drsamangyi`;
+
+            document.title = pageTitle;
+
+            setMeta('description', description);
+
+            setMeta('og:title', pageTitle, 'property');
+
+            setMeta('og:description', description, 'property');
+
+            setMeta('og:url', canonicalUrl, 'property');
+
+            setMeta('og:type', 'video.other', 'property');
+
+            setMeta('og:video', videoUrl, 'property');
+
+            setMeta('og:video:type', 'video/mp4', 'property');
+
+            setMeta('twitter:title', pageTitle);
+
+            setMeta('twitter:description', description);
+
+            if (imageUrl) {
+
+                setMeta('og:image', imageUrl, 'property');
+
+                setMeta('twitter:image', imageUrl);
+
+            }
+
+            setCanonical(canonicalUrl);
+
+            setIndexable(true);
+        }
 
 
         // =========================================
@@ -368,7 +483,7 @@
 
 
         // =========================================
-        // CLOUDFLARE R2 URL ENCODER
+        // CLOUDFLARE R2 URL VALIDATOR
         // =========================================
 
         function encodeR2VideoUrl(rawUrl) {
@@ -378,23 +493,23 @@
             try {
                 url = new URL(rawUrl);
             } catch (error) {
-                throw new Error('Invalid video URL');
+                throw new Error('Invalid R2 URL');
             }
 
             if (url.protocol !== 'https:') {
-                throw new Error('Invalid video protocol');
+                throw new Error('Invalid URL protocol');
             }
 
             if (url.hostname !== R2_HOST) {
-                throw new Error('Untrusted video host');
+                throw new Error('Untrusted R2 host');
             }
 
             if (url.username || url.password) {
-                throw new Error('Invalid video URL credentials');
+                throw new Error('Invalid URL credentials');
             }
 
             if (url.port || url.search || url.hash) {
-                throw new Error('Invalid video URL format');
+                throw new Error('Invalid URL format');
             }
 
             const encodedPath = url.pathname
@@ -407,7 +522,7 @@
                         decodedSegment =
                             decodeURIComponent(segment);
                     } catch (error) {
-                        throw new Error('Invalid video URL encoding');
+                        throw new Error('Invalid URL encoding');
                     }
 
                     decodedSegment =
@@ -425,42 +540,137 @@
 
 
         // =========================================
+        // EXTRACT MOVIE ID FROM VIDEO FILENAME
+        // =========================================
+
+        function extractMovieId(videoUrl) {
+
+            const filename = decodeURIComponent(
+                videoUrl.pathname.split('/').pop() || ''
+            );
+
+            const match = filename.match(
+                /^(movie\d{5})\.mp4$/i
+            );
+
+            return match
+                ? match[1].toLowerCase()
+                : null;
+        }
+
+
+        // =========================================
+        // LOAD MOVIES JSON
+        // =========================================
+
+        async function loadMoviesCatalog() {
+
+            const response = await fetch(MOVIES_JSON, {
+                method: 'GET',
+                cache: 'no-cache',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'Unable to load movies.json: ' +
+                    response.status
+                );
+            }
+
+            const movies = await response.json();
+
+            if (!Array.isArray(movies)) {
+                throw new Error('Invalid movies.json format');
+            }
+
+            return movies;
+        }
+
+
+        // =========================================
+        // VALIDATE MOVIE OBJECT
+        // =========================================
+
+        function validateMovie(movie) {
+
+            if (!movie || typeof movie !== 'object') {
+                throw new Error('Invalid movie data');
+            }
+
+            if (
+                typeof movie.title !== 'string' ||
+                !movie.title.trim()
+            ) {
+                throw new Error('Invalid movie title');
+            }
+
+            if (typeof movie.video !== 'string') {
+                throw new Error('Invalid movie video URL');
+            }
+
+            const videoUrl =
+                encodeR2VideoUrl(movie.video);
+
+            const movieId =
+                extractMovieId(videoUrl);
+
+            if (!movieId) {
+                throw new Error('Invalid movie filename');
+            }
+
+            let imageUrl = null;
+
+            if (
+                typeof movie.img === 'string' &&
+                movie.img.trim()
+            ) {
+
+                try {
+
+                    imageUrl =
+                        encodeR2VideoUrl(movie.img).href;
+
+                } catch (error) {
+
+                    console.warn(
+                        'Invalid movie thumbnail:',
+                        error
+                    );
+                }
+            }
+
+            return {
+                movie: movie,
+                movieId: movieId,
+                title: movie.title.trim().slice(0, 200),
+                videoUrl: videoUrl.href,
+                imageUrl: imageUrl
+            };
+        }
+
+
+        // =========================================
         // LOAD MOVIE DATA
         // NEW ID URL + LEGACY URL SUPPORT
         // =========================================
 
         async function loadMovieData() {
 
+            const movies = await loadMoviesCatalog();
+
             // -------------------------------------
             // NEW URL FORMAT
-            // /watch.html?id=movie00001
+            // /watch?id=movie00049
             // -------------------------------------
 
             if (requestedMovieId !== null) {
 
                 if (!/^movie\d{5}$/i.test(requestedMovieId)) {
                     throw new Error('Invalid movie ID');
-                }
-
-                const response = await fetch('/movies.json', {
-                    method: 'GET',
-                    cache: 'no-cache',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(
-                        'Unable to load movies.json: ' +
-                        response.status
-                    );
-                }
-
-                const movies = await response.json();
-
-                if (!Array.isArray(movies)) {
-                    throw new Error('Invalid movies.json format');
                 }
 
                 const targetId =
@@ -477,15 +687,10 @@
 
                     try {
 
-                        const validatedUrl =
+                        const videoUrl =
                             encodeR2VideoUrl(item.video);
 
-                        const filename = decodeURIComponent(
-                            validatedUrl.pathname.split('/').pop() || ''
-                        );
-
-                        return filename.toLowerCase() ===
-                            `${targetId}.mp4`;
+                        return extractMovieId(videoUrl) === targetId;
 
                     } catch (error) {
 
@@ -497,25 +702,12 @@
                     throw new Error('Movie not found');
                 }
 
-                if (
-                    typeof movie.title !== 'string' ||
-                    !movie.title.trim()
-                ) {
-                    throw new Error('Movie title is invalid');
-                }
-
-                return {
-                    title: movie.title.trim().slice(0, 200),
-
-                    videoUrl: encodeR2VideoUrl(
-                        movie.video
-                    ).href
-                };
+                return validateMovie(movie);
             }
 
 
             // -------------------------------------
-            // OLD URL FORMAT
+            // LEGACY URL FORMAT
             // ?title=...&v=...
             // -------------------------------------
 
@@ -529,14 +721,180 @@
             const validatedUrl =
                 encodeR2VideoUrl(decodedUrl);
 
+            const matchingMovie = movies.find(item => {
+
+                if (
+                    !item ||
+                    typeof item.video !== 'string'
+                ) {
+                    return false;
+                }
+
+                try {
+
+                    return encodeR2VideoUrl(
+                        item.video
+                    ).href === validatedUrl.href;
+
+                } catch (error) {
+
+                    return false;
+                }
+            });
+
+            // If legacy URL matches movies.json,
+            // use the new canonical movie ID.
+
+            if (matchingMovie) {
+
+                return validateMovie(matchingMovie);
+            }
+
+            // Preserve playback for old URLs that
+            // are no longer listed in movies.json.
+
             return {
+                movie: null,
+                movieId: null,
+
                 title:
                     movieTitleParam && movieTitleParam.trim()
                         ? movieTitleParam.trim().slice(0, 200)
                         : 'Watch Movie',
 
-                videoUrl: validatedUrl.href
+                videoUrl: validatedUrl.href,
+                imageUrl: null
             };
+        }
+
+
+        // =========================================
+        // VIDEOOBJECT STRUCTURED DATA
+        // =========================================
+
+        function getValidUploadDate(movie) {
+
+            if (!movie || typeof movie !== 'object') {
+                return null;
+            }
+
+            const possibleDates = [
+                movie.uploadDate,
+                movie.datePublished,
+                movie.date
+            ];
+
+            for (const value of possibleDates) {
+
+                if (
+                    typeof value !== 'string' ||
+                    !value.trim()
+                ) {
+                    continue;
+                }
+
+                const timestamp = Date.parse(value);
+
+                if (Number.isFinite(timestamp)) {
+
+                    return new Date(timestamp).toISOString();
+                }
+            }
+
+            return null;
+        }
+
+
+        function addVideoStructuredData(
+            movie,
+            movieId,
+            videoUrl,
+            imageUrl
+        ) {
+
+            const existing = document.getElementById(
+                'movieVideoStructuredData'
+            );
+
+            if (existing) {
+                existing.remove();
+            }
+
+            // A valid thumbnail is required
+            // for Google's video rich result.
+
+            if (!imageUrl) {
+                console.warn(
+                    'VideoObject not created: thumbnail is missing.'
+                );
+                return;
+            }
+
+            const canonicalUrl =
+                `${SITE_URL}/watch?id=${encodeURIComponent(movieId)}`;
+
+            const description =
+                typeof movie.description === 'string' &&
+                movie.description.trim()
+                    ? movie.description.trim().slice(0, 300)
+                    : `${movie.title} ကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။`;
+
+            const videoObject = {
+                '@context': 'https://schema.org',
+                '@type': 'VideoObject',
+
+                name: movie.title,
+
+                description: description,
+
+                thumbnailUrl: [
+                    imageUrl
+                ],
+
+                contentUrl: videoUrl,
+
+                embedUrl: canonicalUrl,
+
+                url: canonicalUrl,
+
+                inLanguage: 'my'
+            };
+
+            const uploadDate =
+                getValidUploadDate(movie);
+
+            if (uploadDate) {
+                videoObject.uploadDate = uploadDate;
+            }
+
+            // Add duration only when a valid ISO 8601
+            // duration is supplied in movies.json.
+
+            if (
+                typeof movie.duration === 'string' &&
+                /^PT(?=\d)(\d+H)?(\d+M)?(\d+(\.\d+)?S)?$/i.test(
+                    movie.duration
+                )
+            ) {
+
+                videoObject.duration = movie.duration;
+            }
+
+            const script =
+                document.createElement('script');
+
+            script.id = 'movieVideoStructuredData';
+
+            script.type = 'application/ld+json';
+
+            script.textContent =
+                JSON.stringify(videoObject);
+
+            document.head.appendChild(script);
+
+            console.log(
+                'VideoObject Structured Data Added'
+            );
         }
 
 
@@ -897,39 +1255,79 @@
 
         // =========================================
         // INITIALIZE PLAYER
-        // VIDEO MUST NOT WAIT FOR VIEW COUNTER
         // =========================================
 
         async function initPlayer() {
 
             try {
 
-                // LOAD MOVIE FROM ID OR LEGACY URL
+                const movieData =
+                    await loadMovieData();
 
-                const movieData = await loadMovieData();
+                currentMovie = movieData.movie;
+
+                currentMovieId = movieData.movieId;
 
                 safeTitle = movieData.title;
 
                 titleElement.textContent = safeTitle;
 
-                document.title =
-                    safeTitle + ' - drsamangyi';
+
+                // -------------------------------------
+                // SEO AND CANONICAL CONFIGURATION
+                // -------------------------------------
+
+                if (
+                    currentMovie &&
+                    currentMovieId
+                ) {
+
+                    setMovieSEO(
+                        currentMovie,
+                        currentMovieId,
+                        movieData.videoUrl,
+                        movieData.imageUrl
+                    );
+
+                    addVideoStructuredData(
+                        currentMovie,
+                        currentMovieId,
+                        movieData.videoUrl,
+                        movieData.imageUrl
+                    );
+
+                } else {
+
+                    // Old URL that is not found in
+                    // movies.json must not be indexed.
+
+                    document.title =
+                        safeTitle + ' - drsamangyi';
+
+                    setIndexable(false);
+                }
 
 
+                // -------------------------------------
                 // VALIDATE VIDEO URL
+                // -------------------------------------
 
                 const videoUrl =
                     encodeR2VideoUrl(movieData.videoUrl);
 
 
+                // -------------------------------------
                 // SET VIDEO SOURCE FIRST
+                // -------------------------------------
 
                 videoElement.src = videoUrl.href;
 
                 videoElement.load();
 
 
+                // -------------------------------------
                 // INITIALIZE PLYR
+                // -------------------------------------
 
                 if (typeof Plyr === 'undefined') {
                     throw new Error('Plyr library failed to load');
@@ -953,7 +1351,9 @@
                 });
 
 
+                // -------------------------------------
                 // PLAYER EVENT HANDLING
+                // -------------------------------------
 
                 player.on('ready', () => {
 
@@ -976,7 +1376,9 @@
                 });
 
 
+                // -------------------------------------
                 // INITIALIZE VIEW COUNTER SEPARATELY
+                // -------------------------------------
 
                 generateMovieKey(videoUrl.href)
                     .then(key => {
@@ -1015,6 +1417,11 @@
                     error
                 );
 
+                // Invalid or unavailable movie:
+                // do not allow indexing.
+
+                setIndexable(false);
+
                 titleElement.textContent =
                     'Unable to load movie. Please try again.';
 
@@ -1022,7 +1429,9 @@
         }
 
 
+        // =========================================
         // START PLAYER
+        // =========================================
 
         initPlayer();
 
