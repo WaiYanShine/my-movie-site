@@ -4,7 +4,7 @@ import re
 import json
 import xml.etree.ElementTree as ET
 
-from datetime import date, datetime
+from datetime import datetime
 from urllib.parse import urlencode, urlparse
 
 
@@ -27,9 +27,7 @@ R2_HOST = "pub-18678a28a2634123aa1c63d0b4feca75.r2.dev"
 # ==========================================
 
 NS = "http://www.sitemaps.org/schemas/sitemap/0.9"
-
 IMAGE_NS = "http://www.google.com/schemas/sitemap-image/1.1"
-
 VIDEO_NS = "http://www.google.com/schemas/sitemap-video/1.1"
 
 ET.register_namespace("", NS)
@@ -42,12 +40,12 @@ def xml_tag(name, namespace=NS):
 
 
 # ==========================================
-# GENERAL VALIDATION
+# URL VALIDATION
 # ==========================================
 
 def is_valid_https_url(value, allowed_host=None):
 
-    if not isinstance(value, str):
+    if not isinstance(value, str) or not value.strip():
         return False
 
     try:
@@ -65,14 +63,19 @@ def is_valid_https_url(value, allowed_host=None):
         if parsed.port not in (None, 443):
             return False
 
-        if allowed_host and parsed.hostname.lower() != allowed_host.lower():
-            return False
+        if allowed_host:
+            if parsed.hostname.lower() != allowed_host.lower():
+                return False
 
         return True
 
     except (ValueError, TypeError):
         return False
 
+
+# ==========================================
+# DATE VALIDATION
+# ==========================================
 
 def format_date(value):
 
@@ -118,15 +121,13 @@ def get_movie_id(movie):
 
 def generate_watch_url(movie_id):
 
-    query = urlencode({
-        "id": movie_id
-    })
+    query = urlencode({"id": movie_id})
 
     return f"{SITE_URL}/watch?{query}"
 
 
 # ==========================================
-# MOVIE DATA VALIDATION
+# CONTENT ELIGIBILITY
 # ==========================================
 
 def validate_movie(movie):
@@ -154,8 +155,8 @@ def validate_movie(movie):
     if not get_movie_id(movie):
         return False
 
-    # Do not automatically publish ambiguous or
-    # potentially exploitative material in the sitemap.
+    # Exclude titles indicating potentially
+    # underage or non-consensual/secret recording content.
     blocked_terms = [
         "ချောင်းရိုက်",
         "မသိတတ်သေးတဲအရွယ်",
@@ -166,9 +167,9 @@ def validate_movie(movie):
 
     normalized_title = title.casefold()
 
-    if any(term.casefold() in normalized_title
-           for term in blocked_terms):
-        return False
+    for term in blocked_terms:
+        if term.casefold() in normalized_title:
+            return False
 
     return True
 
@@ -234,7 +235,7 @@ def add_movie_image(url, image_url, title):
 # VIDEO SITEMAP
 # ==========================================
 
-def add_movie_video(url, movie, movie_url):
+def add_movie_video(url, movie):
 
     title = movie["title"].strip()
 
@@ -265,23 +266,24 @@ def add_movie_video(url, movie, movie_url):
         xml_tag("description", VIDEO_NS)
     ).text = description[:2048]
 
+    # IMPORTANT:
+    # content_loc must point to the actual MP4 file.
+    # Do not use the HTML watch page URL here.
     ET.SubElement(
         video,
         xml_tag("content_loc", VIDEO_NS)
     ).text = video_url
 
-    ET.SubElement(
-        video,
-        xml_tag("player_loc", VIDEO_NS)
-    ).text = movie_url
+    # player_loc intentionally omitted.
+    # This website uses an HTML5/Plyr player,
+    # not a SWF player.
 
-    # Adult content must not be represented as family-friendly.
     ET.SubElement(
         video,
         xml_tag("family_friendly", VIDEO_NS)
     ).text = "no"
 
-    # Optional publication date
+    # Publication date
     created_at = movie.get("createdAt")
 
     if created_at:
@@ -299,10 +301,14 @@ def add_movie_video(url, movie, movie_url):
         except (ValueError, TypeError):
             pass
 
-    # Optional duration in seconds
+    # Duration in seconds
     duration = movie.get("duration")
 
-    if isinstance(duration, int) and 0 < duration <= 28800:
+    if (
+        isinstance(duration, int)
+        and not isinstance(duration, bool)
+        and 0 < duration <= 28800
+    ):
 
         ET.SubElement(
             video,
@@ -311,7 +317,7 @@ def add_movie_video(url, movie, movie_url):
 
 
 # ==========================================
-# ADD INDIVIDUAL MOVIE
+# ADD INDIVIDUAL MOVIE PAGE
 # ==========================================
 
 def add_movie_page(urlset, movie):
@@ -334,6 +340,7 @@ def add_movie_page(urlset, movie):
         xml_tag("url")
     )
 
+    # HTML landing page URL
     ET.SubElement(
         url,
         xml_tag("loc")
@@ -364,8 +371,7 @@ def add_movie_page(urlset, movie):
 
     add_movie_video(
         url,
-        movie,
-        movie_url
+        movie
     )
 
     return True
@@ -378,11 +384,11 @@ def add_movie_page(urlset, movie):
 def generate_sitemap():
 
     if not os.path.exists(MOVIES_JSON):
-
         raise FileNotFoundError(
             f"{MOVIES_JSON} was not found."
         )
 
+    # Load movies.json
     with open(
         MOVIES_JSON,
         "r",
@@ -392,7 +398,6 @@ def generate_sitemap():
         movies = json.load(file)
 
     if not isinstance(movies, list):
-
         raise ValueError(
             "movies.json must contain a JSON array."
         )
@@ -426,15 +431,14 @@ def generate_sitemap():
     )
 
     # ======================================
-    # 3. MOVIE PAGES
+    # 3. INDIVIDUAL MOVIE PAGES
     # ======================================
 
     movie_count = 0
+    skipped_count = 0
 
     seen_ids = set()
     seen_urls = set()
-
-    skipped_count = 0
 
     for movie in movies:
 
@@ -450,8 +454,14 @@ def generate_sitemap():
 
         movie_url = generate_watch_url(movie_id)
 
-        if movie_id in seen_ids or movie_url in seen_urls:
-            print(f"WARNING: Duplicate movie skipped: {movie_id}")
+        if (
+            movie_id in seen_ids
+            or movie_url in seen_urls
+        ):
+            print(
+                f"WARNING: Duplicate skipped: {movie_id}"
+            )
+
             skipped_count += 1
             continue
 
@@ -499,11 +509,59 @@ def generate_sitemap():
         xml_declaration=True
     )
 
-    # Verify generated XML
+    # Verify XML can be parsed
     ET.parse(SITEMAP_FILE)
 
     # ======================================
-    # 7. RESULT
+    # 7. VERIFY VIDEO URL MISMATCH
+    # ======================================
+
+    mismatch_count = 0
+
+    for url in urlset.findall(xml_tag("url")):
+
+        page_loc = url.find(xml_tag("loc"))
+
+        video = url.find(xml_tag("video", VIDEO_NS))
+
+        if video is None:
+            continue
+
+        content_loc = video.find(
+            xml_tag("content_loc", VIDEO_NS)
+        )
+
+        player_loc = video.find(
+            xml_tag("player_loc", VIDEO_NS)
+        )
+
+        page_url = page_loc.text if page_loc is not None else None
+
+        content_url = (
+            content_loc.text
+            if content_loc is not None
+            else None
+        )
+
+        player_url = (
+            player_loc.text
+            if player_loc is not None
+            else None
+        )
+
+        if content_url == page_url:
+            mismatch_count += 1
+
+        if player_url and player_url == page_url:
+            mismatch_count += 1
+
+    if mismatch_count:
+        raise ValueError(
+            f"Video URL mismatch detected: {mismatch_count}"
+        )
+
+    # ======================================
+    # 8. RESULT
     # ======================================
 
     print()
@@ -511,12 +569,18 @@ def generate_sitemap():
     print(" SITEMAP GENERATED SUCCESSFULLY")
     print("======================================")
 
-    print(f"Static Pages    : 3")
+    print("Static Pages    : 3")
     print(f"Approved Movies : {movie_count}")
     print(f"Skipped Movies  : {skipped_count}")
     print(f"Total URLs      : {movie_count + 3}")
 
+    print("Video player_loc: Not used")
+    print("Video content_loc: MP4 URL")
+
     print(f"Output File     : {SITEMAP_FILE}")
+
+    print("XML Validation  : PASSED")
+    print("URL Validation  : PASSED")
 
     print("======================================")
     print()
