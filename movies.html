@@ -645,6 +645,7 @@
 
     // ==========================================
     // MOVIE WATCH URL
+    // New ID-based URL with legacy fallback
     // ==========================================
 
     function getMovieWatchUrl(movie) {
@@ -655,6 +656,31 @@
             return null;
         }
 
+        try {
+            const url = new URL(videoUrl);
+
+            const filename = decodeURIComponent(
+                url.pathname.split('/').pop() || ''
+            );
+
+            const match = filename.match(
+                /^(movie\d{5})\.mp4$/i
+            );
+
+            if (match) {
+                const movieId = match[1].toLowerCase();
+
+                return `/watch.html?id=${encodeURIComponent(movieId)}`;
+            }
+
+        } catch (error) {
+            console.warn(
+                'Unable to extract movie ID:',
+                error
+            );
+        }
+
+        // Legacy URL fallback
         const title = String(
             movie.title || 'drsamangyi Movie'
         );
@@ -741,14 +767,6 @@
 
     // ==========================================
     // EXTRACT VIEW API RESPONSE
-    //
-    // Expected:
-    // {
-    //   success: true,
-    //   views: [
-    //     { movie_key: "...", views: 3 }
-    //   ]
-    // }
     // ==========================================
 
     function extractViewData(data) {
