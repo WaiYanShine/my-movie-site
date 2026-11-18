@@ -321,7 +321,8 @@
             window.location.search
         );
 
-        const movieTitle = params.get('title');
+        const requestedMovieId = params.get('id');
+        const movieTitleParam = params.get('title');
         const encodedVideo = params.get('v');
 
         const titleElement =
@@ -330,24 +331,12 @@
         const videoElement =
             document.getElementById('player');
 
-
-        // =========================================
-        // DISPLAY MOVIE TITLE
-        // =========================================
-
-        const safeTitle =
-            movieTitle && movieTitle.trim()
-                ? movieTitle.trim().slice(0, 200)
-                : 'Watch Movie';
-
-        titleElement.textContent = safeTitle;
-
-        // Dynamic browser title (not search promotion)
-        document.title = safeTitle + ' - drsamangyi';
+        let safeTitle = 'Watch Movie';
 
 
         // =========================================
         // BASE64 UNICODE DECODER
+        // LEGACY URL SUPPORT
         // =========================================
 
         function b64DecodeUnicode(str) {
@@ -432,6 +421,122 @@
             url.pathname = encodedPath;
 
             return url;
+        }
+
+
+        // =========================================
+        // LOAD MOVIE DATA
+        // NEW ID URL + LEGACY URL SUPPORT
+        // =========================================
+
+        async function loadMovieData() {
+
+            // -------------------------------------
+            // NEW URL FORMAT
+            // /watch.html?id=movie00001
+            // -------------------------------------
+
+            if (requestedMovieId !== null) {
+
+                if (!/^movie\d{5}$/i.test(requestedMovieId)) {
+                    throw new Error('Invalid movie ID');
+                }
+
+                const response = await fetch('/movies.json', {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(
+                        'Unable to load movies.json: ' +
+                        response.status
+                    );
+                }
+
+                const movies = await response.json();
+
+                if (!Array.isArray(movies)) {
+                    throw new Error('Invalid movies.json format');
+                }
+
+                const targetId =
+                    requestedMovieId.toLowerCase();
+
+                const movie = movies.find(item => {
+
+                    if (
+                        !item ||
+                        typeof item.video !== 'string'
+                    ) {
+                        return false;
+                    }
+
+                    try {
+
+                        const validatedUrl =
+                            encodeR2VideoUrl(item.video);
+
+                        const filename = decodeURIComponent(
+                            validatedUrl.pathname.split('/').pop() || ''
+                        );
+
+                        return filename.toLowerCase() ===
+                            `${targetId}.mp4`;
+
+                    } catch (error) {
+
+                        return false;
+                    }
+                });
+
+                if (!movie) {
+                    throw new Error('Movie not found');
+                }
+
+                if (
+                    typeof movie.title !== 'string' ||
+                    !movie.title.trim()
+                ) {
+                    throw new Error('Movie title is invalid');
+                }
+
+                return {
+                    title: movie.title.trim().slice(0, 200),
+
+                    videoUrl: encodeR2VideoUrl(
+                        movie.video
+                    ).href
+                };
+            }
+
+
+            // -------------------------------------
+            // OLD URL FORMAT
+            // ?title=...&v=...
+            // -------------------------------------
+
+            if (!encodedVideo) {
+                throw new Error('Video URL is missing');
+            }
+
+            const decodedUrl =
+                b64DecodeUnicode(encodedVideo);
+
+            const validatedUrl =
+                encodeR2VideoUrl(decodedUrl);
+
+            return {
+                title:
+                    movieTitleParam && movieTitleParam.trim()
+                        ? movieTitleParam.trim().slice(0, 200)
+                        : 'Watch Movie',
+
+                videoUrl: validatedUrl.href
+            };
         }
 
 
@@ -799,15 +904,22 @@
 
             try {
 
-                if (!encodedVideo) {
-                    throw new Error('Video URL is missing');
-                }
+                // LOAD MOVIE FROM ID OR LEGACY URL
 
-                const decodedUrl =
-                    b64DecodeUnicode(encodedVideo);
+                const movieData = await loadMovieData();
+
+                safeTitle = movieData.title;
+
+                titleElement.textContent = safeTitle;
+
+                document.title =
+                    safeTitle + ' - drsamangyi';
+
+
+                // VALIDATE VIDEO URL
 
                 const videoUrl =
-                    encodeR2VideoUrl(decodedUrl);
+                    encodeR2VideoUrl(movieData.videoUrl);
 
 
                 // SET VIDEO SOURCE FIRST
