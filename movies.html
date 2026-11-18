@@ -644,6 +644,37 @@
     }
 
     // ==========================================
+    // EXTRACT MOVIE ID FROM VIDEO FILENAME
+    // Example: movie00049.mp4 -> movie00049
+    // ==========================================
+
+    function getMovieIdFromVideoUrl(videoUrl) {
+        try {
+            const url = new URL(videoUrl);
+
+            const filename = decodeURIComponent(
+                url.pathname.split('/').pop() || ''
+            );
+
+            const match = filename.match(
+                /^(movie\d{5})\.mp4$/i
+            );
+
+            return match
+                ? match[1].toLowerCase()
+                : null;
+
+        } catch (error) {
+            console.warn(
+                'Unable to extract movie ID:',
+                error
+            );
+
+            return null;
+        }
+    }
+
+    // ==========================================
     // MOVIE WATCH URL
     // New ID-based URL with legacy fallback
     // ==========================================
@@ -656,28 +687,11 @@
             return null;
         }
 
-        try {
-            const url = new URL(videoUrl);
+        const movieId =
+            getMovieIdFromVideoUrl(videoUrl);
 
-            const filename = decodeURIComponent(
-                url.pathname.split('/').pop() || ''
-            );
-
-            const match = filename.match(
-                /^(movie\d{5})\.mp4$/i
-            );
-
-            if (match) {
-                const movieId = match[1].toLowerCase();
-
-                return `/watch.html?id=${encodeURIComponent(movieId)}`;
-            }
-
-        } catch (error) {
-            console.warn(
-                'Unable to extract movie ID:',
-                error
-            );
+        if (movieId) {
+            return `/watch?id=${encodeURIComponent(movieId)}`;
         }
 
         // Legacy URL fallback
@@ -693,7 +707,7 @@
             v: encodedVideo
         });
 
-        return `/watch.html?${params.toString()}`;
+        return `/watch?${params.toString()}`;
     }
 
     // ==========================================
