@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -9,7 +8,6 @@
 
     <meta name="description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။">
 
-    <!-- IMPORTANT: Valid movie ID pages are indexable from initial HTML -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
 
     <meta name="theme-color" content="#121212">
@@ -380,8 +378,8 @@
         }
 
 
-        // A valid ID URL starts as indexable in the original HTML.
-        // Invalid IDs and legacy URLs are changed to noindex immediately.
+        // Valid movie ID pages start as indexable.
+        // Invalid IDs and legacy URLs start as noindex.
 
         if (
             requestedMovieId !== null &&
@@ -765,7 +763,6 @@
 
         // =========================================
         // VALIDATE UPLOAD DATE
-        // SUPPORTS createdAt FROM movies.json
         // =========================================
 
         function getValidUploadDate(movie) {
@@ -863,9 +860,6 @@
             if (uploadDate) {
                 videoObject.uploadDate = uploadDate;
             }
-
-            // Add duration only when a valid ISO 8601
-            // duration is supplied in movies.json.
 
             if (
                 typeof movie.duration === 'string' &&
@@ -1225,17 +1219,25 @@
 
 
         // =========================================
-        // VIDEO ERROR HANDLING
+        // VIDEO PLAYBACK ERROR HANDLING
+        // IMPORTANT:
+        // Do not replace the movie title with an error.
+        // A video playback error does not mean the page
+        // itself is missing or unavailable.
         // =========================================
 
         videoElement.addEventListener('error', () => {
 
             const error = videoElement.error;
 
-            console.error('Video Playback Error:', error);
+            console.error('Video Playback Error:', {
+                code: error ? error.code : null,
+                message: error ? error.message : 'Unknown error',
+                source: videoElement.currentSrc || videoElement.src
+            });
 
-            titleElement.textContent =
-                'Video playback failed. Please try again.';
+            // Keep the actual movie title as H1.
+            // Do not change robots to noindex here.
 
             stopViewTracking();
         });
@@ -1384,6 +1386,9 @@
                     error
                 );
 
+                // Initialization failures are different from
+                // normal video playback errors.
+
                 setIndexable(false);
 
                 titleElement.textContent =
@@ -1402,3 +1407,4 @@
 
 </body>
 </html>
+
