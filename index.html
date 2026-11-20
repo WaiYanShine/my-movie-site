@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -269,6 +270,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
 
         .section-title h1 {
@@ -283,6 +285,7 @@
             font-size: 14px;
             padding: 4px 10px;
             border-radius: 20px;
+            white-space: nowrap;
         }
 
         .movie-grid {
@@ -321,11 +324,10 @@
 
         .movie-card img {
             width: 100%;
-            aspect-ratio: 2 / 3;
-            height: auto;
+            height: 280px;
             object-fit: cover;
             display: block;
-            background: #1f1f1f;
+            background: #292929;
         }
 
         .movie-info {
@@ -345,7 +347,25 @@
             justify-content: space-between;
             color: #aaa;
             font-size: 0.85rem;
-            gap: 5px;
+            gap: 8px;
+        }
+
+        .movie-meta span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #777;
+            padding: 30px 10px;
         }
 
         .pagination {
@@ -395,11 +415,11 @@
 
     <header>
         <a href="/" class="logo" aria-label="drsamangyi Homepage">
-            drsamangyi
+            🎬 drsamangyi
         </a>
 
         <nav aria-label="Main navigation">
-            <a href="/" class="active">Home</a>
+            <a href="/" class="active" aria-current="page">Home</a>
             <a href="/movies.html">Movies</a>
             <a href="/contact.html">Contact</a>
         </nav>
@@ -464,7 +484,7 @@
                         onchange="filterMovies(true)"
                     >
                         <option value="all">All Categories</option>
-                        <option value="mm-collections">MM Collections</option>
+                        <option value="mm-collections">Myanmar Collections</option>
                     </select>
                 </div>
 
@@ -555,23 +575,49 @@
         }
 
         /* =========================================
-           UNICODE SAFE BASE64 ENCODER
+           EXTRACT MOVIE ID FROM VIDEO URL
         ========================================= */
 
-        function b64EncodeUnicode(str) {
+        function getMovieId(videoUrl) {
 
-            return btoa(
-                encodeURIComponent(str).replace(
-                    /%([0-9A-F]{2})/g,
-                    function(match, p1) {
+            if (
+                typeof videoUrl !== 'string' ||
+                !videoUrl.trim()
+            ) {
+                return null;
+            }
 
-                        return String.fromCharCode(
-                            parseInt(p1, 16)
-                        );
+            try {
 
-                    }
-                )
-            );
+                const url = new URL(videoUrl);
+
+                if (
+                    url.protocol !== 'https:' ||
+                    url.hostname !== 'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev'
+                ) {
+                    return null;
+                }
+
+                const filename = url.pathname.split('/').pop();
+
+                let decodedFilename;
+
+                try {
+                    decodedFilename = decodeURIComponent(filename);
+                } catch (error) {
+                    decodedFilename = filename;
+                }
+
+                const match = decodedFilename.match(
+                    /^(movie\d+)\.mp4$/i
+                );
+
+                return match ? match[1] : null;
+
+            } catch (error) {
+
+                return null;
+            }
         }
 
         /* =========================================
@@ -975,6 +1021,45 @@
         }
 
         /* =========================================
+           FORMAT VIEW COUNT
+        ========================================= */
+
+        function formatViews(value) {
+
+            const views = Number(value) || 0;
+
+            return new Intl.NumberFormat(
+                'en-US',
+                {
+                    notation: 'compact',
+                    maximumFractionDigits: 1
+                }
+            ).format(views);
+        }
+
+        /* =========================================
+           FORMAT MOVIE DATE
+        ========================================= */
+
+        function formatDisplayDate(value) {
+
+            const timestamp = Date.parse(value);
+
+            if (!Number.isFinite(timestamp)) {
+                return 'Movie';
+            }
+
+            return new Intl.DateTimeFormat(
+                'en-GB',
+                {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }
+            ).format(timestamp);
+        }
+
+        /* =========================================
            RENDER MOVIES
         ========================================= */
 
@@ -1011,7 +1096,7 @@
                 movies.slice(startIndex, endIndex);
 
             pageBadge.textContent =
-                `Page ${currentPage}`;
+                `Page ${currentPage} · ${movies.length} Movies`;
 
             grid.replaceChildren();
 
@@ -1020,9 +1105,7 @@
                 const emptyMessage =
                     document.createElement('p');
 
-                emptyMessage.style.gridColumn = '1 / -1';
-                emptyMessage.style.textAlign = 'center';
-                emptyMessage.style.color = '#777';
+                emptyMessage.className = 'status-message';
 
                 emptyMessage.textContent =
                     'No movies found.';
@@ -1044,18 +1127,38 @@
                     movie.video || ''
                 );
 
+                const movieId = getMovieId(videoURL);
+
                 const imageURL = getSafeUrl(movie.img);
+
+                /*
+                   Use the ID-based Watch URL.
+                   Example: /watch?id=movie00049
+                */
+
+                if (!movieId) {
+
+                    console.warn(
+                        'Movie ID could not be extracted:',
+                        title,
+                        videoURL
+                    );
+
+                    return;
+                }
 
                 const card =
                     document.createElement('a');
 
-                const encodedVideoURL =
-                    b64EncodeUnicode(videoURL);
-
                 card.href =
-                    `/watch.html?title=${encodeURIComponent(title)}&v=${encodeURIComponent(encodedVideoURL)}`;
+                    `/watch?id=${encodeURIComponent(movieId)}`;
 
                 card.className = 'movie-card';
+
+                card.setAttribute(
+                    'aria-label',
+                    `Watch ${title}`
+                );
 
                 const poster =
                     document.createElement('img');
@@ -1095,42 +1198,34 @@
                     document.createElement('h3');
 
                 movieTitle.textContent = title;
+                movieTitle.title = title;
 
                 const movieMeta =
                     document.createElement('div');
 
                 movieMeta.className = 'movie-meta';
 
-                const genre =
-                    document.createElement('span');
-
-                genre.textContent = String(
-                    movie.genre || 'Uncategorized'
-                );
-
                 const date =
                     document.createElement('span');
 
-                const createdAt = movie.createdAt
-                    ? new Date(movie.createdAt)
-                    : null;
-
                 date.textContent =
-                    createdAt &&
-                    !isNaN(createdAt.getTime())
-                        ? createdAt.toLocaleDateString()
-                        : '';
+                    movie.createdAt
+                        ? formatDisplayDate(movie.createdAt)
+                        : 'Myanmar Collection';
 
                 const views =
                     document.createElement('span');
 
-                views.textContent =
-                    '👁 ' +
-                    (Number(movie.views) || 0).toLocaleString();
+                views.className = 'rating';
 
-                movieMeta.appendChild(genre);
-                movieMeta.appendChild(views);
+                views.textContent =
+                    `▶ ${formatViews(movie.views || 0)}`;
+
+                views.title =
+                    `${Number(movie.views) || 0} views`;
+
                 movieMeta.appendChild(date);
+                movieMeta.appendChild(views);
 
                 movieInfo.appendChild(movieTitle);
                 movieInfo.appendChild(movieMeta);
