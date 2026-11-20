@@ -7,8 +7,7 @@
 
     <!-- SEO -->
     <title>drsamangyi - မြန်မာကားများ | Myanmar Movie Collections</title>
-
-    <meta name="description" content="drsamangyi တွင် မြန်မာဇာတ်ကားများနှင့် ဗီဒီယိုစုစည်းမှုများကို ရှာဖွေကြည့်ရှုနိုင်ပါသည်။">
+    <meta name="description" content="drsamangyi တွင် မြန်မာဇာတ်ကားများနှင့် ဗီဒီယိုစုစည်းမှုများကို ရှာဖွေကြည့်ရှုနိုင်ပါသည်။ ရုပ်ရှင်ခေါင်းစဉ်နှင့် အမျိုးအစားအလိုက် ရှာဖွေနိုင်ပါသည်။">
     <meta name="author" content="drsamangyi">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="googlebot" content="index, follow, max-image-preview:large">
@@ -49,12 +48,12 @@
     <!-- Website Structured Data -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "drsamangyi",
-      "alternateName": "Drsamangyi Movies",
-      "url": "https://drsamangyi.com/",
-      "inLanguage": "my"
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "drsamangyi",
+        "alternateName": "Drsamangyi Movies",
+        "url": "https://drsamangyi.com/",
+        "inLanguage": "my"
     }
     </script>
 
@@ -170,6 +169,13 @@
             padding: 0 20px;
         }
 
+        .home-intro {
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.8;
+            margin: -12px 0 25px;
+        }
+
         .search-filter-wrapper {
             margin-bottom: 30px;
         }
@@ -263,7 +269,7 @@
         }
 
         .section-title {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             font-size: 1.8rem;
             border-left: 4px solid #e50914;
             padding-left: 12px;
@@ -317,7 +323,7 @@
             display: block;
         }
 
-        .movie-card:hover {
+        a.movie-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3);
         }
@@ -387,6 +393,9 @@
             font-weight: bold;
             transition: 0.3s;
             border: 1px solid #333;
+        }
+
+        .pagination a {
             cursor: pointer;
         }
 
@@ -466,10 +475,7 @@
                 <div class="filter-group">
                     <label for="sortFilter">Sort By</label>
 
-                    <select
-                        id="sortFilter"
-                        onchange="filterMovies(true)"
-                    >
+                    <select id="sortFilter" onchange="filterMovies(true)">
                         <option value="latest">Latest</option>
                         <option value="oldest">Oldest</option>
                         <option value="most_viewed">Most Viewed</option>
@@ -479,10 +485,7 @@
                 <div class="filter-group">
                     <label for="categoryFilter">Category</label>
 
-                    <select
-                        id="categoryFilter"
-                        onchange="filterMovies(true)"
-                    >
+                    <select id="categoryFilter" onchange="filterMovies(true)">
                         <option value="all">All Categories</option>
                         <option value="mm-collections">Myanmar Collections</option>
                     </select>
@@ -492,13 +495,25 @@
         </div>
 
         <div class="section-title">
-            <h1 id="sectionHeading">Movie Collection</h1>
+            <h1 id="sectionHeading">မြန်မာဇာတ်ကားများ စုစည်းမှု</h1>
             <span id="pageBadge" class="badge">Page 1</span>
         </div>
+
+        <p class="home-intro">
+            drsamangyi တွင် မြန်မာဇာတ်ကားများနှင့် ဗီဒီယိုစုစည်းမှုများကို
+            ရှာဖွေလေ့လာနိုင်ပါသည်။ ရုပ်ရှင်ခေါင်းစဉ်အလိုက် ရှာဖွေခြင်းနှင့်
+            အမျိုးအစားအလိုက် စီစဉ်ကြည့်ရှုခြင်းတို့ကို အသုံးပြုနိုင်ပါသည်။
+        </p>
 
         <div id="movieGrid" class="movie-grid" aria-live="polite"></div>
 
         <nav id="pagination" class="pagination" aria-label="Movie pages"></nav>
+
+        <noscript>
+            <p class="status-message">
+                ဤစာမျက်နှာရှိ ရုပ်ရှင်စာရင်းများကို ကြည့်ရှုရန် JavaScript ကို ဖွင့်ထားရန် လိုအပ်ပါသည်။
+            </p>
+        </noscript>
 
     </main>
 
@@ -522,6 +537,9 @@
         const VIEW_API =
             'https://drsamangyi-view-counter.channeltv4u.workers.dev';
 
+        const R2_HOST =
+            'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev';
+
         let allMovies = [];
 
         /* =========================================
@@ -538,7 +556,7 @@
 
             btn.setAttribute(
                 'aria-expanded',
-                drawer.classList.contains('show')
+                String(drawer.classList.contains('show'))
             );
         }
 
@@ -554,15 +572,9 @@
 
             try {
 
-                const url = new URL(
-                    value,
-                    window.location.origin
-                );
+                const url = new URL(value, window.location.origin);
 
-                if (
-                    url.protocol === 'https:' ||
-                    url.protocol === 'http:'
-                ) {
+                if (url.protocol === 'https:' || url.protocol === 'http:') {
                     return url.href;
                 }
 
@@ -575,10 +587,30 @@
         }
 
         /* =========================================
-           EXTRACT MOVIE ID FROM VIDEO URL
+           EXTRACT MOVIE ID
+           Supported video extensions:
+           MP4, M4V, WEBM, MOV, OGV
         ========================================= */
 
-        function getMovieId(videoUrl) {
+        function getMovieId(movie) {
+
+            if (!movie || typeof movie !== 'object') {
+                return null;
+            }
+
+            const suppliedId =
+                movie.id ||
+                movie.movieId ||
+                movie.movie_id;
+
+            if (
+                typeof suppliedId === 'string' &&
+                /^movie\d+$/i.test(suppliedId)
+            ) {
+                return suppliedId;
+            }
+
+            const videoUrl = movie.video;
 
             if (
                 typeof videoUrl !== 'string' ||
@@ -593,7 +625,7 @@
 
                 if (
                     url.protocol !== 'https:' ||
-                    url.hostname !== 'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev'
+                    url.hostname !== R2_HOST
                 ) {
                     return null;
                 }
@@ -609,7 +641,7 @@
                 }
 
                 const match = decodedFilename.match(
-                    /^(movie\d+)\.mp4$/i
+                    /^(movie\d+)\.(mp4|m4v|webm|mov|ogv)$/i
                 );
 
                 return match ? match[1] : null;
@@ -621,7 +653,7 @@
         }
 
         /* =========================================
-           VIEW COUNTER - LOAD SHARED VIEWS
+           VIEW COUNTER - CANONICAL VIDEO URL
         ========================================= */
 
         function getCanonicalVideoUrl(rawUrl) {
@@ -636,7 +668,7 @@
 
             if (
                 url.protocol !== 'https:' ||
-                url.hostname !== 'pub-18678a28a2634123aa1c63d0b4feca75.r2.dev'
+                url.hostname !== R2_HOST
             ) {
                 return null;
             }
@@ -672,10 +704,7 @@
                 return null;
             }
 
-            if (
-                !window.crypto ||
-                !window.crypto.subtle
-            ) {
+            if (!window.crypto || !window.crypto.subtle) {
                 throw new Error('SHA-256 is not available');
             }
 
@@ -747,7 +776,7 @@
         }
 
         /* =========================================
-           LOAD MOVIES WITH CACHE EXPIRATION
+           LOAD MOVIES WITH CACHE
         ========================================= */
 
         async function initMovies() {
@@ -798,7 +827,6 @@
                     );
 
                     if (!response.ok) {
-
                         throw new Error(
                             `Failed to load movies: ${response.status}`
                         );
@@ -807,10 +835,7 @@
                     const data = await response.json();
 
                     if (!Array.isArray(data)) {
-
-                        throw new Error(
-                            'Invalid movies.json format'
-                        );
+                        throw new Error('Invalid movies.json format');
                     }
 
                     allMovies = data;
@@ -861,16 +886,8 @@
                 window.location.search
             );
 
-            const searchInput =
-                document.getElementById('searchInput');
-
-            const sortFilter =
-                document.getElementById('sortFilter');
-
-            const categoryFilter =
-                document.getElementById('categoryFilter');
-
-            searchInput.value = params.get('q') || '';
+            document.getElementById('searchInput').value =
+                params.get('q') || '';
 
             const sort = params.get('sort');
 
@@ -879,7 +896,7 @@
                 sort === 'oldest' ||
                 sort === 'most_viewed'
             ) {
-                sortFilter.value = sort;
+                document.getElementById('sortFilter').value = sort;
             }
 
             const category = params.get('category');
@@ -888,12 +905,13 @@
                 category === 'all' ||
                 category === 'mm-collections'
             ) {
-                categoryFilter.value = category;
+                document.getElementById('categoryFilter').value =
+                    category;
             }
         }
 
         /* =========================================
-           UPDATE URL WITHOUT PAGE RELOAD
+           UPDATE URL AND SEO CANONICAL
         ========================================= */
 
         function updateFilterURL(page = 1) {
@@ -932,11 +950,54 @@
                 ? `/?${queryString}`
                 : '/';
 
-            window.history.replaceState(
-                {},
-                '',
-                newURL
+            window.history.replaceState({}, '', newURL);
+
+            updatePageSEO(page, Boolean(searchQuery || sortBy !== 'latest' || category !== 'all'));
+        }
+
+        function updatePageSEO(page, hasFilters) {
+
+            const canonical = document.querySelector(
+                'link[rel="canonical"]'
             );
+
+            const robots = document.querySelector(
+                'meta[name="robots"]'
+            );
+
+            const googlebot = document.querySelector(
+                'meta[name="googlebot"]'
+            );
+
+            const title = page > 1
+                ? `မြန်မာဇာတ်ကားများ စုစည်းမှု | Page ${page} | drsamangyi`
+                : 'drsamangyi - မြန်မာကားများ | Myanmar Movie Collections';
+
+            document.title = title;
+
+            if (hasFilters) {
+
+                robots.setAttribute('content', 'noindex, follow');
+                googlebot.setAttribute('content', 'noindex, follow');
+
+                canonical.href = 'https://drsamangyi.com/';
+
+            } else {
+
+                robots.setAttribute(
+                    'content',
+                    'index, follow, max-image-preview:large'
+                );
+
+                googlebot.setAttribute(
+                    'content',
+                    'index, follow, max-image-preview:large'
+                );
+
+                canonical.href = page > 1
+                    ? `https://drsamangyi.com/?page=${page}`
+                    : 'https://drsamangyi.com/';
+            }
         }
 
         /* =========================================
@@ -1028,13 +1089,10 @@
 
             const views = Number(value) || 0;
 
-            return new Intl.NumberFormat(
-                'en-US',
-                {
-                    notation: 'compact',
-                    maximumFractionDigits: 1
-                }
-            ).format(views);
+            return new Intl.NumberFormat('en-US', {
+                notation: 'compact',
+                maximumFractionDigits: 1
+            }).format(views);
         }
 
         /* =========================================
@@ -1049,14 +1107,11 @@
                 return 'Movie';
             }
 
-            return new Intl.DateTimeFormat(
-                'en-GB',
-                {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric'
-                }
-            ).format(timestamp);
+            return new Intl.DateTimeFormat('en-GB', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }).format(timestamp);
         }
 
         /* =========================================
@@ -1071,10 +1126,7 @@
 
             currentPage = Math.max(
                 1,
-                Math.min(
-                    currentPage,
-                    Math.max(totalPages, 1)
-                )
+                Math.min(currentPage, Math.max(totalPages, 1))
             );
 
             const grid =
@@ -1089,11 +1141,8 @@
             const startIndex =
                 (currentPage - 1) * moviesPerPage;
 
-            const endIndex =
-                startIndex + moviesPerPage;
-
             const paginatedMovies =
-                movies.slice(startIndex, endIndex);
+                movies.slice(startIndex, startIndex + moviesPerPage);
 
             pageBadge.textContent =
                 `Page ${currentPage} · ${movies.length} Movies`;
@@ -1106,12 +1155,9 @@
                     document.createElement('p');
 
                 emptyMessage.className = 'status-message';
-
-                emptyMessage.textContent =
-                    'No movies found.';
+                emptyMessage.textContent = 'No movies found.';
 
                 grid.appendChild(emptyMessage);
-
                 paginationDiv.replaceChildren();
 
                 return;
@@ -1123,42 +1169,46 @@
                     movie.title || 'Untitled Movie'
                 );
 
-                const videoURL = String(
-                    movie.video || ''
-                );
-
-                const movieId = getMovieId(videoURL);
-
+                const movieId = getMovieId(movie);
                 const imageURL = getSafeUrl(movie.img);
 
                 /*
-                   Use the ID-based Watch URL.
-                   Example: /watch?id=movie00049
+                   Valid ID:
+                   /watch?id=movie00049
+
+                   Missing ID:
+                   Display card without a broken Watch Link.
                 */
 
-                if (!movieId) {
+                const card = document.createElement(
+                    movieId ? 'a' : 'div'
+                );
 
-                    console.warn(
-                        'Movie ID could not be extracted:',
-                        title,
-                        videoURL
+                if (movieId) {
+
+                    card.href =
+                        `/watch?id=${encodeURIComponent(movieId)}`;
+
+                    card.setAttribute(
+                        'aria-label',
+                        `Watch ${title}`
                     );
 
-                    return;
+                } else {
+
+                    card.setAttribute(
+                        'aria-label',
+                        title
+                    );
+
+                    console.warn(
+                        'Movie has no supported Watch ID:',
+                        title,
+                        movie.video
+                    );
                 }
 
-                const card =
-                    document.createElement('a');
-
-                card.href =
-                    `/watch?id=${encodeURIComponent(movieId)}`;
-
                 card.className = 'movie-card';
-
-                card.setAttribute(
-                    'aria-label',
-                    `Watch ${title}`
-                );
 
                 const poster =
                     document.createElement('img');
@@ -1167,10 +1217,8 @@
                     imageURL || FALLBACK_IMAGE;
 
                 poster.alt = title;
-
                 poster.width = 500;
                 poster.height = 750;
-
                 poster.decoding = 'async';
 
                 if (index === 0) {
@@ -1208,10 +1256,9 @@
                 const date =
                     document.createElement('span');
 
-                date.textContent =
-                    movie.createdAt
-                        ? formatDisplayDate(movie.createdAt)
-                        : 'Myanmar Collection';
+                date.textContent = movie.createdAt
+                    ? formatDisplayDate(movie.createdAt)
+                    : 'Myanmar Collection';
 
                 const views =
                     document.createElement('span');
@@ -1273,8 +1320,7 @@
 
                 const queryString = params.toString();
 
-                const btn =
-                    document.createElement('a');
+                const btn = document.createElement('a');
 
                 btn.href = queryString
                     ? `/?${queryString}`
