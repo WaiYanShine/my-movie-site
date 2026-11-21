@@ -509,7 +509,8 @@
 
     const MOVIES_PER_PAGE = 24;
 
-    const CACHE_KEY = 'drsamangyi_movies_v3';
+    // New cache version to avoid using old cached data.
+    const CACHE_KEY = 'drsamangyi_movies_v4';
 
     const CACHE_TTL = 10 * 60 * 1000;
 
@@ -628,22 +629,6 @@
     }
 
     // ==========================================
-    // UTF-8 BASE64
-    // ==========================================
-
-    function b64EncodeUnicode(value) {
-        const bytes = new TextEncoder().encode(value);
-
-        let binary = '';
-
-        bytes.forEach(byte => {
-            binary += String.fromCharCode(byte);
-        });
-
-        return btoa(binary);
-    }
-
-    // ==========================================
     // EXTRACT MOVIE ID FROM VIDEO FILENAME
     // Example: movie00049.mp4 -> movie00049
     // ==========================================
@@ -657,7 +642,7 @@
             );
 
             const match = filename.match(
-                /^(movie\d{5})\.mp4$/i
+                /^(movie\d+)\.(mp4|m4v|webm|mov|ogv)$/i
             );
 
             return match
@@ -675,11 +660,27 @@
     }
 
     // ==========================================
-    // MOVIE WATCH URL
-    // New ID-based URL with legacy fallback
+    // GET MOVIE ID
+    // First: explicit ID in movies.json
+    // Second: ID extracted from video filename
     // ==========================================
 
-    function getMovieWatchUrl(movie) {
+    function getMovieId(movie) {
+        const possibleIds = [
+            movie.id,
+            movie.movieId,
+            movie.movie_id
+        ];
+
+        for (const value of possibleIds) {
+            if (
+                typeof value === 'string' &&
+                /^movie\d+$/i.test(value.trim())
+            ) {
+                return value.trim().toLowerCase();
+            }
+        }
+
         const videoUrl =
             getCanonicalVideoUrl(movie.video);
 
@@ -687,27 +688,28 @@
             return null;
         }
 
-        const movieId =
-            getMovieIdFromVideoUrl(videoUrl);
+        return getMovieIdFromVideoUrl(videoUrl);
+    }
 
-        if (movieId) {
-            return `/watch?id=${encodeURIComponent(movieId)}`;
+    // ==========================================
+    // MOVIE WATCH URL
+    // ID-BASED URL ONLY
+    // ==========================================
+
+    function getMovieWatchUrl(movie) {
+        const movieId = getMovieId(movie);
+
+        if (!movieId) {
+            console.warn(
+                'Movie ID not found:',
+                movie.title,
+                movie.video
+            );
+
+            return null;
         }
 
-        // Legacy URL fallback
-        const title = String(
-            movie.title || 'drsamangyi Movie'
-        );
-
-        const encodedVideo =
-            b64EncodeUnicode(videoUrl);
-
-        const params = new URLSearchParams({
-            title,
-            v: encodedVideo
-        });
-
-        return `/watch?${params.toString()}`;
+        return `/watch?id=${encodeURIComponent(movieId)}`;
     }
 
     // ==========================================
@@ -882,6 +884,51 @@
     }
 
     // ==========================================
+    // VALIDATE MOVIES DATA
+    // ==========================================
+
+    function validateMovies(data) {
+        if (!Array.isArray(data)) {
+            throw new Error(
+                'movies.json must contain an array.'
+            );
+        }
+
+        return data.filter(movie => {
+            if (
+                !movie ||
+                typeof movie !== 'object' ||
+                typeof movie.title !== 'string' ||
+                typeof movie.video !== 'string' ||
+                typeof movie.img !== 'string'
+            ) {
+                return false;
+            }
+
+            const videoUrl =
+                getCanonicalVideoUrl(movie.video);
+
+            if (!videoUrl) {
+                return false;
+            }
+
+            // Only movies with a valid ID are displayed.
+            const movieId = getMovieId(movie);
+
+            if (!movieId) {
+                console.warn(
+                    'Skipping movie without valid ID:',
+                    movie.title
+                );
+
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    // ==========================================
     // LOAD MOVIES JSON
     // ==========================================
 
@@ -915,7 +962,7 @@
             }
 
             if (cachedMovies) {
-                allMovies = cachedMovies;
+                allMovies = validateMovies(cachedMovies);
 
             } else {
                 const response = await fetch(
@@ -936,22 +983,7 @@
 
                 const data = await response.json();
 
-                if (!Array.isArray(data)) {
-                    throw new Error(
-                        'movies.json must contain an array.'
-                    );
-                }
-
-                allMovies = data.filter(movie => {
-                    return (
-                        movie &&
-                        typeof movie === 'object' &&
-                        typeof movie.title === 'string' &&
-                        typeof movie.video === 'string' &&
-                        typeof movie.img === 'string' &&
-                        getCanonicalVideoUrl(movie.video)
-                    );
-                });
+                allMovies = validateMovies(data);
 
                 try {
                     sessionStorage.setItem(
@@ -1181,6 +1213,7 @@
 
         card.className = 'movie-card';
 
+        // All movie cards use ID-based URLs only.
         card.href = watchUrl;
 
         card.setAttribute(
