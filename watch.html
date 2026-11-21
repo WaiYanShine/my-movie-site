@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="my">
 <head>
@@ -6,9 +7,9 @@
 
     <title>Loading Movie - drsamangyi</title>
 
-    <meta name="description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်။">
+    <meta name="description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်.">
 
-    <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
+    <meta name="robots" content="noindex, follow">
 
     <meta name="theme-color" content="#121212">
 
@@ -131,10 +132,6 @@
             overflow-wrap: anywhere;
         }
 
-        /* =====================================
-           FIXED RESPONSIVE VIDEO PLAYER
-           ===================================== */
-
         .player-box {
             position: relative;
             width: 100%;
@@ -171,10 +168,6 @@
             object-fit: contain;
             background: #000;
         }
-
-        /* =====================================
-           PLYR CONTROL SETTINGS
-           ===================================== */
 
         .plyr--video {
             --plyr-range-track-height: 5px;
@@ -261,10 +254,6 @@
             }
         }
 
-        /* =====================================
-           BACK BUTTON
-           ===================================== */
-
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -317,7 +306,6 @@
         </h1>
 
         <div class="player-box">
-
             <video
                 id="player"
                 playsinline
@@ -326,7 +314,6 @@
             >
                 Your browser does not support HTML5 video.
             </video>
-
         </div>
 
         <a href="/" class="back-btn">
@@ -381,7 +368,7 @@
 
 
         // =========================================
-        // ROBOTS INITIALIZATION
+        // META TAG HELPERS
         // =========================================
 
         function setMeta(name, content, attribute = 'name') {
@@ -400,6 +387,10 @@
         }
 
 
+        // =========================================
+        // ROBOTS
+        // =========================================
+
         function setIndexable(indexable) {
 
             const robots = indexable
@@ -410,14 +401,8 @@
         }
 
 
-        if (
-            requestedMovieId !== null &&
-            /^movie\d{5}$/i.test(requestedMovieId)
-        ) {
-            setIndexable(true);
-        } else {
-            setIndexable(false);
-        }
+        // Default: noindex until a valid catalog movie is loaded.
+        setIndexable(false);
 
 
         // =========================================
@@ -584,9 +569,15 @@
 
         function extractMovieId(videoUrl) {
 
-            const filename = decodeURIComponent(
-                videoUrl.pathname.split('/').pop() || ''
-            );
+            let filename;
+
+            try {
+                filename = decodeURIComponent(
+                    videoUrl.pathname.split('/').pop() || ''
+                );
+            } catch (error) {
+                return null;
+            }
 
             const match = filename.match(
                 /^(movie\d{5})\.mp4$/i
@@ -688,6 +679,35 @@
 
 
         // =========================================
+        // NORMALIZE LEGACY URL
+        // =========================================
+
+        function normalizeLegacyMovieUrl(movieId) {
+
+            const canonicalPath =
+                `/watch?id=${encodeURIComponent(movieId)}`;
+
+            const currentPath =
+                window.location.pathname +
+                window.location.search;
+
+            if (currentPath !== canonicalPath) {
+
+                window.history.replaceState(
+                    null,
+                    '',
+                    canonicalPath
+                );
+
+                console.log(
+                    'Legacy URL normalized:',
+                    canonicalPath
+                );
+            }
+        }
+
+
+        // =========================================
         // LOAD MOVIE DATA
         // NEW ID URL + LEGACY URL SUPPORT
         // =========================================
@@ -696,8 +716,11 @@
 
             const movies = await loadMoviesCatalog();
 
+
+            // -------------------------------------
             // NEW URL FORMAT:
             // /watch?id=movie00049
+            // -------------------------------------
 
             if (requestedMovieId !== null) {
 
@@ -736,8 +759,10 @@
             }
 
 
+            // -------------------------------------
             // LEGACY URL FORMAT:
             // ?title=...&v=...
+            // -------------------------------------
 
             if (!encodedVideo) {
                 throw new Error('Video URL is missing');
@@ -768,9 +793,29 @@
                 }
             });
 
+
+            // -------------------------------------
+            // MATCH FOUND:
+            // NORMALIZE TO NEW ID URL
+            // -------------------------------------
+
             if (matchingMovie) {
-                return validateMovie(matchingMovie);
+
+                const validatedMovie =
+                    validateMovie(matchingMovie);
+
+                normalizeLegacyMovieUrl(
+                    validatedMovie.movieId
+                );
+
+                return validatedMovie;
             }
+
+
+            // -------------------------------------
+            // NO CATALOG MATCH:
+            // KEEP LEGACY VIDEO NON-INDEXABLE
+            // -------------------------------------
 
             return {
                 movie: null,
@@ -1258,9 +1303,6 @@
                 source: videoElement.currentSrc || videoElement.src
             });
 
-            // Keep the movie title.
-            // Do not change robots to noindex here.
-
             stopViewTracking();
         });
 
@@ -1408,9 +1450,6 @@
                     error
                 );
 
-                // Initialization failures are different from
-                // normal video playback errors.
-
                 setIndexable(false);
 
                 titleElement.textContent =
@@ -1429,4 +1468,3 @@
 
 </body>
 </html>
-
