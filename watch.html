@@ -9,7 +9,7 @@
 
     <meta name="description" content="မြန်မာရုပ်ရှင်များကို drsamangyi တွင် ကြည့်ရှုနိုင်ပါသည်.">
 
-    <meta name="robots" content="noindex, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1, max-snippet:-1">
 
     <meta name="theme-color" content="#121212">
 
@@ -401,8 +401,12 @@
         }
 
 
-        // Default: noindex until a valid catalog movie is loaded.
-        setIndexable(false);
+        // Set indexing immediately for valid movie ID URLs.
+        // Invalid IDs and legacy URLs remain noindex.
+        const isValidMovieId =
+            /^movie\d{5}$/i.test(requestedMovieId || '');
+
+        setIndexable(isValidMovieId);
 
 
         // =========================================
